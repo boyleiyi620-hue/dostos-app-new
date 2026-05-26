@@ -22,28 +22,49 @@
             --white: #FFFFFF;
         }
 
-        /* MODERN TEMA (UNISEX & ANIMATED) */
+        /* MODERN TEMA */
         body.theme-modern { background-color: var(--bg); background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png"); color: var(--text); }
         .theme-modern .header { background: var(--primary); border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
         .theme-modern .card { border-radius: 30px; border: 5px solid #F0F2F5; }
 
-        /* KLASİK TEMA (SAMİMİ & PEMBE) */
+        /* KLASİK TEMA */
         body.theme-classic { background-color: #fdf2f8; color: #831843; }
         .theme-classic .header { background: #ec4899; }
         .theme-classic .card { border-radius: 15px; border: 2px solid #fbcfe8; }
         .theme-classic .btn-round { border-radius: 12px; background: #fdf2f8; color: #ec4899; }
 
-        /* UZAY TEMASI (MACERA & KOYU MAVİ) */
-        body.theme-space { background-color: #0f172a; color: #f8fafc; background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); }
+        /* UZAY TEMASI */
+        body.theme-space { background-color: #0f172a; color: #f8fafc; overflow-x: hidden; }
         .theme-space .header { background: #1e293b; border-bottom: 3px solid #38bdf8; }
         .theme-space .card { background: #1e293b; border: 3px solid #38bdf8; color: #f8fafc; }
         .theme-space .card-title { color: #38bdf8; }
         .theme-space .btn-round { background: #334155; color: #38bdf8; }
-        .theme-space .quiz-container { background: #1e293b; border-color: #38bdf8; color: white; }
+        .theme-space .quiz-container { background: #1e293b; border-color: #38bdf8; }
         .theme-space .option-btn { background: #334155; border-color: #475569; color: white; }
         .theme-space .form-card { background: #1e293b; border-color: #38bdf8; color: white; }
-        .theme-space label { color: #38bdf8; }
         .theme-space input, .theme-space select { background: #334155; color: white; border-color: #475569; }
+
+        /* UZAY ANİMASYONLARI */
+        .space-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        body.theme-space .space-bg { display: block; }
+        
+        .rocket { position: absolute; font-size: 3rem; animation: flyRocket 15s infinite linear; }
+        @keyframes flyRocket { 
+            0% { bottom: -10%; left: -10%; transform: rotate(45deg); }
+            100% { bottom: 110%; left: 110%; transform: rotate(45deg); }
+        }
+
+        .planet { position: absolute; font-size: 4rem; animation: spinPlanet 20s infinite linear; opacity: 0.6; }
+        @keyframes spinPlanet { 
+            0% { transform: rotate(0deg) translate(50px) rotate(0deg); }
+            100% { transform: rotate(360deg) translate(50px) rotate(-360deg); }
+        }
+
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle 2s infinite ease-in-out; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+
+        .shooting-star { position: absolute; width: 100px; height: 2px; background: linear-gradient(90deg, white, transparent); animation: shoot 4s infinite linear; opacity: 0; }
+        @keyframes shoot { 0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; } 10% { transform: translateX(500px) translateY(500px) rotate(-45deg); opacity: 0; } 100% { opacity: 0; } }
 
         /* ORTAK STİLLER */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Fredoka', sans-serif; }
@@ -65,9 +86,8 @@
 
         /* TEMA SEÇİCİ */
         .theme-selector { position: absolute; top: 60px; left: 15px; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: none; z-index: 200; border: 3px solid var(--primary); }
-        .theme-option { padding: 10px 15px; cursor: pointer; font-weight: 800; border-radius: 10px; margin-bottom: 5px; transition: background 0.2s; display: flex; align-items: center; gap: 10px; color: #4834D4; }
+        .theme-option { padding: 10px 15px; cursor: pointer; font-weight: 800; border-radius: 10px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; color: #4834D4; }
         .theme-option:hover { background: #f0f0f0; }
-        .theme-option.active { background: var(--primary); color: white; }
 
         .quiz-container { background: white; border-radius: 30px; padding: 20px; text-align: center; border: 6px solid var(--primary); }
         .quiz-question { font-family: 'Baloo 2', cursive; font-size: 1.6rem; margin-bottom: 15px; font-weight: 800; }
@@ -86,6 +106,20 @@
     </style>
 </head>
 <body class="theme-modern">
+    <!-- UZAY ARKA PLANI -->
+    <div class="space-bg" id="space-elements">
+        <div class="star" style="top:10%;left:20%;width:3px;height:3px"></div>
+        <div class="star" style="top:30%;left:80%;width:2px;height:2px;animation-delay:1s"></div>
+        <div class="star" style="top:70%;left:10%;width:4px;height:4px;animation-delay:0.5s"></div>
+        <div class="star" style="top:50%;left:50%;width:2px;height:2px;animation-delay:1.5s"></div>
+        <div class="star" style="top:85%;left:90%;width:3px;height:3px"></div>
+        <div class="rocket">🚀</div>
+        <div class="planet" style="top:15%;right:15%">🌍</div>
+        <div class="planet" style="bottom:20%;left:10%;animation-duration:25s">🪐</div>
+        <div class="shooting-star" style="top:20%;left:10%"></div>
+        <div class="shooting-star" style="top:50%;left:60%;animation-delay:2s"></div>
+    </div>
+
     <div id="theme-menu" class="theme-selector">
         <div class="theme-option" onclick="setTheme('modern')">🌈 Gökkuşağı</div>
         <div class="theme-option" onclick="setTheme('classic')">🌸 Klasik</div>
@@ -166,7 +200,7 @@
 
         async function render() {
             const hash = window.location.hash || '#/';
-            app.innerHTML = '<div style="text-align:center;padding:100px;font-size:3rem">🎨</div>';
+            app.innerHTML = '<div style="text-align:center;padding:100px;font-size:3rem">🚀</div>';
 
             try {
                 if (hash === '#/') {
