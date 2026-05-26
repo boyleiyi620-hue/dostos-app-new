@@ -22,13 +22,7 @@
             --white: #FFFFFF;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Fredoka', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Fredoka', sans-serif; }
 
         body {
             background-color: var(--bg);
@@ -38,9 +32,6 @@
             overflow-x: hidden;
             user-select: none;
         }
-
-        .shape { position: fixed; z-index: -1; opacity: 0.3; animation: float 6s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } }
 
         .header {
             background: var(--primary);
@@ -56,16 +47,16 @@
             border-bottom-right-radius: 30px;
         }
 
-        .header h1 { font-family: 'Baloo 2', cursive; font-size: 1.8rem; color: white; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); font-weight: 800; }
-        .nav-buttons { display: flex; gap: 12px; }
+        .header h1 { font-family: 'Baloo 2', cursive; font-size: 1.6rem; color: white; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); font-weight: 800; }
+        .nav-buttons { display: flex; gap: 10px; }
 
         .btn-round {
             background: white;
             border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 20px;
-            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 18px;
+            font-size: 1.3rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -76,86 +67,80 @@
         .btn-round:active { transform: translateY(4px); box-shadow: none; }
         .btn-primary { background: var(--blue); color: white; }
         .btn-secondary { background: var(--green); color: white; }
+        .btn-quiz { background: #FF9F43; color: white; }
 
-        .container { padding: 25px 20px; max-width: 900px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+        .container { padding: 20px; max-width: 900px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
 
         .card {
             background: var(--white);
-            border-radius: 35px;
-            padding: 20px 10px;
+            border-radius: 30px;
+            padding: 15px 10px;
             text-align: center;
-            box-shadow: 0 10px 0 rgba(0,0,0,0.05);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 6px solid #F0F2F5;
+            border: 5px solid #F0F2F5;
             position: relative;
         }
         .card:active { transform: translateY(5px); box-shadow: none; }
         .card.person { border-color: var(--blue); }
         .card.category { border-color: var(--secondary); }
         .card.item { border-color: var(--green); }
-        .card.quiz { border-color: var(--primary); }
+        .card.quiz { border-color: #FF9F43; }
 
         .card-img {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px;
-            border-radius: 30px;
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 10px;
+            border-radius: 25px;
             background: #F8F9FA;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
+            font-size: 3rem;
             object-fit: cover;
-            border: 4px solid #EEE;
+            border: 3px solid #EEE;
         }
-        .card-title { font-weight: 800; font-size: 1.3rem; color: var(--text); font-family: 'Baloo 2', cursive; }
+        .card-title { font-weight: 800; font-size: 1.1rem; color: var(--text); font-family: 'Baloo 2', cursive; }
 
-        .action-btns { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; }
-        .btn-mini { width: 30px; height: 30px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 0 rgba(0,0,0,0.1); }
+        .action-btns { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 4px; }
+        .btn-mini { width: 28px; height: 28px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 0 rgba(0,0,0,0.1); font-size: 0.8rem; }
         .btn-mini:active { transform: translateY(2px); box-shadow: none; }
         .btn-del { background: var(--accent); color: white; }
         .btn-edit { background: var(--blue); color: white; }
 
-        .quiz-container { background: var(--white); border-radius: 40px; padding: 30px 20px; text-align: center; border: 10px solid var(--primary); }
-        .quiz-question { font-family: 'Baloo 2', cursive; font-size: 2rem; margin-bottom: 20px; color: var(--text); font-weight: 800; }
-        .quiz-img { width: 100%; max-width: 300px; height: 200px; border-radius: 30px; object-fit: cover; margin-bottom: 20px; border: 5px solid #F0F2F5; }
+        .quiz-container { background: var(--white); border-radius: 35px; padding: 25px 15px; text-align: center; border: 8px solid var(--primary); }
+        .quiz-question { font-family: 'Baloo 2', cursive; font-size: 1.8rem; margin-bottom: 20px; color: var(--text); font-weight: 800; }
+        .quiz-img { width: 100%; max-width: 250px; height: 180px; border-radius: 25px; object-fit: cover; margin-bottom: 20px; border: 4px solid #F0F2F5; }
         
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .option-btn { background: #F8F9FA; border: 5px solid #EEE; padding: 20px; border-radius: 25px; font-size: 1.3rem; font-weight: 800; cursor: pointer; transition: all 0.2s; font-family: 'Baloo 2', cursive; box-shadow: 0 6px 0 #DDD; }
-        .option-btn.correct { border-color: var(--green); background: #E6FFFA; box-shadow: 0 6px 0 #1DD1A1; }
-        .option-btn.wrong { border-color: var(--accent); background: #FFF5F5; box-shadow: 0 6px 0 #FF6B6B; animation: shake 0.4s; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .option-btn { background: #F8F9FA; border: 4px solid #EEE; padding: 15px; border-radius: 20px; cursor: pointer; transition: all 0.2s; font-family: 'Baloo 2', cursive; box-shadow: 0 5px 0 #DDD; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .option-btn:active { transform: translateY(4px); box-shadow: none; }
+        .option-img { width: 100%; height: 100px; border-radius: 15px; object-fit: cover; border: 2px solid #EEE; }
+        .option-text { font-size: 1.2rem; font-weight: 800; }
+        .option-btn.correct { border-color: var(--green); background: #E6FFFA; box-shadow: 0 5px 0 #1DD1A1; }
+        .option-btn.wrong { border-color: var(--accent); background: #FFF5F5; box-shadow: 0 5px 0 #FF6B6B; animation: shake 0.4s; }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .next-btn { background: var(--blue); color: white; border: none; padding: 15px 35px; border-radius: 20px; font-size: 1.2rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 0 #2E86DE; font-family: 'Baloo 2', cursive; }
 
-        .next-btn { background: var(--blue); color: white; border: none; padding: 15px 40px; border-radius: 25px; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 8px 0 #2E86DE; font-family: 'Baloo 2', cursive; }
-        .next-btn:active { transform: translateY(4px); box-shadow: none; }
+        .form-card { background: var(--white); padding: 20px; border-radius: 30px; border: 6px solid var(--blue); }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        label { display: block; margin-bottom: 6px; font-weight: 800; font-size: 1rem; color: var(--text); font-family: 'Baloo 2', cursive; }
+        input[type="text"], select { width: 100%; padding: 12px; border-radius: 15px; border: 3px solid #F0F2F5; font-size: 1rem; background: #F8F9FA; }
+        input[type="file"] { width: 100%; padding: 8px; border: 2px dashed var(--blue); border-radius: 12px; }
 
-        .form-card { background: var(--white); padding: 25px; border-radius: 35px; border: 8px solid var(--blue); }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-weight: 800; font-size: 1.1rem; color: var(--text); font-family: 'Baloo 2', cursive; }
-        input[type="text"], select { width: 100%; padding: 15px; border-radius: 20px; border: 4px solid #F0F2F5; font-size: 1.1rem; background: #F8F9FA; font-weight: 600; }
-        
-        /* FILE INPUT STYLING */
-        input[type="file"] { width: 100%; padding: 10px; background: #F8F9FA; border-radius: 15px; border: 2px dashed var(--blue); cursor: pointer; }
+        .btn-save { width: 100%; padding: 15px; border-radius: 18px; border: none; background: var(--green); color: white; font-weight: 800; font-size: 1.3rem; cursor: pointer; margin-top: 10px; box-shadow: 0 6px 0 #10AC84; font-family: 'Baloo 2', cursive; }
 
-        .btn-save { width: 100%; padding: 18px; border-radius: 20px; border: none; background: var(--green); color: white; font-weight: 800; font-size: 1.3rem; cursor: pointer; margin-top: 10px; box-shadow: 0 8px 0 #10AC84; font-family: 'Baloo 2', cursive; }
-        .btn-save:active { transform: translateY(4px); box-shadow: none; }
-
-        @media (max-width: 480px) { .options-grid { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } .header h1 { font-size: 1.4rem; } }
+        @media (max-width: 480px) { .grid { grid-template-columns: repeat(2, 1fr); } .options-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="shape" style="top:10%;left:5%;font-size:3rem">☁️</div>
-    <div class="shape" style="top:20%;right:10%;font-size:2rem">🌟</div>
-    <div class="shape" style="bottom:15%;left:15%;font-size:2.5rem">🎈</div>
-    
     <div id="app"></div>
 
     <script>
         let db;
-        const DB_NAME = 'KonusuyorumFinalDB_V2';
+        const DB_NAME = 'KonusuyorumFinalDB_V3';
         const DB_VERSION = 1;
 
         function initDB() {
@@ -164,39 +149,34 @@
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains('people')) db.createObjectStore('people', { keyPath: 'id' });
-                    if (!db.objectStoreNames.contains('quizzes')) db.createObjectStore('quizzes', { keyPath: 'id' });
                 };
                 request.onsuccess = (e) => { db = e.target.result; resolve(); };
                 request.onerror = (e) => reject(e);
             });
         }
 
-        const crud = (storeName) => ({
+        const peopleDB = {
             getAll: () => new Promise(r => {
-                const tx = db.transaction(storeName, 'readonly');
-                const req = tx.objectStore(storeName).getAll();
+                const tx = db.transaction('people', 'readonly');
+                const req = tx.objectStore('people').getAll();
                 req.onsuccess = () => r(req.result || []);
             }),
             get: (id) => new Promise(r => {
-                const tx = db.transaction(storeName, 'readonly');
-                const req = tx.objectStore(storeName).get(id);
+                const tx = db.transaction('people', 'readonly');
+                const req = tx.objectStore('people').get(id);
                 req.onsuccess = () => r(req.result);
             }),
-            save: (data) => new Promise((r, rej) => {
-                const tx = db.transaction(storeName, 'readwrite');
-                tx.objectStore(storeName).put(data);
+            save: (data) => new Promise(r => {
+                const tx = db.transaction('people', 'readwrite');
+                tx.objectStore('people').put(data);
                 tx.oncomplete = () => r();
-                tx.onerror = (e) => rej(e);
             }),
             delete: (id) => new Promise(r => {
-                const tx = db.transaction(storeName, 'readwrite');
-                tx.objectStore(storeName).delete(id);
+                const tx = db.transaction('people', 'readwrite');
+                tx.objectStore('people').delete(id);
                 tx.oncomplete = () => r();
             })
-        });
-
-        const peopleDB = crud('people');
-        const quizDB = crud('quizzes');
+        };
 
         const generateId = () => Math.random().toString(36).substr(2, 9);
         const navigate = (hash) => { window.location.hash = hash; };
@@ -221,14 +201,6 @@
                 if (hash === '#/') {
                     const people = await peopleDB.getAll();
                     renderHome(people);
-                } else if (hash === '#/quizzes') {
-                    const quizzes = await quizDB.getAll();
-                    renderQuizList(quizzes);
-                } else if (hash.startsWith('#/quiz-play/')) {
-                    const id = hash.split('/')[2];
-                    const quizzes = await quizDB.getAll();
-                    const index = quizzes.findIndex(q => q.id === id);
-                    renderQuizPlay(quizzes, index);
                 } else if (hash.startsWith('#/person/')) {
                     const person = await peopleDB.get(hash.split('/')[2]);
                     renderPerson(person);
@@ -237,84 +209,73 @@
                     const person = await peopleDB.get(parts[2]);
                     const category = person.categories.find(c => c.id === parts[3]);
                     renderCategory(person, category);
+                } else if (hash.startsWith('#/quiz-list/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderQuizList(person);
+                } else if (hash.startsWith('#/quiz-play/')) {
+                    const parts = hash.split('/');
+                    const person = await peopleDB.get(parts[2]);
+                    const index = person.quizzes.findIndex(q => q.id === parts[3]);
+                    renderQuizPlay(person, index);
                 } else if (hash === '#/add-person') {
                     renderPersonForm();
                 } else if (hash.startsWith('#/edit-person/')) {
                     const person = await peopleDB.get(hash.split('/')[2]);
                     renderPersonForm(person);
-                } else if (hash === '#/add-quiz') {
-                    renderQuizForm();
                 } else if (hash.startsWith('#/add-category/')) {
                     renderCategoryForm(hash.split('/')[2]);
+                } else if (hash.startsWith('#/edit-category/')) {
+                    const parts = hash.split('/');
+                    const person = await peopleDB.get(parts[2]);
+                    const cat = person.categories.find(c => c.id === parts[3]);
+                    renderCategoryForm(person.id, cat);
                 } else if (hash.startsWith('#/add-item/')) {
                     const parts = hash.split('/');
                     renderItemForm(parts[2], parts[3]);
+                } else if (hash.startsWith('#/edit-item/')) {
+                    const parts = hash.split('/');
+                    const person = await peopleDB.get(parts[2]);
+                    const cat = person.categories.find(c => c.id === parts[3]);
+                    const item = cat.items.find(i => i.id === parts[4]);
+                    renderItemForm(person.id, cat.id, item);
+                } else if (hash.startsWith('#/add-quiz/')) {
+                    renderQuizForm(hash.split('/')[2]);
                 }
             } catch (err) {
-                app.innerHTML = '<p style="padding:20px">Hata! Lütfen yenile 🛠️</p>';
+                console.error(err);
+                app.innerHTML = '<p style="padding:20px">Hata oluştu 🛠️</p>';
             }
         }
 
         function renderHome(people) {
             app.innerHTML = `
-                <div class="header">
-                    <h1>Konuşuyorum</h1>
-                    <div class="nav-buttons">
-                        <button class="btn-round btn-primary" onclick="navigate('#/quizzes')">🎮</button>
-                        <button class="btn-round btn-secondary" onclick="navigate('#/add-person')">＋</button>
-                    </div>
-                </div>
-                <div class="container">
-                    <div class="grid">
-                        ${people.map(p => `
-                            <div class="card person" onclick="navigate('#/person/${p.id}')">
-                                <div class="action-btns">
-                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>
-                                    <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-person/${p.id}')">✎</button>
-                                </div>
-                                <div class="card-img">${p.avatar ? `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '👤'}</div>
-                                <div class="card-title">${p.name}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    ${people.length === 0 ? '<div style="text-align:center;margin-top:50px"><p style="font-size:1.5rem;font-weight:700">Hadi birini ekleyelim! 🎈</p></div>' : ''}
-                </div>
-            `;
+                <div class="header"><h1>Konuşuyorum</h1><button class="btn-round btn-secondary" onclick="navigate('#/add-person')">＋</button></div>
+                <div class="container"><div class="grid">${people.map(p => `
+                    <div class="card person" onclick="navigate('#/person/${p.id}')">
+                        <div class="action-btns">
+                            <button class="btn-mini btn-del" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>
+                            <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-person/${p.id}')">✎</button>
+                        </div>
+                        <div class="card-img">${p.avatar ? `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '👤'}</div>
+                        <div class="card-title">${p.name}</div>
+                    </div>`).join('')}</div></div>`;
         }
 
         function renderPersonForm(editData = null) {
             app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/')">⬅️</button>
-                    <h1>${editData ? 'Düzenle' : 'Yeni Kişi'}</h1>
-                    <div style="width:50px"></div>
-                </div>
-                <div class="container">
-                    <div class="form-card">
-                        <form onsubmit="handleSavePerson(event, ${editData ? `'${editData.id}'` : 'null'})">
-                            <div class="form-group">
-                                <label>İsim</label>
-                                <input type="text" id="pName" required value="${editData ? editData.name : ''}" placeholder="Örn: Can">
-                            </div>
-                            <div class="form-group">
-                                <label>Fotoğraf Seç (Galeri)</label>
-                                <input type="file" id="pImg" accept="image/*">
-                            </div>
-                            <button type="submit" class="btn-save">${editData ? 'Güncelle' : 'Kaydet'} ✨</button>
-                        </form>
-                    </div>
-                </div>
-            `;
+                <div class="header"><button class="btn-round" onclick="navigate('#/')">⬅️</button><h1>${editData ? 'Düzenle' : 'Yeni Kişi'}</h1><div style="width:45px"></div></div>
+                <div class="container"><div class="form-card"><form onsubmit="handleSavePerson(event, ${editData ? `'${editData.id}'` : 'null'})">
+                    <div class="form-group"><label>İsim</label><input type="text" id="pName" required value="${editData ? editData.name : ''}"></div>
+                    <div class="form-group"><label>Fotoğraf</label><input type="file" id="pImg" accept="image/*"></div>
+                    <button type="submit" class="btn-save">Kaydet ✨</button></form></div></div>`;
         }
 
         async function handleSavePerson(e, id) {
             e.preventDefault();
             const name = document.getElementById('pName').value;
             const file = document.getElementById('pImg').files[0];
-            let person;
-            if (id) { person = await peopleDB.get(id); person.name = name; } 
-            else { person = { id: generateId(), name, avatar: null, categories: [] }; }
-
+            let person = id ? await peopleDB.get(id) : { id: generateId(), name, avatar: null, categories: [], quizzes: [] };
+            person.name = name;
             if (file) {
                 const reader = new FileReader();
                 reader.onload = async (ev) => { person.avatar = ev.target.result; await peopleDB.save(person); navigate('#/'); };
@@ -322,255 +283,151 @@
             } else { await peopleDB.save(person); navigate('#/'); }
         }
 
-        function renderQuizList(quizzes) {
-            app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/')">⬅️</button>
-                    <h1>Oyun Vakti</h1>
-                    <button class="btn-round btn-secondary" onclick="navigate('#/add-quiz')">＋</button>
-                </div>
-                <div class="container">
-                    <div class="grid">
-                        ${quizzes.map(q => `
-                            <div class="card quiz" onclick="navigate('#/quiz-play/${q.id}')">
-                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteQuiz('${q.id}')">✕</button>
-                                <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '❓'}</div>
-                                <div class="card-title">${q.question}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderQuizPlay(quizzes, index) {
-            const quiz = quizzes[index];
-            if (!quiz) { navigate('#/quizzes'); return; }
-            app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/quizzes')">⬅️</button>
-                    <h1>Soru ${index + 1}</h1>
-                    <div style="width:50px"></div>
-                </div>
-                <div class="container">
-                    <div class="quiz-container">
-                        ${quiz.image ? `<img src="${quiz.image}" class="quiz-img">` : ''}
-                        <div class="quiz-question">${quiz.question}</div>
-                        <div class="options-grid">
-                            ${quiz.options.map((opt, i) => `
-                                <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})">${opt}</button>
-                            `).join('')}
-                        </div>
-                        <button class="next-btn" onclick="navigate('#/quiz-play/${quizzes[index+1]?.id || quizzes[0].id}')">Sıradaki ➡️</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        window.checkAnswer = (btn, isCorrect) => {
-            if (isCorrect) {
-                btn.classList.add('correct');
-                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                speak("Harika! Doğru!");
-            } else {
-                btn.classList.add('wrong');
-                speak("Tekrar dene!");
-                setTimeout(() => btn.classList.remove('wrong'), 500);
-            }
-        };
-
-        function renderQuizForm() {
-            app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/quizzes')">⬅️</button>
-                    <h1>Yeni Soru</h1>
-                    <div style="width:50px"></div>
-                </div>
-                <div class="container">
-                    <div class="form-card">
-                        <form onsubmit="handleSaveQuiz(event)">
-                            <div class="form-group">
-                                <label>Soru</label>
-                                <input type="text" id="qText" required placeholder="Örn: Hangisi araba?">
-                            </div>
-                            <div class="form-group">
-                                <label>Soru Fotoğrafı (Galeri)</label>
-                                <input type="file" id="qImg" accept="image/*">
-                            </div>
-                            <div class="form-group"><label>Seçenek 1</label><input type="text" id="opt0" required></div>
-                            <div class="form-group"><label>Seçenek 2</label><input type="text" id="opt1" required></div>
-                            <div class="form-group"><label>Seçenek 3</label><input type="text" id="opt2" required></div>
-                            <div class="form-group"><label>Seçenek 4</label><input type="text" id="opt3" required></div>
-                            <div class="form-group">
-                                <label>Doğru Cevap</label>
-                                <select id="correctIdx">
-                                    <option value="0">Seçenek 1</option>
-                                    <option value="1">Seçenek 2</option>
-                                    <option value="2">Seçenek 3</option>
-                                    <option value="3">Seçenek 4</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn-save">Kaydet 🎮</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function handleSaveQuiz(e) {
-            e.preventDefault();
-            const file = document.getElementById('qImg').files[0];
-            const quiz = {
-                id: generateId(),
-                question: document.getElementById('qText').value,
-                image: null,
-                options: [
-                    document.getElementById('opt0').value,
-                    document.getElementById('opt1').value,
-                    document.getElementById('opt2').value,
-                    document.getElementById('opt3').value
-                ],
-                correct: parseInt(document.getElementById('correctIdx').value)
-            };
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = async (ev) => { quiz.image = ev.target.result; await quizDB.save(quiz); navigate('#/quizzes'); };
-                reader.readAsDataURL(file);
-            } else { await quizDB.save(quiz); navigate('#/quizzes'); }
-        }
-
         function renderPerson(person) {
             app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/')">⬅️</button>
-                    <h1>${person.name}</h1>
-                    <button class="btn-round btn-secondary" onclick="navigate('#/add-category/${person.id}')">＋</button>
-                </div>
-                <div class="container">
-                    <div class="grid">
-                        ${(person.categories || []).map(c => `
-                            <div class="card category" onclick="navigate('#/category/${person.id}/${c.id}')">
-                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
-                                <div class="card-img">📁</div>
-                                <div class="card-title">${c.name}</div>
-                            </div>
-                        `).join('')}
+                <div class="header"><button class="btn-round" onclick="navigate('#/')">⬅️</button><h1>${person.name}</h1>
+                    <div class="nav-buttons">
+                        <button class="btn-round btn-quiz" onclick="navigate('#/quiz-list/${person.id}')">🎮</button>
+                        <button class="btn-round btn-secondary" onclick="navigate('#/add-category/${person.id}')">＋</button>
                     </div>
                 </div>
-            `;
+                <div class="container"><div class="grid">${(person.categories || []).map(c => `
+                    <div class="card category" onclick="navigate('#/category/${person.id}/${c.id}')">
+                        <div class="action-btns">
+                            <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
+                            <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-category/${person.id}/${c.id}')">✎</button>
+                        </div>
+                        <div class="card-img">📁</div><div class="card-title">${c.name}</div>
+                    </div>`).join('')}</div></div>`;
         }
 
-        function renderCategory(person, category) {
+        function renderCategoryForm(pid, editData = null) {
             app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/person/${person.id}')">⬅️</button>
-                    <h1>${category.name}</h1>
-                    <button class="btn-round btn-secondary" onclick="navigate('#/add-item/${person.id}/${category.id}')">＋</button>
-                </div>
-                <div class="container">
-                    <div class="grid">
-                        ${(category.items || []).map(i => `
-                            <div class="card item" onclick="speak('${i.text}')">
-                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteItem('${person.id}', '${category.id}', '${i.id}')">✕</button>
-                                <div class="card-img">${i.image ? `<img src="${i.image}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '💬'}</div>
-                                <div class="card-title">${i.text}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+                <div class="header"><button class="btn-round" onclick="navigate('#/person/${pid}')">⬅️</button><h1>${editData ? 'Düzenle' : 'Yeni Kategori'}</h1><div style="width:45px"></div></div>
+                <div class="container"><div class="form-card"><form onsubmit="handleSaveCategory(event, '${pid}', ${editData ? `'${editData.id}'` : 'null'})">
+                    <div class="form-group"><label>Kategori Adı</label><input type="text" id="cName" required value="${editData ? editData.name : ''}"></div>
+                    <button type="submit" class="btn-save">Kaydet ✨</button></form></div></div>`;
         }
 
-        function renderCategoryForm(pid) {
-            app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/person/${pid}')">⬅️</button>
-                    <h1>Yeni Kategori</h1>
-                    <div style="width:50px"></div>
-                </div>
-                <div class="container">
-                    <div class="form-card">
-                        <form onsubmit="handleSaveCategory(event, '${pid}')">
-                            <div class="form-group">
-                                <label>Kategori Adı</label>
-                                <input type="text" id="cName" required placeholder="Örn: Meyveler">
-                            </div>
-                            <button type="submit" class="btn-save">Kaydet ✨</button>
-                        </form>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function handleSaveCategory(e, pid) {
+        async function handleSaveCategory(e, pid, cid) {
             e.preventDefault();
             const name = document.getElementById('cName').value;
             const person = await peopleDB.get(pid);
-            if (!person.categories) person.categories = [];
-            person.categories.push({ id: generateId(), name, items: [] });
+            if (cid) { person.categories.find(c => c.id === cid).name = name; } 
+            else { person.categories.push({ id: generateId(), name, items: [] }); }
             await peopleDB.save(person);
             navigate('#/person/' + pid);
         }
 
-        function renderItemForm(pid, cid) {
+        function renderCategory(person, category) {
             app.innerHTML = `
-                <div class="header">
-                    <button class="btn-round" onclick="navigate('#/category/${pid}/${cid}')">⬅️</button>
-                    <h1>Yeni Kelime</h1>
-                    <div style="width:50px"></div>
-                </div>
-                <div class="container">
-                    <div class="form-card">
-                        <form onsubmit="handleSaveItem(event, '${pid}', '${cid}')">
-                            <div class="form-group">
-                                <label>Kelime</label>
-                                <input type="text" id="iText" required placeholder="Örn: Elma">
-                            </div>
-                            <div class="form-group">
-                                <label>Fotoğraf Seç (Galeri)</label>
-                                <input type="file" id="iImg" accept="image/*">
-                            </div>
-                            <button type="submit" class="btn-save">Kaydet ✨</button>
-                        </form>
-                    </div>
-                </div>
-            `;
+                <div class="header"><button class="btn-round" onclick="navigate('#/person/${person.id}')">⬅️</button><h1>${category.name}</h1><button class="btn-round btn-secondary" onclick="navigate('#/add-item/${person.id}/${category.id}')">＋</button></div>
+                <div class="container"><div class="grid">${(category.items || []).map(i => `
+                    <div class="card item" onclick="speak('${i.text}')">
+                        <div class="action-btns">
+                            <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteItem('${person.id}', '${category.id}', '${i.id}')">✕</button>
+                            <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-item/${person.id}/${category.id}/${i.id}')">✎</button>
+                        </div>
+                        <div class="card-img">${i.image ? `<img src="${i.image}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '💬'}</div>
+                        <div class="card-title">${i.text}</div>
+                    </div>`).join('')}</div></div>`;
         }
 
-        async function handleSaveItem(e, pid, cid) {
+        function renderItemForm(pid, cid, editData = null) {
+            app.innerHTML = `
+                <div class="header"><button class="btn-round" onclick="navigate('#/category/${pid}/${cid}')">⬅️</button><h1>${editData ? 'Düzenle' : 'Yeni Kelime'}</h1><div style="width:45px"></div></div>
+                <div class="container"><div class="form-card"><form onsubmit="handleSaveItem(event, '${pid}', '${cid}', ${editData ? `'${editData.id}'` : 'null'})">
+                    <div class="form-group"><label>Kelime</label><input type="text" id="iText" required value="${editData ? editData.text : ''}"></div>
+                    <div class="form-group"><label>Fotoğraf</label><input type="file" id="iImg" accept="image/*"></div>
+                    <button type="submit" class="btn-save">Kaydet ✨</button></form></div></div>`;
+        }
+
+        async function handleSaveItem(e, pid, cid, iid) {
             e.preventDefault();
             const text = document.getElementById('iText').value;
             const file = document.getElementById('iImg').files[0];
             const person = await peopleDB.get(pid);
             const cat = person.categories.find(c => c.id === cid);
-            const item = { id: generateId(), text, image: null };
+            let item = iid ? cat.items.find(i => i.id === iid) : { id: generateId(), text, image: null };
+            item.text = text;
             if (file) {
                 const reader = new FileReader();
-                reader.onload = async (ev) => { item.image = ev.target.result; cat.items.push(item); await peopleDB.save(person); navigate('#/category/' + pid + '/' + cid); };
+                reader.onload = async (ev) => { item.image = ev.target.result; if(!iid) cat.items.push(item); await peopleDB.save(person); navigate('#/category/'+pid+'/'+cid); };
                 reader.readAsDataURL(file);
-            } else { cat.items.push(item); await peopleDB.save(person); navigate('#/category/' + pid + '/' + cid); }
+            } else { if(!iid) cat.items.push(item); await peopleDB.save(person); navigate('#/category/'+pid+'/'+cid); }
+        }
+
+        function renderQuizList(person) {
+            app.innerHTML = `
+                <div class="header"><button class="btn-round" onclick="navigate('#/person/${person.id}')">⬅️</button><h1>${person.name} Oyunları</h1><button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋</button></div>
+                <div class="container"><div class="grid">${(person.quizzes || []).map(q => `
+                    <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')">
+                        <button class="btn-mini btn-del" style="position:absolute;top:8px;right:8px" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
+                        <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '❓'}</div>
+                        <div class="card-title">${q.question}</div>
+                    </div>`).join('')}</div></div>`;
+        }
+
+        function renderQuizPlay(person, index) {
+            const quiz = person.quizzes[index];
+            if (!quiz) { navigate('#/quiz-list/' + person.id); return; }
+            app.innerHTML = `
+                <div class="header"><button class="btn-round" onclick="navigate('#/quiz-list/${person.id}')">⬅️</button><h1>Soru ${index + 1}</h1><div style="width:45px"></div></div>
+                <div class="container"><div class="quiz-container">
+                    ${quiz.image ? `<img src="${quiz.image}" class="quiz-img">` : ''}
+                    <div class="quiz-question">${quiz.question}</div>
+                    <div class="options-grid">${quiz.options.map((opt, i) => `
+                        <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})">
+                            ${opt.img ? `<img src="${opt.img}" class="option-img">` : ''}
+                            <span class="option-text">${opt.text}</span>
+                        </button>`).join('')}</div>
+                    <button class="next-btn" onclick="navigate('#/quiz-play/${person.id}/${person.quizzes[index+1]?.id || person.quizzes[0].id}')">Sıradaki ➡️</button>
+                </div></div>`;
+        }
+
+        window.checkAnswer = (btn, isCorrect) => {
+            if (isCorrect) { btn.classList.add('correct'); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); speak("Harika! Doğru!"); } 
+            else { btn.classList.add('wrong'); speak("Tekrar dene!"); setTimeout(() => btn.classList.remove('wrong'), 500); }
+        };
+
+        function renderQuizForm(pid) {
+            app.innerHTML = `
+                <div class="header"><button class="btn-round" onclick="navigate('#/quiz-list/${pid}')">⬅️</button><h1>Yeni Soru</h1><div style="width:45px"></div></div>
+                <div class="container"><div class="form-card"><form onsubmit="handleSaveQuiz(event, '${pid}')">
+                    <div class="form-group"><label>Soru</label><input type="text" id="qText" required></div>
+                    <div class="form-group"><label>Soru Fotoğrafı</label><input type="file" id="qImg" accept="image/*"></div>
+                    ${[0,1,2,3].map(i => `
+                        <div style="background:#F8F9FA;padding:10px;border-radius:15px;margin-bottom:10px">
+                            <label>Seçenek ${i+1}</label>
+                            <input type="text" id="optT${i}" required placeholder="Metin">
+                            <input type="file" id="optI${i}" accept="image/*" style="margin-top:5px">
+                        </div>`).join('')}
+                    <div class="form-group"><label>Doğru Cevap</label><select id="correctIdx"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></div>
+                    <button type="submit" class="btn-save">Kaydet 🎮</button></form></div></div>`;
+        }
+
+        async function handleSaveQuiz(e, pid) {
+            e.preventDefault();
+            const person = await peopleDB.get(pid);
+            const quiz = { id: generateId(), question: document.getElementById('qText').value, image: null, options: [], correct: parseInt(document.getElementById('correctIdx').value) };
+            
+            const readFile = (file) => new Promise(r => { if(!file) r(null); const rd = new FileReader(); rd.onload = (ev) => r(ev.target.result); rd.readAsDataURL(file); });
+            
+            quiz.image = await readFile(document.getElementById('qImg').files[0]);
+            for(let i=0; i<4; i++) {
+                quiz.options.push({ text: document.getElementById('optT'+i).value, img: await readFile(document.getElementById('optI'+i).files[0]) });
+            }
+            
+            if(!person.quizzes) person.quizzes = [];
+            person.quizzes.push(quiz);
+            await peopleDB.save(person);
+            navigate('#/quiz-list/' + pid);
         }
 
         window.deletePerson = async (id) => { if(confirm('Silinsin mi?')) { await peopleDB.delete(id); render(); } };
-        window.deleteQuiz = async (id) => { if(confirm('Soru silinsin mi?')) { await quizDB.delete(id); render(); } };
-        window.deleteCategory = async (pid, cid) => {
-            if(confirm('Kategori silinsin mi?')) {
-                const p = await peopleDB.get(pid);
-                p.categories = p.categories.filter(c => c.id !== cid);
-                await peopleDB.save(p);
-                render();
-            }
-        };
-        window.deleteItem = async (pid, cid, iid) => {
-            if(confirm('Kelime silinsin mi?')) {
-                const p = await peopleDB.get(pid);
-                const c = p.categories.find(cat => cat.id === cid);
-                c.items = c.items.filter(i => i.id !== iid);
-                await peopleDB.save(p);
-                render();
-            }
-        };
+        window.deleteQuiz = async (pid, qid) => { if(confirm('Soru silinsin mi?')) { const p = await peopleDB.get(pid); p.quizzes = p.quizzes.filter(q => q.id !== qid); await peopleDB.save(p); render(); } };
+        window.deleteCategory = async (pid, cid) => { if(confirm('Silinsin mi?')) { const p = await peopleDB.get(pid); p.categories = p.categories.filter(c => c.id !== cid); await peopleDB.save(p); render(); } };
+        window.deleteItem = async (pid, cid, iid) => { if(confirm('Silinsin mi?')) { const p = await peopleDB.get(pid); const c = p.categories.find(cat => cat.id === cid); c.items = c.items.filter(i => i.id !== iid); await peopleDB.save(p); render(); } };
 
         window.addEventListener('hashchange', render);
         window.addEventListener('load', async () => { await initDB(); render(); });
