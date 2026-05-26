@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6C5CE7">
+    <meta name="theme-color" content="#FFB300">
     <title>Konuşuyorum & Öğreniyorum 🌈</title>
 
     <!-- PWA Manifest -->
@@ -17,15 +17,15 @@
 
     <style>
         :root {
-            --primary: #6C5CE7; /* Modern Mor */
-            --secondary: #00B894; /* Mint Yeşili */
-            --accent: #FF7675; /* Mercan */
-            --yellow: #FDCB6E; /* Parlak Sarı */
-            --blue: #0984E3; /* Canlı Mavi */
-            --bg: #F9FAFB;
-            --text: #2D3436;
+            --primary: #FFB300; /* Güneş Sarısı */
+            --secondary: #00D2D3; /* Turkuaz */
+            --accent: #FF6B6B; /* Tatlı Kırmızı */
+            --blue: #54A0FF; /* Gökyüzü Mavisi */
+            --green: #1DD1A1; /* Çimen Yeşili */
+            --bg: #FFF9E6;
+            --text: #4834D4;
             --white: #FFFFFF;
-            --shadow: 0 10px 25px rgba(108, 92, 231, 0.1);
+            --shadow: 0 8px 0px rgba(0,0,0,0.1);
         }
 
         * {
@@ -38,20 +38,28 @@
 
         body {
             background-color: var(--bg);
-            background-image: 
-                url("https://www.transparenttextures.com/patterns/cubes.png"),
-                linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            background-attachment: fixed;
+            background-image: url("https://www.transparenttextures.com/patterns/pinstriped-suit.png");
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
             user-select: none;
         }
 
+        /* Floating Shapes */
+        .shape {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.3;
+            animation: float 6s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
         /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+            background: var(--primary);
             padding: 15px 20px;
             display: flex;
             align-items: center;
@@ -59,39 +67,39 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.05);
-            border-bottom: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
         }
 
         .header h1 {
             font-family: 'Baloo 2', cursive;
             font-size: 1.8rem;
-            background: linear-gradient(45deg, var(--primary), var(--blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
             font-weight: 800;
         }
 
         .nav-buttons { display: flex; gap: 12px; }
 
         .btn-round {
-            background: var(--white);
+            background: white;
             border: none;
             width: 50px;
             height: 50px;
-            border-radius: 18px;
+            border-radius: 20px;
             font-size: 1.5rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: var(--shadow);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
         }
 
-        .btn-round:active { transform: scale(0.9); }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-round:active { transform: translateY(4px); box-shadow: none; }
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-secondary { background: var(--green); color: white; }
         .btn-accent { background: var(--accent); color: white; }
 
         /* Main Container */
@@ -104,69 +112,94 @@
         /* Grid System */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
         }
 
         /* Cards */
         .card {
             background: var(--white);
-            border-radius: 30px;
-            padding: 25px 15px;
+            border-radius: 35px;
+            padding: 20px 10px;
             text-align: center;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 0 rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 5px solid transparent;
+            border: 6px solid #F0F2F5;
             position: relative;
-            overflow: hidden;
         }
 
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(108, 92, 231, 0.2); }
-        .card:active { transform: scale(0.95); }
+        .card:hover { transform: translateY(-5px); }
+        .card:active { transform: translateY(5px); box-shadow: none; }
         
-        .card.person { border-color: var(--primary); }
-        .card.category { border-color: var(--blue); }
-        .card.item { border-color: var(--secondary); }
-        .card.quiz { border-color: var(--yellow); }
+        .card.person { border-color: var(--blue); }
+        .card.category { border-color: var(--secondary); }
+        .card.item { border-color: var(--green); }
+        .card.quiz { border-color: var(--primary); }
 
         .card-img {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 15px;
-            border-radius: 25px;
-            background: #F0F3F7;
+            border-radius: 30px;
+            background: #F8F9FA;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 3.5rem;
             object-fit: cover;
-            border: 2px solid rgba(0,0,0,0.03);
+            border: 4px solid #EEE;
         }
 
         .card-title {
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 800;
+            font-size: 1.3rem;
             color: var(--text);
             font-family: 'Baloo 2', cursive;
         }
 
+        /* Action Buttons on Cards */
+        .action-btns {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .btn-mini {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+        }
+        .btn-mini:active { transform: translateY(2px); box-shadow: none; }
+        .btn-del { background: var(--accent); color: white; }
+        .btn-edit { background: var(--blue); color: white; }
+
         /* Quiz Styles */
         .quiz-container {
             background: var(--white);
-            border-radius: 35px;
-            padding: 40px 25px;
+            border-radius: 40px;
+            padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border: 8px solid var(--yellow);
+            box-shadow: 0 15px 0 rgba(0,0,0,0.05);
+            border: 10px solid var(--primary);
         }
 
         .quiz-question {
             font-family: 'Baloo 2', cursive;
             font-size: 2.2rem;
             margin-bottom: 30px;
-            color: var(--primary);
-            line-height: 1.2;
+            color: var(--text);
+            font-weight: 800;
         }
 
         .options-grid {
@@ -178,19 +211,20 @@
 
         .option-btn {
             background: #F8F9FA;
-            border: 4px solid #EDF2F7;
+            border: 5px solid #EEE;
             padding: 25px;
-            border-radius: 25px;
-            font-size: 1.4rem;
-            font-weight: 700;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Baloo 2', cursive;
+            box-shadow: 0 6px 0 #DDD;
         }
 
-        .option-btn:hover { border-color: var(--blue); background: #EBF8FF; }
-        .option-btn.correct { border-color: var(--secondary); background: #E6FFFA; transform: scale(1.05); }
-        .option-btn.wrong { border-color: var(--accent); background: #FFF5F5; animation: shake 0.4s; }
+        .option-btn:active { transform: translateY(4px); box-shadow: none; }
+        .option-btn.correct { border-color: var(--green); background: #E6FFFA; box-shadow: 0 6px 0 #1DD1A1; }
+        .option-btn.wrong { border-color: var(--accent); background: #FFF5F5; box-shadow: 0 6px 0 #FF6B6B; animation: shake 0.4s; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -202,89 +236,72 @@
             background: var(--blue);
             color: white;
             border: none;
-            padding: 18px 50px;
-            border-radius: 60px;
-            font-size: 1.4rem;
+            padding: 20px 60px;
+            border-radius: 30px;
+            font-size: 1.5rem;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(9, 132, 227, 0.3);
-            transition: all 0.3s;
+            box-shadow: 0 8px 0 #2E86DE;
             font-family: 'Baloo 2', cursive;
         }
-
-        .next-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(9, 132, 227, 0.4); }
+        .next-btn:active { transform: translateY(4px); box-shadow: none; }
 
         /* Form Styles */
         .form-card {
             background: var(--white);
-            padding: 35px;
-            border-radius: 35px;
-            box-shadow: var(--shadow);
-            border: 4px solid var(--primary);
+            padding: 30px;
+            border-radius: 40px;
+            box-shadow: 0 15px 0 rgba(0,0,0,0.05);
+            border: 8px solid var(--blue);
         }
 
         .form-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+        label { display: block; margin-bottom: 10px; font-weight: 800; font-size: 1.2rem; color: var(--text); font-family: 'Baloo 2', cursive; }
         input[type="text"], select {
             width: 100%;
-            padding: 15px 20px;
-            border-radius: 18px;
-            border: 3px solid #EDF2F7;
-            font-size: 1.1rem;
-            transition: border-color 0.3s;
-            background: #F8FAFC;
+            padding: 18px;
+            border-radius: 25px;
+            border: 4px solid #F0F2F5;
+            font-size: 1.2rem;
+            background: #F8F9FA;
+            font-weight: 600;
         }
-        input:focus { border-color: var(--primary); outline: none; }
         
         .btn-save {
             width: 100%;
-            padding: 18px;
-            border-radius: 20px;
+            padding: 20px;
+            border-radius: 25px;
             border: none;
-            background: var(--secondary);
+            background: var(--green);
             color: white;
             font-weight: 800;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             cursor: pointer;
             margin-top: 15px;
-            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.3);
+            box-shadow: 0 8px 0 #10AC84;
             font-family: 'Baloo 2', cursive;
         }
-
-        .btn-delete {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(255, 118, 117, 0.15);
-            color: var(--accent);
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-        .btn-delete:hover { background: var(--accent); color: white; }
+        .btn-save:active { transform: translateY(4px); box-shadow: none; }
 
         /* Mobile */
         @media (max-width: 480px) {
             .options-grid { grid-template-columns: 1fr; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .header h1 { font-size: 1.4rem; }
+            .header h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
+    <div class="shape" style="top:10%;left:5%;font-size:3rem">☁️</div>
+    <div class="shape" style="top:20%;right:10%;font-size:2rem;animation-delay:1s">🌟</div>
+    <div class="shape" style="bottom:15%;left:15%;font-size:2.5rem;animation-delay:2s">🎈</div>
+    
     <div id="app"></div>
 
     <script>
         // ==================== DATABASE ====================
         let db;
-        const DB_NAME = 'KonusuyorumPremiumDB';
+        const DB_NAME = 'KonusuyorumFinalDB';
         const DB_VERSION = 1;
 
         function initDB() {
@@ -333,11 +350,11 @@
         
         function speak(text) {
             if (!window.speechSynthesis) return;
-            window.speechSynthesis.cancel(); // Mevcut sesi durdur
+            window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'tr-TR';
             msg.rate = 0.85;
-            msg.pitch = 1.1; // Daha çocuksu bir ses tonu
+            msg.pitch = 1.2;
             window.speechSynthesis.speak(msg);
         }
 
@@ -346,7 +363,7 @@
 
         async function render() {
             const hash = window.location.hash || '#/';
-            app.innerHTML = '<div style="text-align:center;padding:100px;font-size:2rem">🎈</div>';
+            app.innerHTML = '<div style="text-align:center;padding:100px;font-size:3rem">🌈</div>';
 
             try {
                 if (hash === '#/') {
@@ -370,6 +387,9 @@
                     renderCategory(person, category);
                 } else if (hash === '#/add-person') {
                     renderPersonForm();
+                } else if (hash.startsWith('#/edit-person/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderPersonForm(person);
                 } else if (hash === '#/add-quiz') {
                     renderQuizForm();
                 } else if (hash.startsWith('#/add-category/')) {
@@ -379,8 +399,7 @@
                     renderItemForm(parts[2], parts[3]);
                 }
             } catch (err) {
-                console.error(err);
-                app.innerHTML = '<p style="padding:20px">Bir hata oluştu, lütfen sayfayı yenileyin. 🛠️</p>';
+                app.innerHTML = '<p style="padding:20px">Hata! Lütfen yenile 🛠️</p>';
             }
         }
 
@@ -389,55 +408,65 @@
                 <div class="header">
                     <h1>Konuşuyorum</h1>
                     <div class="nav-buttons">
-                        <button class="btn-round btn-accent" onclick="navigate('#/quizzes')">🎮</button>
-                        <button class="btn-round btn-primary" onclick="navigate('#/add-person')">＋</button>
+                        <button class="btn-round btn-primary" onclick="navigate('#/quizzes')">🎮</button>
+                        <button class="btn-round btn-secondary" onclick="navigate('#/add-person')">＋</button>
                     </div>
                 </div>
                 <div class="container">
                     <div class="grid">
                         ${people.map(p => `
                             <div class="card person" onclick="navigate('#/person/${p.id}')">
-                                <button class="btn-delete" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>
-                                <div class="card-img">${p.avatar ? `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:20px;object-fit:cover">` : '👤'}</div>
+                                <div class="action-btns">
+                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>
+                                    <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-person/${p.id}')">✎</button>
+                                </div>
+                                <div class="card-img">${p.avatar ? `<img src="${p.avatar}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '👤'}</div>
                                 <div class="card-title">${p.name}</div>
                             </div>
                         `).join('')}
                     </div>
-                    ${people.length === 0 ? '<div style="text-align:center;margin-top:50px"><p style="font-size:1.2rem;color:#666">Hadi birini ekleyerek başlayalım! ✨</p></div>' : ''}
+                    ${people.length === 0 ? '<div style="text-align:center;margin-top:50px"><p style="font-size:1.5rem;font-weight:700">Hadi birini ekleyelim! 🎈</p></div>' : ''}
                 </div>
             `;
         }
 
-        function renderPersonForm() {
+        function renderPersonForm(editData = null) {
             app.innerHTML = `
                 <div class="header">
                     <button class="btn-round" onclick="navigate('#/')">⬅️</button>
-                    <h1>Yeni Kişi</h1>
+                    <h1>${editData ? 'Düzenle' : 'Yeni Kişi'}</h1>
                     <div style="width:50px"></div>
                 </div>
                 <div class="container">
                     <div class="form-card">
-                        <form onsubmit="handleSavePerson(event)">
+                        <form onsubmit="handleSavePerson(event, ${editData ? `'${editData.id}'` : 'null'})">
                             <div class="form-group">
                                 <label>İsim</label>
-                                <input type="text" id="pName" required placeholder="Örn: Ahmet">
+                                <input type="text" id="pName" required value="${editData ? editData.name : ''}" placeholder="Örn: Can">
                             </div>
                             <div class="form-group">
-                                <label>Fotoğraf (İsteğe Bağlı)</label>
-                                <input type="file" id="pImg" accept="image/*">
+                                <label>Fotoğraf Seç (Galeri)</label>
+                                <input type="file" id="pImg" accept="image/*" capture="gallery">
                             </div>
-                            <button type="submit" class="btn-save">Kaydet ✨</button>
+                            <button type="submit" class="btn-save">${editData ? 'Güncelle' : 'Kaydet'} ✨</button>
                         </form>
                     </div>
                 </div>
             `;
         }
 
-        async function handleSavePerson(e) {
+        async function handleSavePerson(e, id) {
             e.preventDefault();
             const name = document.getElementById('pName').value;
             const file = document.getElementById('pImg').files[0];
-            const person = { id: generateId(), name, avatar: null, categories: [] };
+            let person;
+            
+            if (id) {
+                person = await peopleDB.get(id);
+                person.name = name;
+            } else {
+                person = { id: generateId(), name, avatar: null, categories: [] };
+            }
 
             if (file) {
                 const reader = new FileReader();
@@ -465,7 +494,7 @@
                         <form onsubmit="handleSaveCategory(event, '${pid}')">
                             <div class="form-group">
                                 <label>Kategori Adı</label>
-                                <input type="text" id="cName" required placeholder="Örn: Yemekler">
+                                <input type="text" id="cName" required placeholder="Örn: Oyuncaklar">
                             </div>
                             <button type="submit" class="btn-save">Kaydet ✨</button>
                         </form>
@@ -496,11 +525,11 @@
                         <form onsubmit="handleSaveItem(event, '${pid}', '${cid}')">
                             <div class="form-group">
                                 <label>Kelime</label>
-                                <input type="text" id="iText" required placeholder="Örn: Su istiyorum">
+                                <input type="text" id="iText" required placeholder="Örn: Elma istiyorum">
                             </div>
                             <div class="form-group">
-                                <label>Fotoğraf</label>
-                                <input type="file" id="iImg" accept="image/*">
+                                <label>Fotoğraf Seç (Galeri)</label>
+                                <input type="file" id="iImg" accept="image/*" capture="gallery">
                             </div>
                             <button type="submit" class="btn-save">Kaydet ✨</button>
                         </form>
@@ -538,19 +567,18 @@
                 <div class="header">
                     <button class="btn-round" onclick="navigate('#/')">⬅️</button>
                     <h1>Oyun Vakti</h1>
-                    <button class="btn-round btn-primary" onclick="navigate('#/add-quiz')">＋</button>
+                    <button class="btn-round btn-secondary" onclick="navigate('#/add-quiz')">＋</button>
                 </div>
                 <div class="container">
                     <div class="grid">
                         ${quizzes.map(q => `
                             <div class="card quiz" onclick="navigate('#/quiz-play/${q.id}')">
-                                <button class="btn-delete" onclick="event.stopPropagation(); deleteQuiz('${q.id}')">✕</button>
+                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteQuiz('${q.id}')">✕</button>
                                 <div class="card-img">❓</div>
                                 <div class="card-title">${q.question}</div>
                             </div>
                         `).join('')}
                     </div>
-                    ${quizzes.length === 0 ? '<div style="text-align:center;margin-top:50px"><p>Hadi bir soru ekle! 🎮</p></div>' : ''}
                 </div>
             `;
         }
@@ -558,7 +586,6 @@
         function renderQuizPlay(quizzes, index) {
             const quiz = quizzes[index];
             if (!quiz) { navigate('#/quizzes'); return; }
-            
             app.innerHTML = `
                 <div class="header">
                     <button class="btn-round" onclick="navigate('#/quizzes')">⬅️</button>
@@ -573,7 +600,7 @@
                                 <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})">${opt}</button>
                             `).join('')}
                         </div>
-                        <button class="next-btn" onclick="navigate('#/quiz-play/${quizzes[index+1]?.id || quizzes[0].id}')">Sıradaki Soru ➡️</button>
+                        <button class="next-btn" onclick="navigate('#/quiz-play/${quizzes[index+1]?.id || quizzes[0].id}')">Sıradaki ➡️</button>
                     </div>
                 </div>
             `;
@@ -583,7 +610,7 @@
             if (isCorrect) {
                 btn.classList.add('correct');
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                speak("Harika! Doğru cevap!");
+                speak("Harika! Doğru!");
             } else {
                 btn.classList.add('wrong');
                 speak("Tekrar dene!");
@@ -596,13 +623,13 @@
                 <div class="header">
                     <button class="btn-round" onclick="navigate('#/')">⬅️</button>
                     <h1>${person.name}</h1>
-                    <button class="btn-round btn-primary" onclick="navigate('#/add-category/${person.id}')">＋</button>
+                    <button class="btn-round btn-secondary" onclick="navigate('#/add-category/${person.id}')">＋</button>
                 </div>
                 <div class="container">
                     <div class="grid">
                         ${(person.categories || []).map(c => `
                             <div class="card category" onclick="navigate('#/category/${person.id}/${c.id}')">
-                                <button class="btn-delete" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
+                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
                                 <div class="card-img">📁</div>
                                 <div class="card-title">${c.name}</div>
                             </div>
@@ -617,14 +644,14 @@
                 <div class="header">
                     <button class="btn-round" onclick="navigate('#/person/${person.id}')">⬅️</button>
                     <h1>${category.name}</h1>
-                    <button class="btn-round btn-primary" onclick="navigate('#/add-item/${person.id}/${category.id}')">＋</button>
+                    <button class="btn-round btn-secondary" onclick="navigate('#/add-item/${person.id}/${category.id}')">＋</button>
                 </div>
                 <div class="container">
                     <div class="grid">
                         ${(category.items || []).map(i => `
                             <div class="card item" onclick="speak('${i.text}')">
-                                <button class="btn-delete" onclick="event.stopPropagation(); deleteItem('${person.id}', '${category.id}', '${i.id}')">✕</button>
-                                <div class="card-img">${i.image ? `<img src="${i.image}" style="width:100%;height:100%;border-radius:20px;object-fit:cover">` : '💬'}</div>
+                                <button class="btn-mini btn-del" style="position:absolute;top:10px;right:10px" onclick="event.stopPropagation(); deleteItem('${person.id}', '${category.id}', '${i.id}')">✕</button>
+                                <div class="card-img">${i.image ? `<img src="${i.image}" style="width:100%;height:100%;border-radius:25px;object-fit:cover">` : '💬'}</div>
                                 <div class="card-title">${i.text}</div>
                             </div>
                         `).join('')}
@@ -645,7 +672,7 @@
                         <form onsubmit="handleSaveQuiz(event)">
                             <div class="form-group">
                                 <label>Soru</label>
-                                <input type="text" id="qText" required placeholder="Örn: Hangisi bir meyvedir?">
+                                <input type="text" id="qText" required placeholder="Örn: Hangisi araba?">
                             </div>
                             <div class="form-group"><label>Seçenek 1</label><input type="text" id="opt0" required></div>
                             <div class="form-group"><label>Seçenek 2</label><input type="text" id="opt1" required></div>
@@ -685,10 +712,10 @@
         }
 
         // ==================== DELETE HANDLERS ====================
-        window.deletePerson = async (id) => { if(confirm('Bu kişiyi silmek istediğine emin misin?')) { await peopleDB.delete(id); render(); } };
-        window.deleteQuiz = async (id) => { if(confirm('Bu soruyu silmek istediğine emin misin?')) { await quizDB.delete(id); render(); } };
+        window.deletePerson = async (id) => { if(confirm('Silinsin mi?')) { await peopleDB.delete(id); render(); } };
+        window.deleteQuiz = async (id) => { if(confirm('Soru silinsin mi?')) { await quizDB.delete(id); render(); } };
         window.deleteCategory = async (pid, cid) => {
-            if(confirm('Kategoriyi silmek istediğine emin misin?')) {
+            if(confirm('Kategori silinsin mi?')) {
                 const p = await peopleDB.get(pid);
                 p.categories = p.categories.filter(c => c.id !== cid);
                 await peopleDB.save(p);
@@ -696,7 +723,7 @@
             }
         };
         window.deleteItem = async (pid, cid, iid) => {
-            if(confirm('Bu kelimeyi silmek istediğine emin misin?')) {
+            if(confirm('Kelime silinsin mi?')) {
                 const p = await peopleDB.get(pid);
                 const c = p.categories.find(cat => cat.id === cid);
                 c.items = c.items.filter(i => i.id !== iid);
