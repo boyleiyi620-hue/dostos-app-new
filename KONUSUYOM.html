@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#ff9ec7">
+    <title>Konuşuyorum 🌈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            font-family: 'Fredoka', 'Baloo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(255, 200, 220, 0.6) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(180, 220, 255, 0.6) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 240, 180, 0.5) 0%, transparent 50%),
+                linear-gradient(135deg, #fff5e1 0%, #ffe4f1 50%, #e1f0ff 100%);
+            background-attachment: fixed;
+            color: #4a3a5c;
+            line-height: 1.5;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            min-height: 100vh;
+        }
+
+        /* Sevimli arka plan baloncukları */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(255, 182, 193, 0.3) 8px, transparent 9px),
+                radial-gradient(circle at 85% 25%, rgba(173, 216, 230, 0.3) 10px, transparent 11px),
+                radial-gradient(circle at 25% 75%, rgba(255, 218, 185, 0.3) 7px, transparent 8px),
+                radial-gradient(circle at 75% 85%, rgba(221, 160, 221, 0.3) 9px, transparent 10px),
+                radial-gradient(circle at 50% 30%, rgba(176, 224, 230, 0.25) 6px, transparent 7px);
+            background-size: 600px 600px, 700px 700px, 500px 500px, 800px 800px, 400px 400px;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatBubbles 30s ease-in-out infinite;
+        }
+
+        @keyframes floatBubbles {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            font-size: 1.4rem;
+            color: #ff6fa3;
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: ' 🌟';
+            animation: spin 2s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ff9ec7 0%, #ffb4d8 50%, #b4d4ff 100%);
+            color: white;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 6px 20px rgba(255, 158, 199, 0.35);
+            min-height: 70px;
+            border-bottom-left-radius: 28px;
+            border-bottom-right-radius: 28px;
+        }
+
+        .header h1 {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-back, .btn-add {
+            background: rgba(255,255,255,0.35);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 700;
+            white-space: nowrap;
+            min-height: 44px;
+            font-family: inherit;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #7ed957 0%, #5cc04e 100%);
+            border-color: rgba(255,255,255,0.6);
+            box-shadow: 0 4px 12px rgba(126, 217, 87, 0.4);
+        }
+
+        .btn-back:active, .btn-add:active {
+            transform: scale(0.92) rotate(-2deg);
+            opacity: 0.95;
+        }
+
+        /* Container */
+        .container {
+            padding: 20px 16px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.3rem;
+            color: #ff6fa3;
+            margin-bottom: 18px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(255, 111, 163, 0.15);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 24px;
+            color: #8e7ca0;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            background: rgba(255,255,255,0.85);
+            border-radius: 28px;
+            margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(255, 158, 199, 0.18);
+            border: 3px dashed #ffc4dc;
+            font-weight: 500;
+        }
+
+        .empty::before {
+            content: '🎈';
+            display: block;
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .empty b {
+            color: #ff6fa3;
+            font-weight: 700;
+        }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 18px;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 18px;
+        }
+
+        /* Cards - tatlı pastel kart renkleri */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 22px 16px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(255, 158, 199, 0.18);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            border: 3px solid #fff;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(255, 200, 220, 0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Kişi kartlarına farklı pastel renkler */
+        .person-card:nth-child(6n+1) { background: linear-gradient(135deg, #fff0f5 0%, #ffe0ec 100%); border-color: #ffc4dc; }
+        .person-card:nth-child(6n+2) { background: linear-gradient(135deg, #e8f4ff 0%, #d4e8ff 100%); border-color: #b4d4ff; }
+        .person-card:nth-child(6n+3) { background: linear-gradient(135deg, #fff5e1 0%, #ffeac4 100%); border-color: #ffd591; }
+        .person-card:nth-child(6n+4) { background: linear-gradient(135deg, #f0ffe8 0%, #ddf5cc 100%); border-color: #b8e4a0; }
+        .person-card:nth-child(6n+5) { background: linear-gradient(135deg, #f5e8ff 0%, #e8d4ff 100%); border-color: #d4b4ff; }
+        .person-card:nth-child(6n+6) { background: linear-gradient(135deg, #e1fcff 0%, #c4f0f5 100%); border-color: #9ee0e8; }
+
+        /* Kategori kartlarına farklı pastel renkler */
+        .category-card:nth-child(6n+1) { background: linear-gradient(135deg, #fff5e1 0%, #ffe0b3 100%); border-color: #ffcc70; }
+        .category-card:nth-child(6n+2) { background: linear-gradient(135deg, #e8f9ff 0%, #c4ecf9 100%); border-color: #80d4f0; }
+        .category-card:nth-child(6n+3) { background: linear-gradient(135deg, #fff0f5 0%, #ffd6e7 100%); border-color: #ff9fc4; }
+        .category-card:nth-child(6n+4) { background: linear-gradient(135deg, #f0ffe8 0%, #d0f5b8 100%); border-color: #95d670; }
+        .category-card:nth-child(6n+5) { background: linear-gradient(135deg, #f8e8ff 0%, #ddc4ff 100%); border-color: #b48bff; }
+        .category-card:nth-child(6n+6) { background: linear-gradient(135deg, #ffe8e8 0%, #ffc4c4 100%); border-color: #ff8080; }
+
+        .card:active {
+            transform: scale(0.92) rotate(-1deg);
+        }
+
+        .person-card:hover, .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255, 158, 199, 0.3);
+        }
+
+        .card-image {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1), inset 0 0 0 4px rgba(255,255,255,0.8);
+            border: 4px solid white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-avatar {
+            font-size: 56px;
+            line-height: 1;
+        }
+
+        .card-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+            line-height: 1;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+            animation: wiggle 3s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .card-title {
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #4a3a5c;
+            word-break: break-word;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: #8e7ca0;
+            margin-top: 6px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Item Card (for words) - renkli, eğlenceli */
+        .item-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(180, 212, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            border: 4px solid white;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Her kelime kartına farklı pastel renk */
+        .item-card:nth-child(8n+1) { background: linear-gradient(180deg, #fff0f5 0%, #ffe0ec 100%); border-color: #ffc4dc; }
+        .item-card:nth-child(8n+2) { background: linear-gradient(180deg, #e8f4ff 0%, #d4e8ff 100%); border-color: #b4d4ff; }
+        .item-card:nth-child(8n+3) { background: linear-gradient(180deg, #fff5e1 0%, #ffeac4 100%); border-color: #ffd591; }
+        .item-card:nth-child(8n+4) { background: linear-gradient(180deg, #f0ffe8 0%, #ddf5cc 100%); border-color: #b8e4a0; }
+        .item-card:nth-child(8n+5) { background: linear-gradient(180deg, #f5e8ff 0%, #e8d4ff 100%); border-color: #d4b4ff; }
+        .item-card:nth-child(8n+6) { background: linear-gradient(180deg, #e1fcff 0%, #c4f0f5 100%); border-color: #9ee0e8; }
+        .item-card:nth-child(8n+7) { background: linear-gradient(180deg, #fff5f0 0%, #ffd9c4 100%); border-color: #ffb088; }
+        .item-card:nth-child(8n+8) { background: linear-gradient(180deg, #ffe8f0 0%, #ffc4d4 100%); border-color: #ff8fb0; }
+
+        .item-card:active {
+            transform: scale(0.91) rotate(-1.5deg);
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 14px 30px rgba(180, 212, 255, 0.4);
+        }
+
+        .item-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            background: white;
+            border-bottom: 3px solid rgba(255,255,255,0.7);
+        }
+
+        .item-text {
+            padding: 18px 14px;
+            font-family: 'Baloo 2', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4a3a5c;
+            word-break: break-word;
+            line-height: 1.4;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Konuşma simgesi - kelime kartı için */
+        .item-card::after {
+            content: '🔊';
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            font-size: 20px;
+            opacity: 0.6;
+            background: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Konuşma animasyonu */
+        .item-card.speaking {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 158, 199, 0.6); }
+        }
+
+        /* Delete Buttons */
+        .btn-delete-small {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ff8a9e 0%, #ff6b85 100%);
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.95;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 3px 10px rgba(255, 107, 133, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete-small:active {
+            opacity: 1;
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .btn-delete-item {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ff8a9e 0%, #ff6b85 100%);
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            z-index: 10;
+            box-shadow: 0 3px 10px rgba(255, 107, 133, 0.4);
+        }
+
+        .btn-delete-item:active {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        /* Forms */
+        .form {
+            background: white;
+            padding: 32px 26px;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(255, 158, 199, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            border: 4px solid #fff5fa;
+            position: relative;
+        }
+
+        .form::before {
+            content: '✨';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff9ec7 0%, #ffb4d8 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 4px 15px rgba(255, 158, 199, 0.4);
+            border: 4px solid white;
+        }
+
+        .form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #ff6fa3;
+            font-size: 1.1rem;
+            font-family: 'Baloo 2', sans-serif;
+        }
+
+        .form input[type="text"],
+        .form input[type="file"] {
+            width: 100%;
+            padding: 16px 18px;
+            margin-bottom: 24px;
+            border: 3px solid #ffe0ec;
+            border-radius: 18px;
+            font-size: 1.15rem;
+            font-family: 'Fredoka', sans-serif;
+            background: #fff5fa;
+            color: #4a3a5c;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .form input[type="text"]:focus {
+            outline: none;
+            border-color: #ff9ec7;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 158, 199, 0.15);
+        }
+
+        .form input[type="file"] {
+            cursor: pointer;
+            padding: 14px;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #7ed957 0%, #5cc04e 100%);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Baloo 2', sans-serif;
+            box-shadow: 0 6px 18px rgba(126, 217, 87, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-save:active {
+            background: linear-gradient(135deg, #5cc04e 0%, #4ba83d 100%);
+            transform: scale(0.97);
+            box-shadow: 0 3px 10px rgba(126, 217, 87, 0.4);
+        }
+
+        /* Error */
+        .error {
+            text-align: center;
+            padding: 50px 24px;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            background: rgba(255,255,255,0.9);
+            border-radius: 24px;
+            margin: 20px;
+            border: 3px solid #ffd0d0;
+        }
+
+        .error::before {
+            content: '😢';
+            display: block;
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .grid, .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .item-text {
+                font-size: 1.15rem;
+                padding: 14px 10px;
+            }
+
+            .card {
+                padding: 18px 12px;
+            }
+
+            .card-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .card-icon {
+                font-size: 50px;
+            }
+
+            .btn-back, .btn-add {
+                padding: 9px 12px;
+                font-size: 0.85rem;
+            }
+
+            .item-image {
+                height: 130px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="loading">Yükleniyor</div>
+    </div>
+    <script>
+        // ============================================================
+        // KONUŞUYORUM - AAC Uygulaması (Çocuk Teması 🌈)
+        // ============================================================
+
+        const DB_NAME = 'KonusuyorumDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'persons';
+
+        let db = null;
+        const app = document.getElementById('app');
+
+        // ==================== DATABASE ====================
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = () => reject(new Error('Veritabanı açılamadı'));
+                request.onsuccess = (event) => {
+                    db = event.target.result;
+                    resolve(db);
+                };
+                request.onupgradeneeded = (event) => {
+                    const database = event.target.result;
+                    if (!database.objectStoreNames.contains(STORE_NAME)) {
+                        database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+            });
+        }
+
+        function getAllPersons() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function getPerson(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.get(id);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function savePerson(person) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.put(person);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        function deletePersonFromDB(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const store = transaction.objectStore(STORE_NAME);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // ==================== UTILITIES ====================
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/'/g, "&#39;");
+        }
+
+        function resizeImage(file, maxWidth, callback) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > maxWidth) {
+                        height = Math.round(height * (maxWidth / width));
+                        width = maxWidth;
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#f0f0f0';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.75));
+                };
+                img.onerror = () => callback(null);
+                img.src = e.target.result;
+            };
+            reader.onerror = () => callback(null);
+            reader.readAsDataURL(file);
+        }
+
+        // ==================== TTS ====================
+
+        function speak(text) {
+            if (!window.speechSynthesis) {
+                alert('Bu cihazda sesli okuma desteklenmiyor.');
+                return;
+            }
+            if (!text) return;
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'tr-TR';
+            utterance.rate = 0.85;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // ==================== ROUTER ====================
+
+        function navigate(hash) {
+            window.location.hash = hash;
+        }
+
+        function getRoute() {
+            const hash = window.location.hash || '#/';
+            const parts = hash.replace('#/', '').split('/').filter(Boolean);
+            return { page: parts[0] || 'persons', params: parts.slice(1) };
+        }
+
+        function render() {
+            const route = getRoute();
+            app.innerHTML = '';
+
+            switch(route.page) {
+                case 'persons':
+                    renderPersons();
+                    break;
+                case 'person':
+                    renderPersonDetail(route.params[0]);
+                    break;
+                case 'category':
+                    renderCategoryDetail(route.params[0], route.params[1]);
+                    break;
+                case 'add-person':
+                    renderAddPerson();
+                    break;
+                case 'add-category':
+                    renderAddCategory(route.params[0]);
+                    break;
+                case 'add-item':
+                    renderAddItem(route.params[0], route.params[1]);
+                    break;
+                default:
+                    renderPersons();
+            }
+        }
+
+        // ==================== VIEWS ====================
+
+        async function renderPersons() {
+            try {
+                const persons = await getAllPersons();
+
+                let html = `
+                    <div class="header">
+                        <button class="btn-back" onclick="navigate('#/')" style="visibility:hidden">←</button>
+                        <h1>🌈 Konuşuyorum</h1>
+                        <button class="btn-add" onclick="navigate('#/add-person')">＋ Kişi</button>
+                    </div>
+                    <div class="container">
+                        <div class="section-title">👨‍👩‍👧‍👦 Sevdiklerim</div>
+                `;
+
+                if (persons.length === 0) {
+                    html += `
+                        <div class="empty">
+                            Henüz kimse yok!<br><br>
+                            Yukarıdaki <b>＋ Kişi</b> butonuna basarak sevdiğin birini ekleyebilirsin. 💖
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="grid">`;
+                    for (const person of persons) {
+                        html += `
+                            <div class="card person-card" onclick="navigate('#/person/${person.id}')">
+                                <div class="card-image">
+                                    ${person.avatar 
+                                        ? `<img src="${person.avatar}" alt="" loading="lazy">` 
+                                        : '<div class="placeholder-avatar">🧒</div>'}
+                                </div>
+                                <div class="card-title">${escapeHtml(person.name)}</div>
+                                <button class="btn-delete-small" onclick="event.stopPropagation(); window.deletePersonHandler('${person.id}')">🗑️</button>
+                            </div>
+                        `;
+                    }
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+                app.innerHTML = html;
+            } catch (err) {
+                app.innerHTML = `<div class="error">Kişiler yüklenirken hata oluştu: ${err.message}</div>`;
+            }
+        }
+
+        async function renderPersonDetail(personId) {
+            try {
+                const person = await getPerson(personId);
+                if (!person) {
+                    navigate('#/');
+                    return;
+                }
+
+                // Kategori için renkli emojiler
+                const categoryEmojis = ['🎨', '🌟', '🎈', '🎁', '🌸', '🦄', '🐻', '🌺', '🎀', '🍭', '🎵', '⭐'];
+
+                let html = `
+                    <div class="header">
+                        <button class="btn-back" onclick="navigate('#/')">← Geri</button>
+                        <h1>💝 ${escapeHtml(person.name)}</h1>
+                        <button class="btn-add" onclick="navigate('#/add-category/${personId}')">＋ Kategori</button>
+                    </div>
+                    <div class="container">
+                        <div class="section-title">📚 Kategoriler</div>
+                `;
+
+                if (!person.categories || person.categories.length === 0) {
+                    html += `
+                        <div class="empty">
+                            Henüz kategori yok!<br><br>
+                            Yukarıdaki <b>＋ Kategori</b> butonuna basarak yeni bir kategori ekleyebilirsin. 🌟
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="grid">`;
+                    person.categories.forEach((cat, idx) => {
+                        const itemCount = cat.items ? cat.items.length : 0;
+                        const emoji = categoryEmojis[idx % categoryEmojis.length];
+                        html += `
+                            <div class="card category-card" onclick="navigate('#/category/${personId}/${cat.id}')">
+                                <span class="card-icon">${emoji}</span>
+                                <div class="card-title">${escapeHtml(cat.name)}</div>
+                                <div class="card-subtitle">${itemCount} kelime</div>
+                                <button class="btn-delete-small" onclick="event.stopPropagation(); window.deleteCategoryHandler('${personId}', '${cat.id}')">🗑️</button>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+                app.innerHTML = html;
+            } catch (err) {
+                app.innerHTML = `<div class="error">Kategoriler yüklenirken hata oluştu: ${err.message}</div>`;
+            }
+        }
+
+        async function renderCategoryDetail(personId, categoryId) {
+            try {
+                const person = await getPerson(personId);
+                if (!person) {
+                    navigate('#/');
+                    return;
+                }
+
+                const category = person.categories.find(c => c.id === categoryId);
+                if (!category) {
+                    navigate(`#/person/${personId}`);
+                    return;
+                }
+
+                let html = `
+                    <div class="header">
+                        <button class="btn-back" onclick="navigate('#/person/${personId}')">← Geri</button>
+                        <h1>✨ ${escapeHtml(category.name)}</h1>
+                        <button class="btn-add" onclick="navigate('#/add-item/${personId}/${categoryId}')">＋ Kelime</button>
+                    </div>
+                    <div class="container">
+                `;
+
+                if (!category.items || category.items.length === 0) {
+                    html += `
+                        <div class="empty">
+                            Henüz kelime yok!<br><br>
+                            Yukarıdaki <b>＋ Kelime</b> butonuna basarak yeni bir kelime veya cümle ekleyebilirsin. 💬
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="items-grid">`;
+                    for (const item of category.items) {
+                        const safeText = escapeHtml(item.text);
+                        html += `
+                            <div class="item-card" data-text="${safeText}" onclick="window.speakItem(this)">
+                                ${item.image ? `<img src="${item.image}" alt="" class="item-image" loading="lazy">` : ''}
+                                <div class="item-text">${safeText}</div>
+                                <button class="btn-delete-item" onclick="event.stopPropagation(); window.deleteItemHandler('${personId}', '${categoryId}', '${item.id}')">🗑️</button>
+                            </div>
+                        `;
+                    }
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+                app.innerHTML = html;
+            } catch (err) {
+                app.innerHTML = `<div class="error">Kelimeler yüklenirken hata oluştu: ${err.message}</div>`;
+            }
+        }
+
+        function renderAddPerson() {
+            app.innerHTML = `
+                <div class="header">
+                    <button class="btn-back" onclick="navigate('#/')">← Geri</button>
+                    <h1>🌟 Yeni Kişi</h1>
+                    <div style="width:70px"></div>
+                </div>
+                <div class="container">
+                    <form class="form" onsubmit="window.savePersonHandler(event)">
+                        <label for="personName">🧒 İsim</label>
+                        <input type="text" id="personName" required placeholder="Örn: Ahmet" autocomplete="off">
+
+                        <label for="personImage">📸 Fotoğraf (İsteğe Bağlı)</label>
+                        <input type="file" id="personImage" accept="image/*">
+
+                        <button type="submit" class="btn-save">💾 Kaydet</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function renderAddCategory(personId) {
+            app.innerHTML = `
+                <div class="header">
+                    <button class="btn-back" onclick="navigate('#/person/${personId}')">← Geri</button>
+                    <h1>🎨 Yeni Kategori</h1>
+                    <div style="width:70px"></div>
+                </div>
+                <div class="container">
+                    <form class="form" onsubmit="window.saveCategoryHandler(event, '${personId}')">
+                        <label for="categoryName">📚 Kategori Adı</label>
+                        <input type="text" id="categoryName" required placeholder="Örn: Yemekler, Oyuncaklar, Duygular" autocomplete="off">
+
+                        <button type="submit" class="btn-save">💾 Kaydet</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function renderAddItem(personId, categoryId) {
+            app.innerHTML = `
+                <div class="header">
+                    <button class="btn-back" onclick="navigate('#/category/${personId}/${categoryId}')">← Geri</button>
+                    <h1>💬 Yeni Kelime</h1>
+                    <div style="width:70px"></div>
+                </div>
+                <div class="container">
+                    <form class="form" onsubmit="window.saveItemHandler(event, '${personId}', '${categoryId}')">
+                        <label for="itemText">✏️ Kelime veya Cümle</label>
+                        <input type="text" id="itemText" required placeholder="Örn: Su istiyorum" autocomplete="off">
+
+                        <label for="itemImage">🖼️ Fotoğraf (İsteğe Bağlı)</label>
+                        <input type="file" id="itemImage" accept="image/*">
+
+                        <button type="submit" class="btn-save">💾 Kaydet</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        // ==================== HANDLERS ====================
+
+        window.savePersonHandler = async function(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('personName');
+            const fileInput = document.getElementById('personImage');
+            const name = nameInput.value.trim();
+
+            if (!name) return;
+
+            const person = {
+                id: generateId(),
+                name: name,
+                avatar: null,
+                categories: [],
+                createdAt: new Date().toISOString()
+            };
+
+            const saveAndGo = async () => {
+                try {
+                    await savePerson(person);
+                    navigate('#/');
+                } catch (err) {
+                    alert('Kişi kaydedilirken hata oluştu: ' + err.message);
+                }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                resizeImage(fileInput.files[0], 300, async (base64) => {
+                    person.avatar = base64;
+                    await saveAndGo();
+                });
+            } else {
+                await saveAndGo();
+            }
+        };
+
+        window.saveCategoryHandler = async function(e, personId) {
+            e.preventDefault();
+            const nameInput = document.getElementById('categoryName');
+            const name = nameInput.value.trim();
+
+            if (!name) return;
+
+            try {
+                const person = await getPerson(personId);
+                if (!person.categories) person.categories = [];
+
+                person.categories.push({
+                    id: generateId(),
+                    name: name,
+                    items: [],
+                    createdAt: new Date().toISOString()
+                });
+
+                await savePerson(person);
+                navigate(`#/person/${personId}`);
+            } catch (err) {
+                alert('Kategori kaydedilirken hata oluştu: ' + err.message);
+            }
+        };
+
+        window.saveItemHandler = async function(e, personId, categoryId) {
+            e.preventDefault();
+            const textInput = document.getElementById('itemText');
+            const fileInput = document.getElementById('itemImage');
+            const text = textInput.value.trim();
+
+            if (!text) return;
+
+            const item = {
+                id: generateId(),
+                text: text,
+                image: null,
+                createdAt: new Date().toISOString()
+            };
+
+            const saveAndGo = async () => {
+                try {
+                    const person = await getPerson(personId);
+                    const category = person.categories.find(c => c.id === categoryId);
+                    if (!category) throw new Error('Kategori bulunamadı');
+                    if (!category.items) category.items = [];
+                    category.items.push(item);
+                    await savePerson(person);
+                    navigate(`#/category/${personId}/${categoryId}`);
+                } catch (err) {
+                    alert('Kelime kaydedilirken hata oluştu: ' + err.message);
+                }
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                resizeImage(fileInput.files[0], 450, async (base64) => {
+                    item.image = base64;
+                    await saveAndGo();
+                });
+            } else {
+                await saveAndGo();
+            }
+        };
+
+        window.deletePersonHandler = async function(id) {
+            if (!confirm('Bu kişiyi ve tüm verilerini silmek istediğinize emin misiniz?')) return;
+            try {
+                await deletePersonFromDB(id);
+                render();
+            } catch (err) {
+                alert('Silme işlemi başarısız: ' + err.message);
+            }
+        };
+
+        window.deleteCategoryHandler = async function(personId, categoryId) {
+            if (!confirm('Bu kategoriyi ve içindeki tüm kelimeleri silmek istediğinize emin misiniz?')) return;
+            try {
+                const person = await getPerson(personId);
+                person.categories = person.categories.filter(c => c.id !== categoryId);
+                await savePerson(person);
+                render();
+            } catch (err) {
+                alert('Silme işlemi başarısız: ' + err.message);
+            }
+        };
+
+        window.deleteItemHandler = async function(personId, categoryId, itemId) {
+            if (!confirm('Bu kelimeyi silmek istediğinize emin misiniz?')) return;
+            try {
+                const person = await getPerson(personId);
+                const category = person.categories.find(c => c.id === categoryId);
+                category.items = category.items.filter(i => i.id !== itemId);
+                await savePerson(person);
+                render();
+            } catch (err) {
+                alert('Silme işlemi başarısız: ' + err.message);
+            }
+        };
+
+        window.speakItem = function(element) {
+            const text = element.getAttribute('data-text');
+            // Konuşurken kartı animasyonlu yap
+            element.classList.add('speaking');
+            setTimeout(() => element.classList.remove('speaking'), 600);
+            speak(text);
+        };
+
+        // ==================== INIT ====================
+
+        window.addEventListener('hashchange', render);
+        window.addEventListener('load', async () => {
+            try {
+                await initDB();
+                render();
+            } catch (err) {
+                app.innerHTML = `
+                    <div class="error">
+                        <h2>Uygulama başlatılamadı</h2>
+                        <p>Tarayıcınızın IndexedDB desteği olmayabilir.</p>
+                        <p>Hata: ${err.message}</p>
+                    </div>
+                `;
+            }
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
