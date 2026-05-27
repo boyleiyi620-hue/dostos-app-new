@@ -27,7 +27,7 @@
         /* ARKA PLAN ANİMASYONLARI */
         .bg-animations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .anim-item { position: absolute; transition: transform 0.2s; }
-        .clickable-item { pointer-events: auto; cursor: pointer; }
+        .clickable-item { pointer-events: auto; cursor: pointer; z-index: 50; }
         .clickable-item:active { transform: scale(1.5); }
 
         /* UZAY - GERÇEKÇİ */
@@ -54,6 +54,18 @@
         .theme-notebook * { font-family: 'Indie Flower', cursive !important; }
         .theme-notebook .pencil { font-size: 5rem; opacity: 0.3; animation: roam 30s infinite ease-in-out; }
         .theme-notebook .paperclip { font-size: 4rem; opacity: 0.3; animation: slowSpin 50s infinite linear; }
+
+        /* OYUN İÇİN ÖZEL ANİMASYONLAR */
+        @keyframes popIn {
+            0% { transform: scale(0) translate(0, 0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: scale(1) translate(var(--tx), var(--ty)); opacity: 0.5; }
+        }
+        .pop-obj { 
+            position: fixed; font-size: 4rem; z-index: 1000; 
+            animation: popIn var(--dur) linear forwards; 
+            pointer-events: auto; cursor: pointer;
+        }
 
         /* ANİMASYON TANIMLARI */
         @keyframes shootRealistic {
@@ -189,53 +201,29 @@
         let popGameActive = false;
         let popScore = 0;
         let currentPersonId = null;
+        let spawnRate = 2000;
+        let spawnTimer = null;
 
         function updateBackground() {
             const container = document.getElementById('bg-elements');
             container.innerHTML = '';
             
-            const createItem = (emoji, className, clickable = false) => {
-                const item = document.createElement('div');
-                item.className = `${className} anim-item ${clickable ? 'clickable-item' : ''}`;
-                item.innerHTML = emoji;
-                if (clickable) {
-                    item.onclick = (e) => {
-                        if (popGameActive) {
-                            popScore++;
-                            speak("Pat!");
-                            confetti({ particleCount: 20, spread: 30, origin: { x: e.clientX/window.innerWidth, y: e.clientY/window.innerHeight } });
-                            item.remove();
-                            updatePopScoreUI();
-                        }
-                    };
-                }
-                return item;
-            };
-
             if (currentTheme === 'space') {
                 for(let i=0; i<35; i++) container.innerHTML += `<div class="star anim-item" style="top:${Math.random()*100}%;left:${Math.random()*100}%;width:${1+Math.random()*3}px;height:${1+Math.random()*3}px;animation-delay:${Math.random()*3}s"></div>`;
                 for(let i=0; i<8; i++) container.innerHTML += `<div class="shooting-star anim-item" style="top:${Math.random()*60}%;left:${Math.random()*40}%;animation-delay:${i*4}s"></div>`;
-                container.appendChild(createItem('🚀', 'rocket', true));
+                container.innerHTML += `<div class="rocket anim-item">🚀</div>`;
                 container.innerHTML += `<div class="planet anim-item" style="top:15%;right:15%">🌍</div>`;
                 container.innerHTML += `<div class="planet anim-item" style="bottom:20%;left:10%;animation-duration:60s">🪐</div>`;
             } else if (currentTheme === 'modern') {
                 container.innerHTML += `<div class="sun anim-item">☀️</div>`;
                 for(let i=0; i<6; i++) container.innerHTML += `<div class="cloud anim-item" style="top:${10+i*15}%;animation-delay:${i*6}s;animation-duration:${40+Math.random()*30}s">☁️</div>`;
-                for(let i=0; i<12; i++) {
-                    const b = createItem('🎈', 'balloon', true);
-                    b.style.cssText = `animation-delay:${i*5}s;left:${Math.random()*90}%`;
-                    container.appendChild(b);
-                }
+                for(let i=0; i<12; i++) container.innerHTML += `<div class="balloon anim-item" style="animation-delay:${i*5}s;left:${Math.random()*90}%">🎈</div>`;
             } else if (currentTheme === 'classic') {
-                for(let i=0; i<15; i++) {
-                    const h = createItem('❤️', 'heart', true);
-                    h.style.cssText = `left:${Math.random()*90}%;animation-delay:${i*3}s`;
-                    container.appendChild(h);
-                }
+                for(let i=0; i<15; i++) container.innerHTML += `<div class="heart anim-item" style="left:${Math.random()*90}%;animation-delay:${i*3}s">❤️</div>`;
                 for(let i=0; i<8; i++) container.innerHTML += `<div class="flower anim-item" style="top:${Math.random()*80}%;left:${Math.random()*80}%;animation-delay:${i*4}s">🌸</div>`;
-                container.appendChild(createItem('🦋', 'butterfly', true));
+                container.innerHTML += `<div class="butterfly anim-item">🦋</div>`;
             } else if (currentTheme === 'notebook') {
-                container.appendChild(createItem('✏️', 'pencil', true));
+                container.innerHTML += `<div class="pencil anim-item">✏️</div>`;
                 for(let i=0; i<3; i++) container.innerHTML += `<div class="paperclip anim-item" style="top:${10+i*30}%;right:${5+i*10}%;animation-delay:${i*2}s">📎</div>`;
                 container.innerHTML += `<div class="paperclip anim-item" style="bottom:10%;left:20%">📌</div>`;
             }
@@ -295,6 +283,7 @@
             const hash = window.location.hash || '#/';
             app.innerHTML = '<div style="text-align:center;padding:100px;font-size:3rem">✨</div>';
             popGameActive = false;
+            if (spawnTimer) clearTimeout(spawnTimer);
 
             try {
                 if (hash === '#/') {
@@ -423,27 +412,71 @@
         function renderPopGame(person) {
             popGameActive = true;
             popScore = 0;
+            spawnRate = 2000;
             app.innerHTML = getHeader('Patlatma Oyunu', '#/person/' + person.id) + `
                 <div class="container">
                     <div class="score-board" id="pop-score-board">
                         <span>Skor: <span id="current-pop-score">0</span></span>
                         <span>En Yüksek: ${person.popHighScore || 0}</span>
                     </div>
-                    <p style="text-align:center; font-weight:800; font-size:1.2rem;">Ekranda çıkan objeleri patlat! 💥</p>
-                </div>`;
+                    <p style="text-align:center; font-weight:800; font-size:1.2rem;">Objeleri patlat! Hızlanıyor! 💥</p>
+                </div>
+                <div id="game-area" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:900;"></div>`;
             
-            const gameInterval = setInterval(() => {
-                if (!popGameActive) { clearInterval(gameInterval); return; }
-                updateBackground();
-            }, 3000);
+            spawnObject();
+        }
+
+        function spawnObject() {
+            if (!popGameActive) return;
+            
+            const area = document.getElementById('game-area');
+            if (!area) return;
+
+            const themeObjs = { modern: '🎈', classic: '❤️', space: '🚀', notebook: '✏️' };
+            const obj = document.createElement('div');
+            obj.className = 'pop-obj';
+            obj.innerHTML = themeObjs[currentTheme] || '🎈';
+            
+            const x = Math.random() * 80 + 10;
+            const y = Math.random() * 80 + 10;
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = (Math.random() - 0.5) * 200;
+            const dur = Math.max(1500, 4000 - (popScore * 50));
+
+            obj.style.left = x + '%';
+            obj.style.top = y + '%';
+            obj.style.setProperty('--tx', tx + 'px');
+            obj.style.setProperty('--ty', ty + 'px');
+            obj.style.setProperty('--dur', dur + 'ms');
+
+            obj.onclick = (e) => {
+                e.stopPropagation();
+                popScore++;
+                speak("Pat!");
+                confetti({ particleCount: 20, spread: 30, origin: { x: e.clientX/window.innerWidth, y: e.clientY/window.innerHeight } });
+                obj.remove();
+                updatePopScoreUI();
+                
+                // Hızlanma
+                spawnRate = Math.max(400, 2000 - (popScore * 30));
+            };
+
+            area.appendChild(obj);
+            setTimeout(() => obj.remove(), dur);
+            
+            spawnTimer = setTimeout(spawnObject, spawnRate);
         }
 
         function updatePopScoreUI() {
-            document.getElementById('current-pop-score').innerText = popScore;
+            const scoreEl = document.getElementById('current-pop-score');
+            if (scoreEl) scoreEl.innerText = popScore;
+            
             peopleDB.get(currentPersonId).then(person => {
                 if (popScore > (person.popHighScore || 0)) {
                     person.popHighScore = popScore;
                     peopleDB.save(person);
+                    const highEl = document.querySelector('.score-board span:last-child');
+                    if (highEl) highEl.innerText = 'En Yüksek: ' + popScore;
                 }
             });
         }
@@ -545,7 +578,6 @@
             renderMemorySetup(person);
         };
 
-        // ... Diğer fonksiyonlar (Category, Item, Quiz vb.) aynı kalacak ...
         function renderCategoryForm(pid, editData = null) {
             app.innerHTML = getHeader(editData ? 'Düzenle' : 'Yeni Kategori', '#/person/' + pid) + `
                 <div class="container"><div class="form-card"><form onsubmit="handleSaveCategory(event, '${pid}', ${editData ? `'${editData.id}'` : 'null'})">
