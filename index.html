@@ -61,7 +61,7 @@
         .theme-modern .cloud-small { font-size: 3rem; opacity: 0.15; animation: floatCloud 80s infinite linear; }
         .theme-modern .balloon { font-size: 3.5rem; opacity: 0.5; animation: balloonFloat 25s infinite ease-in-out; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1)); }
         .theme-modern .sun { font-size: 9rem; top: 3%; right: 3%; opacity: 0.18; animation: sunPulse 8s infinite ease-in-out; filter: drop-shadow(0 0 30px rgba(255,200,0,0.3)); }
-
+        .theme-modern .rainbow { position: absolute; top: 5%; left: 50%; transform: translateX(-50%); font-size: 7rem; opacity: 0.12; animation: rainbowFade 10s infinite ease-in-out; }
 
         /* KLASİK - GELİŞTİRİLMİŞ */
         .theme-classic { background: radial-gradient(circle at 30% 70%, rgba(255,182,193,0.3) 0%, transparent 40%), radial-gradient(circle at 70% 30%, rgba(255,218,230,0.3) 0%, transparent 40%), #fdf2f8; background-attachment: fixed; }
@@ -96,10 +96,10 @@
 
         /* ANİMASYON TANIMLARI */
         @keyframes shootStar {
-            0% { transform: translateX(0) rotate(215deg); opacity: 0; }
+            0% { transform: translateX(0) rotate(-35deg); opacity: 0; }
             5% { opacity: 1; }
             60% { opacity: 0.6; }
-            100% { transform: translateX(calc(-100vw - 200px)) rotate(215deg); opacity: 0; }
+            100% { transform: translateX(calc(100vw + 200px)) rotate(-35deg); opacity: 0; }
         }
         @keyframes nebulaPulse {
             0%, 100% { opacity: 0.12; transform: scale(1); }
@@ -315,15 +315,16 @@
                 for(let i=0; i<5; i++) {
                     const dur = 2.5 + Math.random() * 3;
                     const delay = Math.random() * 15 + i * 5;
-                    container.innerHTML += `<div class="shooting-star anim-item" style="top:${5+Math.random()*40}%;right:-80px;--shoot-dur:${dur}s;--shoot-delay:${delay}s"></div>`;
+                    container.innerHTML += `<div class="shooting-star anim-item" style="top:${Math.random()*50}%;left:-80px;--shoot-dur:${dur}s;--shoot-delay:${delay}s"></div>`;
                 }
                 container.innerHTML += `<div class="rocket anim-item">🚀</div>`;
                 container.innerHTML += `<div class="planet anim-item" style="top:12%;right:12%">🌍</div>`;
                 container.innerHTML += `<div class="planet anim-item" style="bottom:18%;left:8%;animation-duration:80s">🪐</div>`;
             } else if (currentTheme === 'modern') {
+                container.innerHTML += `<div class="rainbow anim-item">🌈</div>`;
                 container.innerHTML += `<div class="sun anim-item">☀️</div>`;
-                for(let i=0; i<5; i++) container.innerHTML += `<div class="cloud anim-item" style="top:${3+Math.random()*20}%;animation-delay:${i*10+Math.random()*5}s;animation-duration:${50+Math.random()*30}s">☁️</div>`;
-                for(let i=0; i<3; i++) container.innerHTML += `<div class="cloud-small anim-item" style="top:${5+Math.random()*18}%;animation-delay:${i*15+Math.random()*8}s;animation-duration:${70+Math.random()*20}s">☁️</div>`;
+                for(let i=0; i<5; i++) container.innerHTML += `<div class="cloud anim-item" style="top:${8+i*18}%;animation-delay:${i*8}s;animation-duration:${50+Math.random()*30}s">☁️</div>`;
+                for(let i=0; i<3; i++) container.innerHTML += `<div class="cloud-small anim-item" style="top:${15+i*25}%;animation-delay:${i*12+5}s;animation-duration:${70+Math.random()*20}s">☁️</div>`;
                 const balloonEmojis = ['🎈','🎈','🟡','🔴','🟢','🔵','🟣','🎈'];
                 for(let i=0; i<10; i++) container.innerHTML += `<div class="balloon anim-item" style="animation-delay:${i*4+Math.random()*3}s;left:${5+Math.random()*85}%;animation-duration:${20+Math.random()*15}s">${balloonEmojis[i%balloonEmojis.length]}</div>`;
             } else if (currentTheme === 'classic') {
