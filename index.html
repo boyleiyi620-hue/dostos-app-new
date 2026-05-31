@@ -658,7 +658,8 @@
 
         function renderPerson(person) {
             app.innerHTML = getHeader(person.name, '#/', `
-                <button class="btn-round" style="background:#FF9F43;color:white" onclick="navigate('#/game-menu/${person.id}')">🎮</button>
+                <button class="btn-round" style="background:#54A0FF;color:white" onclick="navigate('#/quiz-list/${person.id}')">🎮</button>
+                <button class="btn-round" style="background:#FF9F43;color:white" onclick="navigate('#/game-menu/${person.id}')">🎯</button>
                 <button class="btn-round btn-secondary" onclick="navigate('#/add-category/${person.id}')">＋</button>
             `) + `
                 <div class="container">
@@ -684,13 +685,14 @@
             app.innerHTML = getHeader('Oyunlar', '#/person/' + person.id) + `
                 <div class="container">
                     <div class="game-menu-container">
+                        <button class="game-menu-btn" style="background:#54A0FF" onclick="navigate('#/quiz-list/${person.id}')">🎮 Quizler & Soru Ekle</button>
                         <button class="game-menu-btn" style="background:#FF9F43" onclick="navigate('#/pop-game/${person.id}')">🎈 Patlatma Oyunu</button>
                         <button class="game-menu-btn" style="background:#1DD1A1" onclick="navigate('#/memory-game/${person.id}')">🧩 Hafıza Oyunu</button>
-                        <button class="game-menu-btn" style="background:#54A0FF" onclick="toggleSubMenu('extra-games')">➕ Diğer Oyunlar</button>
+                        <button class="game-menu-btn" style="background:#FF6B6B" onclick="toggleSubMenu('extra-games')">➕ Diğer Oyunlar</button>
                         <div id="extra-games" class="game-sub-menu">
-                            <button class="game-sub-btn" style="background:#FF6B6B" onclick="navigate('#/color-game/${person.id}')">🎨 Renk Eşleştirme</button>
-                            <button class="game-sub-btn" style="background:#4834D4" onclick="navigate('#/animal-game/${person.id}')">🦁 Hayvan Bilmece</button>
-                            <button class="game-sub-btn" style="background:#2ecc71" onclick="navigate('#/shape-game/${person.id}')">📐 Şekil Bilmece</button>
+                            <button class="game-sub-btn" style="background:#FF6B6B" onclick="navigate('#/color-game/${person.id}')">🎨 Renk Bulmaca</button>
+                            <button class="game-sub-btn" style="background:#4834D4" onclick="navigate('#/animal-game/${person.id}')">🦁 Hayvanı Bul</button>
+                            <button class="game-sub-btn" style="background:#2ecc71" onclick="navigate('#/shape-game/${person.id}')">📐 Şekil Bulmaca</button>
                         </div>
                     </div>
                 </div>`;
@@ -1298,16 +1300,23 @@
                 categories[cat].push(q);
             });
 
-            app.innerHTML = getHeader('Quizler', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋</button>`) + `
+            app.innerHTML = getHeader('Soru Hazırlama', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋ Soru Ekle</button>`) + `
                 <div class="container">
-                    ${Object.keys(categories).length === 0 ? '<p style="text-align:center; padding:20px;">Henüz soru yok.</p>' : ''}
+                    ${Object.keys(categories).length === 0 ? `
+                        <div style="text-align:center; padding:40px; background:rgba(255,255,255,0.5); border-radius:30px; border:3px dashed #CCC; margin-top:20px;">
+                            <p style="font-size:1.5rem; color:#666; font-weight:700;">Henüz soru yok 🎮</p>
+                            <p style="color:#888;">Sağ üstteki + butonuna basarak ilk soruyu hazırlayabilirsin!</p>
+                        </div>
+                    ` : ''}
                     ${Object.entries(categories).map(([name, qs]) => `
-                        <h2 style="margin:20px 0 10px; font-family:'Baloo 2'; color:var(--primary)">${name}</h2>
+                        <h2 style="margin:25px 0 15px; font-family:'Baloo 2'; color:var(--primary); font-size:1.8rem; border-bottom:2px solid var(--primary); display:inline-block; padding-right:20px;">${name}</h2>
                         <div class="grid">${qs.map(q => `
-                            <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')">
-                                <button class="btn-mini btn-del" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
+                            <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')" style="border:3px solid #eee; transition:transform 0.2s;">
+                                <div class="action-btns">
+                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
+                                </div>
                                 <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:12px;object-fit:cover">` : '❓'}</div>
-                                <div class="card-title">${q.question}</div>
+                                <div class="card-title" style="font-size:1.1rem;">${q.question}</div>
                             </div>`).join('')}</div>
                     `).join('')}
                 </div>`;
