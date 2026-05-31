@@ -252,11 +252,57 @@
             0% { transform: translateY(0) scale(1); opacity: 1; }
             100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
         }
-        .farm-bg { background: #8bc34a; border-radius: 30px; padding: 20px; border: 10px solid #795548; position: relative; overflow: hidden; }
+        .farm-bg { background: #8bc34a; border-radius: 30px; padding: 20px; border: 10px solid #795548; position: relative; overflow: hidden; background-image: radial-gradient(#ffffff 15%, transparent 16%), radial-gradient(#ffffff 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; }
+        .farm-scenery { position: relative; height: 400px; background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #4CAF50 60%, #4CAF50 100%); border-radius: 20px; overflow: hidden; border: 8px solid #795548; box-shadow: inset 0 0 50px rgba(0,0,0,0.2); }
+        .farm-sun { position: absolute; top: 20px; right: 40px; font-size: 4rem; animation: sunPulse 4s infinite ease-in-out; }
+        .farm-cloud { position: absolute; font-size: 3rem; opacity: 0.8; animation: floatCloud 20s infinite linear; }
+        
+        #animal-sprite { 
+            position: absolute; 
+            bottom: 40px; 
+            left: -150px; 
+            font-size: 8rem; 
+            transition: left 2s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+            z-index: 10;
+        }
+        #animal-sprite.center { left: calc(50% - 4rem); }
+        #animal-sprite.exit { left: 110%; }
+        
+        .animal-speech-bubble {
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.1);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+        }
+        .animal-speech-bubble.active { transform: translateX(-50%) scale(1); }
+        .animal-speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid white;
+        }
 
         /* ANA EKRAN OYUNLARI CSS */
-        .voice-game-container { position: relative; height: 300px; background: #87CEEB; border-radius: 20px; overflow: hidden; }
-        #voice-char { position: absolute; bottom: 20px; left: 20px; font-size: 3rem; transition: left 0.1s; }
+        .voice-game-container { position: relative; height: 350px; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); border-radius: 30px; overflow: hidden; border: 6px solid #54A0FF; }
+        #voice-char { position: absolute; bottom: 60px; left: 20px; font-size: 5rem; transition: all 0.1s; z-index: 5; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
+        #voice-char.jumping { transform: translateY(-40px) rotate(10deg); }
+        .parkour-ground { position: absolute; bottom: 0; width: 200%; height: 60px; background: #8BC34A; display: flex; animation: groundScroll 10s linear infinite; }
+        @keyframes groundScroll { from { left: 0; } to { left: -100%; } }
+        .parkour-tree { position: absolute; bottom: 60px; font-size: 4rem; animation: treeScroll 5s linear infinite; }
+        @keyframes treeScroll { from { right: -100px; } to { right: 110%; } }
         .puzzle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: #CCC; padding: 5px; border-radius: 10px; }
         .puzzle-piece { aspect-ratio: 1; background-size: 300% 300%; border: 1px solid white; cursor: pointer; }
         
@@ -550,9 +596,13 @@
         function getHeader(title, backHash = null, extraBtn = null) {
             const themeIcons = { modern: '🌈', classic: '🌸', space: '🚀', notebook: '📝', aquarium: '🌊' };
             const colors = { modern: '#FFB300', classic: '#ec4899', space: '#1e293b', notebook: '#334155', aquarium: '#0288d1' };
+            
+            // Eğer oyun alanındaysak ve backHash yoksa ana sayfaya dön
+            const backAction = backHash ? `navigate('${backHash}')` : `window.history.back()`;
+            
             return `
                 <div class="header" style="background:${colors[currentTheme]}">
-                    ${backHash ? `<button class="btn-round" onclick="navigate('${backHash}')">⬅️</button>` : `<button class="btn-round" onclick="toggleThemeMenu()">${themeIcons[currentTheme]}</button>`}
+                    ${(backHash || window.location.hash !== '#/') ? `<button class="btn-round" onclick="${backAction}">⬅️</button>` : `<button class="btn-round" onclick="toggleThemeMenu()">${themeIcons[currentTheme]}</button>`}
                     <h1>${title}</h1>
                     <div class="nav-buttons">${extraBtn || ''}</div>
                 </div>
@@ -663,13 +713,14 @@
             currentColor = colors[Math.floor(Math.random() * colors.length)];
             const options = [...colors].sort(() => Math.random() - 0.5);
 
-            app.innerHTML = getHeader('Renk Eşleştirme', '#/game-menu/' + person.id) + `
+            app.innerHTML = getHeader('Renk Bulmaca', '#/game-menu/' + person.id) + `
                 <div class="container">
-                    <div class="match-container">
-                        <div id="target-balloon" class="match-target" style="color:${currentColor.hex}">🎈</div>
-                        <div class="match-options" id="color-options">
+                    <div class="match-container" style="background:rgba(255,255,255,0.3); border-radius:40px; padding:40px; border:4px dashed var(--primary);">
+                        <p style="font-weight:800; font-size:1.5rem; color:var(--text); margin-bottom:20px;">${currentColor.name} rengini bul!</p>
+                        <div id="target-balloon" class="match-target" style="color:${currentColor.hex}; font-size:10rem; animation: floatUpMatch 4s infinite alternate ease-in-out;">🎈</div>
+                        <div class="match-options" style="margin-top:40px;">
                             ${options.map(opt => `
-                                <div class="match-opt" style="background:${opt.hex}" onclick="checkColorMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                                <div class="match-opt" style="background:${opt.hex}; width:100px; height:100px; font-size:4rem; transition:transform 0.2s;" onclick="checkColorMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
                             `).join('')}
                         </div>
                     </div>
@@ -678,18 +729,14 @@
 
         function checkColorMatch(btn, name, pid) {
             if (name === currentColor.name) {
-                speak("Harika! Doğru!");
-                confetti({ particleCount: 100, spread: 70 });
-                const target = document.getElementById('target-balloon');
-                target.classList.add('floating');
-                setTimeout(() => navigate('#/color-game/' + pid), 2000);
+                speak("Aferin! Doğru renk!");
+                confetti({ particleCount: 150, spread: 70 });
+                btn.style.transform = "scale(1.5) rotate(20deg)";
+                setTimeout(() => renderColorGame({id: pid}), 2000);
             } else {
-                speak("Bilemedin! Tekrar dene.");
+                speak("Bu değil, bir daha bak.");
                 btn.style.animation = 'shake 0.5s';
-                setTimeout(() => {
-                    btn.style.animation = '';
-                    renderColorGame({id: pid}); // Re-render to shuffle
-                }, 500);
+                setTimeout(() => { btn.style.animation = ''; }, 500);
             }
         }
 
@@ -697,40 +744,40 @@
         let currentAnimal = null;
         function renderAnimalGame(person) {
             const animals = [
-                { name: 'Kedi', emoji: '🐱' },
-                { name: 'Köpek', emoji: '🐶' },
-                { name: 'Koyun', emoji: '🐑' },
-                { name: 'İnek', emoji: '🐮' },
-                { name: 'Eşşek', emoji: '🫏' }
+                { name: 'Kedi', emoji: '🐱' }, { name: 'Köpek', emoji: '🐶' },
+                { name: 'Koyun', emoji: '🐑' }, { name: 'İnek', emoji: '🐮' },
+                { name: 'Tavşan', emoji: '🐰' }, { name: 'Aslan', emoji: '🦁' }
             ];
             currentAnimal = animals[Math.floor(Math.random() * animals.length)];
-            const options = [...animals].sort(() => Math.random() - 0.5).slice(0, 3);
+            const options = [...animals].sort(() => Math.random() - 0.5).slice(0, 4);
             if (!options.find(o => o.name === currentAnimal.name)) options[0] = currentAnimal;
             options.sort(() => Math.random() - 0.5);
 
-            app.innerHTML = getHeader('Hayvan Bilmece', '#/game-menu/' + person.id) + `
+            app.innerHTML = getHeader('Hayvanı Bul', '#/game-menu/' + person.id) + `
                 <div class="container">
-                    <div class="farm-bg">
-                        <div class="match-container">
-                            <div id="target-animal" class="match-target">${currentAnimal.emoji}</div>
-                            <div class="match-options">
-                                ${options.map(opt => `
-                                    <div class="match-opt" style="background:white" onclick="checkAnimalMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
-                                `).join('')}
-                            </div>
-                        </div>
+                    <div class="farm-scenery" style="height:300px;">
+                        <div class="farm-sun">☀️</div>
+                        <div id="target-animal" class="match-target" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:10rem;">❓</div>
+                    </div>
+                    <p style="text-align:center; font-weight:800; font-size:1.5rem; margin:20px 0;">${currentAnimal.name} nerede?</p>
+                    <div class="match-options">
+                        ${options.map(opt => `
+                            <div class="match-opt" style="background:white; width:90px; height:90px;" onclick="checkAnimalMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                        `).join('')}
                     </div>
                 </div>`;
         }
 
         function checkAnimalMatch(btn, name, pid) {
             if (name === currentAnimal.name) {
-                speak("Doğru bildin!");
-                confetti({ particleCount: 100, spread: 70 });
-                setTimeout(() => renderAnimalGame({id: pid}), 1500);
+                speak("Evet! İşte " + currentAnimal.name);
+                document.getElementById('target-animal').innerText = currentAnimal.emoji;
+                confetti({ particleCount: 150, spread: 70 });
+                setTimeout(() => renderAnimalGame({id: pid}), 2000);
             } else {
-                speak("Bilemedin! Tekrar dene.");
-                renderAnimalGame({id: pid});
+                speak("Bu değil.");
+                btn.style.animation = 'shake 0.5s';
+                setTimeout(() => { btn.style.animation = ''; }, 500);
             }
         }
 
@@ -738,20 +785,20 @@
         let currentShape = null;
         function renderShapeGame(person) {
             const shapes = [
-                { name: 'Kare', emoji: '⬛' },
-                { name: 'Üçgen', emoji: '🔺' },
-                { name: 'Yuvarlak', emoji: '🔴' }
+                { name: 'Kare', emoji: '⬛' }, { name: 'Üçgen', emoji: '🔺' },
+                { name: 'Yuvarlak', emoji: '🔴' }, { name: 'Yıldız', emoji: '⭐' }
             ];
             currentShape = shapes[Math.floor(Math.random() * shapes.length)];
             const options = [...shapes].sort(() => Math.random() - 0.5);
 
-            app.innerHTML = getHeader('Şekil Bilmece', '#/game-menu/' + person.id) + `
+            app.innerHTML = getHeader('Şekil Bulmaca', '#/game-menu/' + person.id) + `
                 <div class="container">
-                    <div class="match-container">
-                        <div id="target-shape" class="match-target">${currentShape.emoji}</div>
-                        <div class="match-options">
+                    <div class="match-container" style="background:white; border-radius:40px; border:6px solid var(--blue);">
+                        <p style="font-weight:800; font-size:1.5rem; color:var(--blue); margin-bottom:20px;">${currentShape.name} hangisi?</p>
+                        <div id="target-shape" class="match-target" style="font-size:10rem; animation: pulse 2s infinite;">❓</div>
+                        <div class="match-options" style="margin-top:40px;">
                             ${options.map(opt => `
-                                <div class="match-opt" style="background:white" onclick="checkShapeMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                                <div class="match-opt" style="background:#F0F8FF; width:90px; height:90px; border:3px solid var(--blue);" onclick="checkShapeMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
                             `).join('')}
                         </div>
                     </div>
@@ -760,67 +807,92 @@
 
         function checkShapeMatch(btn, name, pid) {
             if (name === currentShape.name) {
-                speak("Harika!");
-                confetti({ particleCount: 100, spread: 70 });
-                setTimeout(() => renderShapeGame({id: pid}), 1500);
+                speak("Harika! Bu bir " + currentShape.name);
+                document.getElementById('target-shape').innerText = currentShape.emoji;
+                confetti({ particleCount: 150, spread: 70 });
+                setTimeout(() => renderShapeGame({id: pid}), 2000);
             } else {
                 speak("Bilemedin!");
-                renderShapeGame({id: pid});
+                btn.style.animation = 'shake 0.5s';
+                setTimeout(() => { btn.style.animation = ''; }, 500);
             }
         }
 
         // VOICE PARKOUR GAME
-        let audioContext, analyser, microphone, voiceInterval;
+        let voiceStream = null;
         function renderVoiceParkour() {
-            app.innerHTML = getHeader('Ses Parkuru', '#/') + `
+            app.innerHTML = getHeader('Tavşan Koşusu', '#/') + `
                 <div class="container">
                     <div class="voice-game-container">
-                        <div id="voice-char">🏃</div>
-                        <div style="position:absolute; bottom:0; width:100%; height:20px; background:#8B4513"></div>
+                        <div class="farm-sun">☀️</div>
+                        <div class="parkour-tree" style="animation-delay:-2s">🌳</div>
+                        <div class="parkour-tree" style="animation-delay:-5s">🌳</div>
+                        <div id="voice-char">🐰</div>
+                        <div class="parkour-ground"></div>
                     </div>
-                    <div style="text-align:center; margin-top:20px;">
-                        <p style="font-weight:800;">Bağırarak karakteri koştur! 🗣️</p>
-                        <button class="btn-save" onclick="startVoiceGame()">Oyunu Başlat</button>
+                    <div style="text-align:center; margin-top:20px; display:flex; flex-direction:column; gap:15px; align-items:center;">
+                        <p style="font-weight:800; color:var(--primary); font-size:1.2rem;">Bağırarak Tavşanı Koştur! 🗣️🥕</p>
+                        <div id="mic-level-bg" style="width:200px; height:20px; background:#eee; border-radius:10px; overflow:hidden; border:2px solid #ddd;">
+                            <div id="mic-level-bar" style="width:0%; height:100%; background:var(--green); transition:width 0.1s;"></div>
+                        </div>
+                        <button id="start-parkour-btn" class="btn-save" style="background:var(--blue); width:200px;" onclick="startVoiceGame()">Oyunu Başlat 🎤</button>
                     </div>
                 </div>`;
         }
 
         async function startVoiceGame() {
+            const btn = document.getElementById('start-parkour-btn');
+            btn.disabled = true;
+            btn.innerText = "Mikrofon Açık!";
+            
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                microphone = audioContext.createMediaStreamSource(stream);
+                voiceStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(voiceStream);
                 microphone.connect(analyser);
                 analyser.fftSize = 256;
                 const bufferLength = analyser.frequencyBinCount;
                 const dataArray = new Uint8Array(bufferLength);
 
                 const char = document.getElementById('voice-char');
+                const levelBar = document.getElementById('mic-level-bar');
                 let posX = 20;
 
                 function update() {
                     if (window.location.hash !== '#/voice-parkour') {
-                        stream.getTracks().forEach(t => t.stop());
+                        if(voiceStream) voiceStream.getTracks().forEach(t => t.stop());
                         return;
                     }
+                    
                     analyser.getByteFrequencyData(dataArray);
                     let sum = 0;
                     for(let i=0; i<bufferLength; i++) sum += dataArray[i];
                     let average = sum / bufferLength;
 
-                    if (average > 20) {
-                        posX += (average / 10);
-                        if (posX > window.innerWidth - 60) {
+                    // Görsel seviye barı
+                    if(levelBar) levelBar.style.width = Math.min(100, average * 2) + '%';
+
+                    if (average > 15) { // Hassasiyet eşiği
+                        char.classList.add('jumping');
+                        posX += (average / 5);
+                        if (posX > window.innerWidth - 80) {
                             posX = 20;
-                            confetti({ particleCount: 50 });
+                            confetti({ particleCount: 100, origin: { x: 0.8 } });
+                            speak("Harika gidiyorsun!");
                         }
                         char.style.left = posX + 'px';
+                    } else {
+                        char.classList.remove('jumping');
                     }
                     requestAnimationFrame(update);
                 }
                 update();
-            } catch (err) { alert("Mikrofon izni gerekli!"); }
+            } catch (err) { 
+                alert("Mikrofon izni verilmedi veya desteklenmiyor!"); 
+                btn.disabled = false;
+                btn.innerText = "Tekrar Dene";
+            }
         }
 
         // PUZZLE GAME
@@ -868,47 +940,129 @@
 
         // VOICE IMITATE GAME
         const animalSounds = [
-            { name: 'İnek', emoji: '🐮', sound: 'möö' },
-            { name: 'Köpek', emoji: '🐶', sound: 'hav hav' },
-            { name: 'Kedi', emoji: '🐱', sound: 'miyav' },
-            { name: 'Koyun', emoji: '🐑', sound: 'mee' },
-            { name: 'Eşşek', emoji: '🫏', sound: 'ai ai' }
+            { name: 'İnek', emoji: '🐮', sound: 'möö', text: 'Mööö de bakalım!' },
+            { name: 'Köpek', emoji: '🐶', sound: 'hav', text: 'Hav hav de bakalım!' },
+            { name: 'Kedi', emoji: '🐱', sound: 'miyav', text: 'Miyav de bakalım!' },
+            { name: 'Koyun', emoji: '🐑', sound: 'mee', text: 'Meeeee de bakalım!' },
+            { name: 'Aslan', emoji: '🦁', sound: 'roar', text: 'Kükre bakalım!' }
         ];
         let currentImitateIdx = 0;
+        let isListening = false;
+
         function renderVoiceImitate() {
             const animal = animalSounds[currentImitateIdx % animalSounds.length];
-            app.innerHTML = getHeader('Ses Taklidi', '#/') + `
+            app.innerHTML = getHeader('Hayvan Sesleri', '#/') + `
                 <div class="container">
-                    <div class="farm-bg" style="text-align:center; padding:40px;">
-                        <div style="font-size:8rem; margin-bottom:20px;">${animal.emoji}</div>
-                        <button class="btn-save" onclick="playAnimalSound('${animal.sound}')">Sesi Dinle 🔊</button>
-                        <button class="btn-save" style="background:#54A0FF; margin-top:10px;" onclick="listenForImitation('${animal.sound}')">Tekrar Et 🎤</button>
-                        <p id="imitate-status" style="margin-top:20px; font-weight:800;"></p>
+                    <div class="farm-scenery">
+                        <div class="farm-sun">☀️</div>
+                        <div class="farm-cloud" style="top:40px; left:20px;">☁️</div>
+                        <div class="farm-cloud" style="top:80px; right:30px; animation-delay:-5s;">☁️</div>
+                        <div id="animal-bubble" class="animal-speech-bubble">${animal.text}</div>
+                        <div id="animal-sprite">${animal.emoji}</div>
+                        <div style="position:absolute; bottom:0; width:100%; height:40px; background:#4CAF50;"></div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:15px; margin-top:20px; align-items:center;">
+                        <button id="listen-btn" class="game-menu-btn" style="background:#FFB300; max-width:250px;" onclick="playAnimalAndStartListening()">
+                            <span id="btn-icon">🔊</span> <span id="btn-text">Sesi Dinle</span>
+                        </button>
+                        <p id="imitate-status" style="font-weight:800; color:var(--primary); font-size:1.2rem; min-height:1.5rem;"></p>
                     </div>
                 </div>`;
+            
+            // Hayvanın koşarak gelmesi
+            setTimeout(() => {
+                const sprite = document.getElementById('animal-sprite');
+                if(sprite) sprite.classList.add('center');
+            }, 100);
         }
 
-        function playAnimalSound(s) { speak(s); }
-
-        function listenForImitation(expected) {
+        async function playAnimalAndStartListening() {
+            if (isListening) return;
+            const animal = animalSounds[currentImitateIdx % animalSounds.length];
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
             const status = document.getElementById('imitate-status');
-            status.innerText = "Dinleniyor...";
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'tr-TR';
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript.toLowerCase();
-                if (transcript.includes(expected) || expected.includes(transcript)) {
-                    speak("Harika! Bildin.");
-                    confetti({ particleCount: 100 });
+            const bubble = document.getElementById('animal-bubble');
+
+            // 1. Sesi çal
+            speak(animal.sound);
+            bubble.classList.add('active');
+            btnText.innerText = "Dinliyorum...";
+            btnIcon.innerText = "🎤";
+            status.innerText = "Şimdi sıra sende!";
+            isListening = true;
+
+            // 2. Dinlemeye başla
+            try {
+                const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'tr-TR';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript.toLowerCase();
+                    console.log("Duyulan:", transcript);
+                    
+                    // Basit eşleştirme (hayvan sesi veya ismi geçerse)
+                    if (transcript.includes(animal.sound.toLowerCase()) || 
+                        transcript.includes(animal.name.toLowerCase()) ||
+                        animal.sound.toLowerCase().includes(transcript)) {
+                        
+                        handleImitateSuccess();
+                    } else {
+                        status.innerText = "Duyamadım, bir daha dene! ❤️";
+                        speak("Bir daha dene bakalım.");
+                        resetListeningUI();
+                    }
+                };
+
+                recognition.onerror = (e) => {
+                    console.error("Hata:", e.error);
+                    status.innerText = "Mikrofon hatası! 🛠️";
+                    resetListeningUI();
+                };
+
+                recognition.onend = () => {
+                    if (isListening && status.innerText === "Şimdi sıra sende!") {
+                        resetListeningUI();
+                    }
+                };
+
+                recognition.start();
+            } catch (err) {
+                alert("Tarayıcınız ses tanımayı desteklemiyor.");
+                resetListeningUI();
+            }
+        }
+
+        function resetListeningUI() {
+            isListening = false;
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            if(btnText) btnText.innerText = "Tekrar Dinle";
+            if(btnIcon) btnIcon.innerText = "🔊";
+        }
+
+        function handleImitateSuccess() {
+            const status = document.getElementById('imitate-status');
+            const sprite = document.getElementById('animal-sprite');
+            const bubble = document.getElementById('animal-bubble');
+            
+            status.innerText = "HARİKA! 🎉";
+            speak("Aferin sana! Çok güzel söyledin.");
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            
+            bubble.classList.remove('active');
+            
+            setTimeout(() => {
+                sprite.classList.remove('center');
+                sprite.classList.add('exit');
+                setTimeout(() => {
                     currentImitateIdx++;
-                    setTimeout(renderVoiceImitate, 2000);
-                } else {
-                    speak("Bilemedin, tekrar dene!");
-                    status.innerText = "Tekrar dene!";
-                }
-            };
-            recognition.onerror = () => { status.innerText = "Hata oluştu!"; };
-            recognition.start();
+                    isListening = false;
+                    renderVoiceImitate();
+                }, 1000);
+            }, 2000);
         }
 
         // POP GAME
@@ -1192,41 +1346,90 @@
 
         function renderQuizForm(pid) {
             app.innerHTML = getHeader('Yeni Soru', '#/quiz-list/' + pid) + `
-                <div class="container"><div class="form-card"><form onsubmit="handleSaveQuiz(event, '${pid}')">
-                    <div class="form-group"><label>Kategori</label><input type="text" id="qCat" placeholder="Örn: Renkler, Aile..." list="catList">
-                        <datalist id="catList"><option value="Renkler"><option value="Aile Bireyleri"></datalist>
+                <div class="container">
+                    <div class="form-card">
+                        <form id="quiz-form">
+                            <div class="form-group">
+                                <label>Kategori</label>
+                                <input type="text" id="qCat" placeholder="Örn: Renkler, Aile..." list="catList">
+                                <datalist id="catList"><option value="Renkler"><option value="Aile Bireyleri"></datalist>
+                            </div>
+                            <div class="form-group">
+                                <label>Soru Metni</label>
+                                <input type="text" id="qText" required placeholder="Örn: Bu hangi renk?">
+                            </div>
+                            <div class="form-group">
+                                <label>Soru Görseli (İsteğe Bağlı)</label>
+                                <input type="file" id="qImg" accept="image/*">
+                            </div>
+                            <hr style="margin:20px 0; border:1px solid #eee;">
+                            <label style="font-weight:800; display:block; margin-bottom:10px; color:var(--primary);">Seçenekler</label>
+                            ${[0,1,2,3].map(i => `
+                                <div style="background:#F8F9FA; padding:15px; border-radius:20px; margin-bottom:15px; border:2px solid #EEE; position:relative;">
+                                    <label style="font-size:0.9rem; color:#666;">Seçenek ${i+1}</label>
+                                    <input type="text" id="optT${i}" required placeholder="Cevap metni" style="margin-bottom:10px;">
+                                    <input type="file" id="optI${i}" accept="image/*">
+                                </div>`).join('')}
+                            <div class="form-group">
+                                <label>Doğru Cevap Hangisi?</label>
+                                <select id="correctIdx" style="background:#FFF9E6; border:2px solid var(--primary); font-weight:700;">
+                                    <option value="0">1. Seçenek</option>
+                                    <option value="1">2. Seçenek</option>
+                                    <option value="2">3. Seçenek</option>
+                                    <option value="3">4. Seçenek</option>
+                                </select>
+                            </div>
+                            <button type="button" onclick="handleSaveQuizAction('${pid}')" class="btn-save" style="background:var(--green); margin-top:20px;">Soruyu Kaydet 🎮</button>
+                        </form>
                     </div>
-                    <div class="form-group"><label>Soru</label><input type="text" id="qText" required></div>
-                    <div class="form-group"><label>Soru Fotoğrafı</label><input type="file" id="qImg" accept="image/*"></div>
-                    ${[0,1,2,3].map(i => `
-                        <div style="background:#F8F9FA;padding:12px;border-radius:15px;margin-bottom:12px;border:2px solid #EEE">
-                            <label>Seçenek ${i+1}</label>
-                            <input type="text" id="optT${i}" required placeholder="Metin">
-                            <input type="file" id="optI${i}" accept="image/*" style="margin-top:8px">
-                        </div>`).join('')}
-                    <div class="form-group"><label>Doğru Cevap</label><select id="correctIdx"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></div>
-                    <button type="submit" class="btn-save">Kaydet 🎮</button></form></div></div>`;
+                </div>`;
         }
 
-        async function handleSaveQuiz(e, pid) {
-            e.preventDefault();
-            const person = await peopleDB.get(pid);
-            const quiz = { 
-                id: generateId(), 
-                category: document.getElementById('qCat').value || 'Genel',
-                question: document.getElementById('qText').value, 
-                image: null, 
-                options: [], 
-                correct: parseInt(document.getElementById('correctIdx').value) 
-            };
-            const readFile = (file) => new Promise(r => { if(!file) r(null); const rd = new FileReader(); rd.onload = (ev) => r(ev.target.result); rd.readAsDataURL(file); });
-            quiz.image = await readFile(document.getElementById('qImg').files[0]);
-            for(let i=0; i<4; i++) { quiz.options.push({ text: document.getElementById('optT'+i).value, img: await readFile(document.getElementById('optI'+i).files[0]) }); }
-            if(!person.quizzes) person.quizzes = [];
-            person.quizzes.push(quiz);
-            await peopleDB.save(person);
-            navigate('#/quiz-list/' + pid);
+        async function handleSaveQuizAction(pid) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerText = "Kaydediliyor...";
+            
+            try {
+                const person = await peopleDB.get(pid);
+                const quiz = { 
+                    id: generateId(), 
+                    category: document.getElementById('qCat').value || 'Genel',
+                    question: document.getElementById('qText').value, 
+                    image: null, 
+                    options: [], 
+                    correct: parseInt(document.getElementById('correctIdx').value) 
+                };
+
+                const readFile = (file) => new Promise(r => { 
+                    if(!file) r(null); 
+                    const rd = new FileReader(); 
+                    rd.onload = (ev) => r(ev.target.result); 
+                    rd.readAsDataURL(file); 
+                });
+
+                quiz.image = await readFile(document.getElementById('qImg').files[0]);
+                
+                for(let i=0; i<4; i++) { 
+                    const text = document.getElementById('optT'+i).value;
+                    const img = await readFile(document.getElementById('optI'+i).files[0]);
+                    quiz.options.push({ text, img }); 
+                }
+
+                if(!person.quizzes) person.quizzes = [];
+                person.quizzes.push(quiz);
+                await peopleDB.save(person);
+                speak("Soru başarıyla eklendi!");
+                navigate('#/quiz-list/' + pid);
+            } catch (err) {
+                console.error(err);
+                alert("Hata oluştu!");
+                btn.disabled = false;
+                btn.innerText = "Soruyu Kaydet 🎮";
+            }
         }
+
+
 
         window.deletePerson = async (id) => { if(confirm('Bu kişiyi silmek istediğine emin misin?')) { await peopleDB.delete(id); render(); } };
         window.deleteCategory = async (pid, cid) => { if(confirm('Bu kategoriyi silmek istediğine emin misin?')) { const p = await peopleDB.get(pid); p.categories = p.categories.filter(c => c.id !== cid); await peopleDB.save(p); render(); } };
