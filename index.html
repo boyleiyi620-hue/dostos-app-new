@@ -15,6 +15,7 @@
             --primary: #FFB300; --secondary: #00D2D3; --accent: #FF6B6B;
             --blue: #54A0FF; --green: #1DD1A1; --bg: #FFF9E6;
             --text: #4834D4; --white: #FFFFFF;
+            --aquarium-bg: #0077be;
         }
 
         /* TEMA TEMELLERİ */
@@ -23,6 +24,7 @@
         body.theme-classic { background-color: #fdf2f8; color: #831843; }
         body.theme-space { background-color: #0f172a; color: #f8fafc; }
         body.theme-notebook { background-color: #fefce8; color: #1e293b; background-image: linear-gradient(#e5e7eb 1px, transparent 1px); background-size: 100% 30px; }
+        body.theme-aquarium { background-color: var(--aquarium-bg); color: #e0f2f1; }
 
         /* ARKA PLAN ANİMASYONLARI */
         .bg-animations { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
@@ -78,6 +80,28 @@
         .theme-notebook .paperclip { font-size: 3.5rem; opacity: 0.2; animation: clipWobble 6s infinite ease-in-out; }
         .theme-notebook .eraser { font-size: 2.5rem; opacity: 0.2; animation: roam 35s infinite ease-in-out; }
         .theme-notebook .doodle { font-size: 2rem; opacity: 0.15; animation: doodlePop 4s infinite ease-in-out; }
+
+        /* AKVARYUM - YENİ */
+        .theme-aquarium { background: linear-gradient(180deg, #4fc3f7 0%, #01579b 100%); background-attachment: fixed; }
+        .theme-aquarium .bubble { background: rgba(255,255,255,0.3); border-radius: 50%; border: 1px solid rgba(255,255,255,0.5); animation: bubbleUp var(--dur) infinite ease-in; position: absolute; }
+        .theme-aquarium .fish { font-size: 3rem; animation: fishSwim var(--dur) infinite ease-in-out; position: absolute; opacity: 0.7; }
+        .theme-aquarium .seaweed { font-size: 4rem; animation: sway 6s infinite ease-in-out; position: absolute; bottom: -10px; opacity: 0.6; }
+        @keyframes bubbleUp {
+            0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+            20% { opacity: 0.6; }
+            100% { transform: translateY(-10vh) translateX(var(--tx)); opacity: 0; }
+        }
+        @keyframes fishSwim {
+            0% { transform: translate(-20vw, var(--y)) scaleX(1); }
+            45% { transform: translate(110vw, var(--y)) scaleX(1); }
+            50% { transform: translate(110vw, var(--y)) scaleX(-1); }
+            95% { transform: translate(-20vw, var(--y)) scaleX(-1); }
+            100% { transform: translate(-20vw, var(--y)) scaleX(1); }
+        }
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
 
         /* OYUN SIRASINDA ARKA PLAN GİZLE */
         .bg-hidden { display: none !important; }
@@ -209,6 +233,33 @@
         .theme-space .card-title { color: #f8fafc !important; }
         .theme-space .card-img { background: #0f172a !important; }
 
+        /* OYUN MENÜSÜ STİLLERİ */
+        .game-menu-container { display: flex; flex-direction: column; gap: 15px; padding: 20px; align-items: center; }
+        .game-menu-btn { width: 100%; max-width: 300px; padding: 20px; border-radius: 20px; border: none; font-size: 1.3rem; font-weight: 800; color: white; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .game-menu-btn:active { transform: translateY(4px); box-shadow: none; }
+        .game-sub-menu { display: none; flex-direction: column; gap: 10px; width: 100%; align-items: center; margin-top: 5px; }
+        .game-sub-menu.active { display: flex; }
+        .game-sub-btn { width: 90%; max-width: 270px; padding: 15px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+
+        /* EŞLEŞTİRME OYUNLARI CSS */
+        .match-container { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 20px; min-height: 60vh; justify-content: center; }
+        .match-target { font-size: 8rem; transition: all 0.5s; }
+        .match-target.floating { animation: floatUpMatch 3s forwards; }
+        .match-options { display: flex; gap: 20px; justify-content: center; width: 100%; }
+        .match-opt { width: 80px; height: 80px; border-radius: 20px; border: 4px solid white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+        .match-opt:active { transform: translateY(4px); box-shadow: none; }
+        @keyframes floatUpMatch {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+        .farm-bg { background: #8bc34a; border-radius: 30px; padding: 20px; border: 10px solid #795548; position: relative; overflow: hidden; }
+
+        /* ANA EKRAN OYUNLARI CSS */
+        .voice-game-container { position: relative; height: 300px; background: #87CEEB; border-radius: 20px; overflow: hidden; }
+        #voice-char { position: absolute; bottom: 20px; left: 20px; font-size: 3rem; transition: left 0.1s; }
+        .puzzle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: #CCC; padding: 5px; border-radius: 10px; }
+        .puzzle-piece { aspect-ratio: 1; background-size: 300% 300%; border: 1px solid white; cursor: pointer; }
+        
         /* GENEL STİLLER */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Fredoka', sans-serif; }
         .header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -263,8 +314,9 @@
         <div class="theme-option" onclick="setTheme('modern')">🌈 Gökkuşağı</div>
         <div class="theme-option" onclick="setTheme('classic')">🌸 Klasik</div>
         <div class="theme-option" onclick="setTheme('space')">🚀 Uzay</div>
-        <div class="theme-option" onclick="setTheme('notebook')">📝 Not Defteri</div>
-    </div>
+                <div class="theme-option" onclick="setTheme('notebook')">📝 Not Defteri</div>
+                <div class="theme-option" onclick="setTheme('aquarium')">🌊 Akvaryum</div>
+            </div>
     <div id="app"></div>
 
     <script>
@@ -342,6 +394,20 @@
                 container.innerHTML += `<div class="eraser anim-item" style="bottom:15%;left:25%">🧽</div>`;
                 const doodles = ['⭐','✨','💡','📌','🎵'];
                 for(let i=0; i<5; i++) container.innerHTML += `<div class="doodle anim-item" style="top:${15+Math.random()*70}%;left:${10+Math.random()*80}%;animation-delay:${i*1.2}s">${doodles[i]}</div>`;
+            } else if (currentTheme === 'aquarium') {
+                for(let i=0; i<15; i++) {
+                    const size = 10 + Math.random() * 20;
+                    const dur = 4 + Math.random() * 6;
+                    container.innerHTML += `<div class="bubble anim-item" style="left:${Math.random()*100}%;width:${size}px;height:${size}px;--dur:${dur}s;--tx:${(Math.random()-0.5)*100}px;animation-delay:${Math.random()*5}s"></div>`;
+                }
+                const fishes = ['🐟','🐠','🐡','🦈'];
+                for(let i=0; i<6; i++) {
+                    const dur = 15 + Math.random() * 20;
+                    container.innerHTML += `<div class="fish anim-item" style="--y:${10+Math.random()*80}%;--dur:${dur}s;animation-delay:${Math.random()*10}s">${fishes[i%fishes.length]}</div>`;
+                }
+                for(let i=0; i<8; i++) {
+                    container.innerHTML += `<div class="seaweed anim-item" style="left:${i*12+Math.random()*5}%">🌿</div>`;
+                }
             }
         }
 
@@ -456,6 +522,24 @@
                 } else if (hash.startsWith('#/memory-setup/')) {
                     const person = await peopleDB.get(hash.split('/')[2]);
                     renderMemorySetup(person);
+                } else if (hash.startsWith('#/game-menu/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderGameMenu(person);
+                } else if (hash.startsWith('#/color-game/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderColorGame(person);
+                } else if (hash.startsWith('#/animal-game/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderAnimalGame(person);
+                } else if (hash.startsWith('#/shape-game/')) {
+                    const person = await peopleDB.get(hash.split('/')[2]);
+                    renderShapeGame(person);
+                } else if (hash === '#/voice-parkour') {
+                    renderVoiceParkour();
+                } else if (hash === '#/puzzle-game') {
+                    renderPuzzleGame();
+                } else if (hash === '#/voice-imitate') {
+                    renderVoiceImitate();
                 }
             } catch (err) {
                 console.error(err);
@@ -464,8 +548,8 @@
         }
 
         function getHeader(title, backHash = null, extraBtn = null) {
-            const themeIcons = { modern: '🌈', classic: '🌸', space: '🚀', notebook: '📝' };
-            const colors = { modern: '#FFB300', classic: '#ec4899', space: '#1e293b', notebook: '#334155' };
+            const themeIcons = { modern: '🌈', classic: '🌸', space: '🚀', notebook: '📝', aquarium: '🌊' };
+            const colors = { modern: '#FFB300', classic: '#ec4899', space: '#1e293b', notebook: '#334155', aquarium: '#0288d1' };
             return `
                 <div class="header" style="background:${colors[currentTheme]}">
                     ${backHash ? `<button class="btn-round" onclick="navigate('${backHash}')">⬅️</button>` : `<button class="btn-round" onclick="toggleThemeMenu()">${themeIcons[currentTheme]}</button>`}
@@ -476,8 +560,21 @@
         }
 
         function renderHome(people) {
-            app.innerHTML = getHeader('Konuşuyorum', null, `<button class="btn-round btn-secondary" onclick="navigate('#/add-person')">＋</button>`) + `
-                <div class="container"><div class="grid">${people.map(p => `
+            app.innerHTML = getHeader('Konuşuyorum', null, `
+                <button class="btn-round" style="background:#FF6B6B;color:white" onclick="navigate('#/voice-parkour')">🏃</button>
+                <button class="btn-round" style="background:#54A0FF;color:white" onclick="navigate('#/puzzle-game')">🧩</button>
+                <button class="btn-round" style="background:#1DD1A1;color:white" onclick="navigate('#/voice-imitate')">🐮</button>
+                <button class="btn-round btn-secondary" onclick="navigate('#/add-person')">＋</button>
+            `) + `
+                <div class="container">
+                    ${people.length === 0 ? `
+                        <div style="text-align:center; padding:50px; background:rgba(255,255,255,0.7); border-radius:30px; border:4px dashed #FFB300; margin-top:20px;">
+                            <p style="font-size:2rem; margin-bottom:10px;">👋 Merhaba!</p>
+                            <p style="font-size:1.2rem; color:#4834D4; font-weight:700;">Henüz kimse kayıtlı değil.</p>
+                            <p style="color:#666; margin-top:10px;">Sağ üstteki + butonuna basarak ilk kişiyi ekleyebilirsin.</p>
+                        </div>
+                    ` : ''}
+                    <div class="grid">${people.map(p => `
                     <div class="card person" onclick="navigate('#/person/${p.id}')">
                         <div class="action-btns">
                             <button class="btn-mini btn-del" onclick="event.stopPropagation(); deletePerson('${p.id}')">✕</button>
@@ -511,19 +608,307 @@
 
         function renderPerson(person) {
             app.innerHTML = getHeader(person.name, '#/', `
-                <button class="btn-round" style="background:#FF9F43;color:white" onclick="navigate('#/pop-game/${person.id}')">🎈</button>
-                <button class="btn-round" style="background:#1DD1A1;color:white" onclick="navigate('#/memory-game/${person.id}')">🧩</button>
-                <button class="btn-round" style="background:#54A0FF;color:white" onclick="navigate('#/quiz-list/${person.id}')">🎮</button>
+                <button class="btn-round" style="background:#FF9F43;color:white" onclick="navigate('#/game-menu/${person.id}')">🎮</button>
                 <button class="btn-round btn-secondary" onclick="navigate('#/add-category/${person.id}')">＋</button>
             `) + `
-                <div class="container"><div class="grid">${(person.categories || []).map(c => `
-                    <div class="card category" onclick="navigate('#/category/${person.id}/${c.id}')">
-                        <div class="action-btns">
-                            <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
-                            <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-category/${person.id}/${c.id}')">✎</button>
+                <div class="container">
+                    ${(person.categories || []).length === 0 ? `
+                        <div style="text-align:center; padding:40px; background:rgba(255,255,255,0.5); border-radius:30px; border:3px dashed #CCC; margin-top:20px;">
+                            <p style="font-size:1.5rem; color:#666; font-weight:700;">Henüz kategori yok 📁</p>
+                            <p style="color:#888;">Sağ üstteki + butonuna basarak ilk kategorini oluşturabilirsin!</p>
                         </div>
-                        <div class="card-img">📁</div><div class="card-title">${c.name}</div>
-                    </div>`).join('')}</div></div>`;
+                    ` : `
+                        <div class="grid">${(person.categories || []).map(c => `
+                            <div class="card category" onclick="navigate('#/category/${person.id}/${c.id}')">
+                                <div class="action-btns">
+                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteCategory('${person.id}', '${c.id}')">✕</button>
+                                    <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-category/${person.id}/${c.id}')">✎</button>
+                                </div>
+                                <div class="card-img">📁</div><div class="card-title">${c.name}</div>
+                            </div>`).join('')}</div>
+                    `}
+                </div>`;
+        }
+
+        function renderGameMenu(person) {
+            app.innerHTML = getHeader('Oyunlar', '#/person/' + person.id) + `
+                <div class="container">
+                    <div class="game-menu-container">
+                        <button class="game-menu-btn" style="background:#FF9F43" onclick="navigate('#/pop-game/${person.id}')">🎈 Patlatma Oyunu</button>
+                        <button class="game-menu-btn" style="background:#1DD1A1" onclick="navigate('#/memory-game/${person.id}')">🧩 Hafıza Oyunu</button>
+                        <button class="game-menu-btn" style="background:#54A0FF" onclick="toggleSubMenu('extra-games')">➕ Diğer Oyunlar</button>
+                        <div id="extra-games" class="game-sub-menu">
+                            <button class="game-sub-btn" style="background:#FF6B6B" onclick="navigate('#/color-game/${person.id}')">🎨 Renk Eşleştirme</button>
+                            <button class="game-sub-btn" style="background:#4834D4" onclick="navigate('#/animal-game/${person.id}')">🦁 Hayvan Bilmece</button>
+                            <button class="game-sub-btn" style="background:#2ecc71" onclick="navigate('#/shape-game/${person.id}')">📐 Şekil Bilmece</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function toggleSubMenu(id) {
+            const menu = document.getElementById(id);
+            menu.classList.toggle('active');
+        }
+
+        // COLOR MATCHING GAME
+        let currentColor = null;
+        function renderColorGame(person) {
+            const colors = [
+                { name: 'Mavi', hex: '#54A0FF', emoji: '🔵' },
+                { name: 'Kırmızı', hex: '#FF6B6B', emoji: '🔴' },
+                { name: 'Sarı', hex: '#FFB300', emoji: '🟡' },
+                { name: 'Yeşil', hex: '#1DD1A1', emoji: '🟢' }
+            ];
+            currentColor = colors[Math.floor(Math.random() * colors.length)];
+            const options = [...colors].sort(() => Math.random() - 0.5);
+
+            app.innerHTML = getHeader('Renk Eşleştirme', '#/game-menu/' + person.id) + `
+                <div class="container">
+                    <div class="match-container">
+                        <div id="target-balloon" class="match-target" style="color:${currentColor.hex}">🎈</div>
+                        <div class="match-options" id="color-options">
+                            ${options.map(opt => `
+                                <div class="match-opt" style="background:${opt.hex}" onclick="checkColorMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function checkColorMatch(btn, name, pid) {
+            if (name === currentColor.name) {
+                speak("Harika! Doğru!");
+                confetti({ particleCount: 100, spread: 70 });
+                const target = document.getElementById('target-balloon');
+                target.classList.add('floating');
+                setTimeout(() => navigate('#/color-game/' + pid), 2000);
+            } else {
+                speak("Bilemedin! Tekrar dene.");
+                btn.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    btn.style.animation = '';
+                    renderColorGame({id: pid}); // Re-render to shuffle
+                }, 500);
+            }
+        }
+
+        // ANIMAL MATCHING GAME
+        let currentAnimal = null;
+        function renderAnimalGame(person) {
+            const animals = [
+                { name: 'Kedi', emoji: '🐱' },
+                { name: 'Köpek', emoji: '🐶' },
+                { name: 'Koyun', emoji: '🐑' },
+                { name: 'İnek', emoji: '🐮' },
+                { name: 'Eşşek', emoji: '🫏' }
+            ];
+            currentAnimal = animals[Math.floor(Math.random() * animals.length)];
+            const options = [...animals].sort(() => Math.random() - 0.5).slice(0, 3);
+            if (!options.find(o => o.name === currentAnimal.name)) options[0] = currentAnimal;
+            options.sort(() => Math.random() - 0.5);
+
+            app.innerHTML = getHeader('Hayvan Bilmece', '#/game-menu/' + person.id) + `
+                <div class="container">
+                    <div class="farm-bg">
+                        <div class="match-container">
+                            <div id="target-animal" class="match-target">${currentAnimal.emoji}</div>
+                            <div class="match-options">
+                                ${options.map(opt => `
+                                    <div class="match-opt" style="background:white" onclick="checkAnimalMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function checkAnimalMatch(btn, name, pid) {
+            if (name === currentAnimal.name) {
+                speak("Doğru bildin!");
+                confetti({ particleCount: 100, spread: 70 });
+                setTimeout(() => renderAnimalGame({id: pid}), 1500);
+            } else {
+                speak("Bilemedin! Tekrar dene.");
+                renderAnimalGame({id: pid});
+            }
+        }
+
+        // SHAPE MATCHING GAME
+        let currentShape = null;
+        function renderShapeGame(person) {
+            const shapes = [
+                { name: 'Kare', emoji: '⬛' },
+                { name: 'Üçgen', emoji: '🔺' },
+                { name: 'Yuvarlak', emoji: '🔴' }
+            ];
+            currentShape = shapes[Math.floor(Math.random() * shapes.length)];
+            const options = [...shapes].sort(() => Math.random() - 0.5);
+
+            app.innerHTML = getHeader('Şekil Bilmece', '#/game-menu/' + person.id) + `
+                <div class="container">
+                    <div class="match-container">
+                        <div id="target-shape" class="match-target">${currentShape.emoji}</div>
+                        <div class="match-options">
+                            ${options.map(opt => `
+                                <div class="match-opt" style="background:white" onclick="checkShapeMatch(this, '${opt.name}', '${person.id}')">${opt.emoji}</div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function checkShapeMatch(btn, name, pid) {
+            if (name === currentShape.name) {
+                speak("Harika!");
+                confetti({ particleCount: 100, spread: 70 });
+                setTimeout(() => renderShapeGame({id: pid}), 1500);
+            } else {
+                speak("Bilemedin!");
+                renderShapeGame({id: pid});
+            }
+        }
+
+        // VOICE PARKOUR GAME
+        let audioContext, analyser, microphone, voiceInterval;
+        function renderVoiceParkour() {
+            app.innerHTML = getHeader('Ses Parkuru', '#/') + `
+                <div class="container">
+                    <div class="voice-game-container">
+                        <div id="voice-char">🏃</div>
+                        <div style="position:absolute; bottom:0; width:100%; height:20px; background:#8B4513"></div>
+                    </div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <p style="font-weight:800;">Bağırarak karakteri koştur! 🗣️</p>
+                        <button class="btn-save" onclick="startVoiceGame()">Oyunu Başlat</button>
+                    </div>
+                </div>`;
+        }
+
+        async function startVoiceGame() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+
+                const char = document.getElementById('voice-char');
+                let posX = 20;
+
+                function update() {
+                    if (window.location.hash !== '#/voice-parkour') {
+                        stream.getTracks().forEach(t => t.stop());
+                        return;
+                    }
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for(let i=0; i<bufferLength; i++) sum += dataArray[i];
+                    let average = sum / bufferLength;
+
+                    if (average > 20) {
+                        posX += (average / 10);
+                        if (posX > window.innerWidth - 60) {
+                            posX = 20;
+                            confetti({ particleCount: 50 });
+                        }
+                        char.style.left = posX + 'px';
+                    }
+                    requestAnimationFrame(update);
+                }
+                update();
+            } catch (err) { alert("Mikrofon izni gerekli!"); }
+        }
+
+        // PUZZLE GAME
+        function renderPuzzleGame() {
+            app.innerHTML = getHeader('Yapboz', '#/') + `
+                <div class="container">
+                    <div class="form-card">
+                        <label>Bir fotoğraf yükle:</label>
+                        <input type="file" accept="image/*" onchange="createPuzzle(this)">
+                        <div id="puzzle-area" style="margin-top:20px;"></div>
+                    </div>
+                </div>`;
+        }
+
+        function createPuzzle(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgUrl = e.target.result;
+                const area = document.getElementById('puzzle-area');
+                area.innerHTML = '<div class="puzzle-grid" id="p-grid"></div>';
+                const grid = document.getElementById('p-grid');
+                let pieces = [];
+                for(let i=0; i<9; i++) pieces.push(i);
+                pieces.sort(() => Math.random() - 0.5);
+
+                pieces.forEach((p, idx) => {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.style.backgroundImage = `url(${imgUrl})`;
+                    const row = Math.floor(p / 3);
+                    const col = p % 3;
+                    piece.style.backgroundPosition = `${col * 50}% ${row * 50}%`;
+                    piece.onclick = () => {
+                        // Basit yer değiştirme mantığı
+                        piece.style.opacity = '0.5';
+                        // Gerçek bir sürükle bırak veya tıklama mantığı buraya eklenebilir
+                    };
+                    grid.appendChild(piece);
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // VOICE IMITATE GAME
+        const animalSounds = [
+            { name: 'İnek', emoji: '🐮', sound: 'möö' },
+            { name: 'Köpek', emoji: '🐶', sound: 'hav hav' },
+            { name: 'Kedi', emoji: '🐱', sound: 'miyav' },
+            { name: 'Koyun', emoji: '🐑', sound: 'mee' },
+            { name: 'Eşşek', emoji: '🫏', sound: 'ai ai' }
+        ];
+        let currentImitateIdx = 0;
+        function renderVoiceImitate() {
+            const animal = animalSounds[currentImitateIdx % animalSounds.length];
+            app.innerHTML = getHeader('Ses Taklidi', '#/') + `
+                <div class="container">
+                    <div class="farm-bg" style="text-align:center; padding:40px;">
+                        <div style="font-size:8rem; margin-bottom:20px;">${animal.emoji}</div>
+                        <button class="btn-save" onclick="playAnimalSound('${animal.sound}')">Sesi Dinle 🔊</button>
+                        <button class="btn-save" style="background:#54A0FF; margin-top:10px;" onclick="listenForImitation('${animal.sound}')">Tekrar Et 🎤</button>
+                        <p id="imitate-status" style="margin-top:20px; font-weight:800;"></p>
+                    </div>
+                </div>`;
+        }
+
+        function playAnimalSound(s) { speak(s); }
+
+        function listenForImitation(expected) {
+            const status = document.getElementById('imitate-status');
+            status.innerText = "Dinleniyor...";
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'tr-TR';
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript.toLowerCase();
+                if (transcript.includes(expected) || expected.includes(transcript)) {
+                    speak("Harika! Bildin.");
+                    confetti({ particleCount: 100 });
+                    currentImitateIdx++;
+                    setTimeout(renderVoiceImitate, 2000);
+                } else {
+                    speak("Bilemedin, tekrar dene!");
+                    status.innerText = "Tekrar dene!";
+                }
+            };
+            recognition.onerror = () => { status.innerText = "Hata oluştu!"; };
+            recognition.start();
         }
 
         // POP GAME
@@ -752,13 +1137,26 @@
         }
 
         function renderQuizList(person) {
-            app.innerHTML = getHeader(person.name + ' Oyunları', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋</button>`) + `
-                <div class="container"><div class="grid">${(person.quizzes || []).map(q => `
-                    <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')">
-                        <button class="btn-mini btn-del" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
-                        <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:12px;object-fit:cover">` : '❓'}</div>
-                        <div class="card-title">${q.question}</div>
-                    </div>`).join('')}</div></div>`;
+            const categories = {};
+            (person.quizzes || []).forEach(q => {
+                const cat = q.category || 'Genel';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(q);
+            });
+
+            app.innerHTML = getHeader('Quizler', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋</button>`) + `
+                <div class="container">
+                    ${Object.keys(categories).length === 0 ? '<p style="text-align:center; padding:20px;">Henüz soru yok.</p>' : ''}
+                    ${Object.entries(categories).map(([name, qs]) => `
+                        <h2 style="margin:20px 0 10px; font-family:'Baloo 2'; color:var(--primary)">${name}</h2>
+                        <div class="grid">${qs.map(q => `
+                            <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')">
+                                <button class="btn-mini btn-del" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
+                                <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:12px;object-fit:cover">` : '❓'}</div>
+                                <div class="card-title">${q.question}</div>
+                            </div>`).join('')}</div>
+                    `).join('')}
+                </div>`;
         }
 
         function renderQuizPlay(person, index) {
@@ -766,15 +1164,25 @@
             if (!quiz) { navigate('#/quiz-list/' + person.id); return; }
             app.innerHTML = getHeader('Soru ' + (index + 1), '#/quiz-list/' + person.id) + `
                 <div class="container"><div class="quiz-container">
-                    ${quiz.image ? `<img src="${quiz.image}" class="quiz-img">` : ''}
+                    <button class="btn-round" style="background:#54A0FF; color:white; margin:0 auto 15px; display:block;" onclick="speakQuiz('${quiz.id}', '${person.id}')">🔊 Soruyu Oku</button>
+                    ${quiz.image ? `<img src="${quiz.image}" class="quiz-img" style="max-width:100%; border-radius:15px; margin-bottom:15px;">` : ''}
                     <div class="quiz-question">${quiz.question}</div>
                     <div class="options-grid">${quiz.options.map((opt, i) => `
                         <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})">
-                            ${opt.img ? `<img src="${opt.img}" class="option-img">` : ''}
+                            ${opt.img ? `<img src="${opt.img}" class="option-img" style="max-width:80px;">` : ''}
                             <span class="option-text">${opt.text}</span>
                         </button>`).join('')}</div>
                     <button class="next-btn" onclick="navigate('#/quiz-play/${person.id}/${person.quizzes[index+1]?.id || person.quizzes[0].id}')">Sıradaki ➡️</button>
                 </div></div>`;
+        }
+
+        async function speakQuiz(qid, pid) {
+            const person = await peopleDB.get(pid);
+            const quiz = person.quizzes.find(q => q.id === qid);
+            if (!quiz) return;
+            let text = quiz.question + ". Seçenekler şunlar: ";
+            quiz.options.forEach((opt, i) => { text += (i+1) + ". " + opt.text + ". "; });
+            speak(text);
         }
 
         window.checkAnswer = (btn, isCorrect) => {
@@ -785,6 +1193,9 @@
         function renderQuizForm(pid) {
             app.innerHTML = getHeader('Yeni Soru', '#/quiz-list/' + pid) + `
                 <div class="container"><div class="form-card"><form onsubmit="handleSaveQuiz(event, '${pid}')">
+                    <div class="form-group"><label>Kategori</label><input type="text" id="qCat" placeholder="Örn: Renkler, Aile..." list="catList">
+                        <datalist id="catList"><option value="Renkler"><option value="Aile Bireyleri"></datalist>
+                    </div>
                     <div class="form-group"><label>Soru</label><input type="text" id="qText" required></div>
                     <div class="form-group"><label>Soru Fotoğrafı</label><input type="file" id="qImg" accept="image/*"></div>
                     ${[0,1,2,3].map(i => `
@@ -800,7 +1211,14 @@
         async function handleSaveQuiz(e, pid) {
             e.preventDefault();
             const person = await peopleDB.get(pid);
-            const quiz = { id: generateId(), question: document.getElementById('qText').value, image: null, options: [], correct: parseInt(document.getElementById('correctIdx').value) };
+            const quiz = { 
+                id: generateId(), 
+                category: document.getElementById('qCat').value || 'Genel',
+                question: document.getElementById('qText').value, 
+                image: null, 
+                options: [], 
+                correct: parseInt(document.getElementById('correctIdx').value) 
+            };
             const readFile = (file) => new Promise(r => { if(!file) r(null); const rd = new FileReader(); rd.onload = (ev) => r(ev.target.result); rd.readAsDataURL(file); });
             quiz.image = await readFile(document.getElementById('qImg').files[0]);
             for(let i=0; i<4; i++) { quiz.options.push({ text: document.getElementById('optT'+i).value, img: await readFile(document.getElementById('optI'+i).files[0]) }); }
