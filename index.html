@@ -530,7 +530,11 @@
                     renderCategory(person, category);
                 } else if (hash.startsWith('#/quiz-list/')) {
                     const person = await peopleDB.get(hash.split('/')[2]);
-                    renderQuizList(person);
+                    renderQuizCategories(person);
+                } else if (hash.startsWith('#/quiz-cat-detail/')) {
+                    const parts = hash.split('/');
+                    const person = await peopleDB.get(parts[2]);
+                    renderQuizList(person, decodeURIComponent(parts[3]));
                 } else if (hash.startsWith('#/quiz-play/')) {
                     const parts = hash.split('/');
                     const person = await peopleDB.get(parts[2]);
@@ -558,7 +562,8 @@
                     const item = cat.items.find(i => i.id === parts[4]);
                     renderItemForm(person.id, cat.id, item);
                 } else if (hash.startsWith('#/add-quiz/')) {
-                    renderQuizForm(hash.split('/')[2]);
+                    const parts = hash.split('/');
+                    renderQuizForm(parts[2], decodeURIComponent(parts[3] || 'Genel'));
                 } else if (hash.startsWith('#/pop-game/')) {
                     const person = await peopleDB.get(hash.split('/')[2]);
                     renderPopGame(person);
@@ -1292,60 +1297,102 @@
             } else { if(!iid) cat.items.push(item); await peopleDB.save(person); navigate('#/category/'+pid+'/'+cid); }
         }
 
-        function renderQuizList(person) {
-            const categories = {};
-            (person.quizzes || []).forEach(q => {
-                const cat = q.category || 'Genel';
-                if (!categories[cat]) categories[cat] = [];
-                categories[cat].push(q);
-            });
-
-            app.innerHTML = getHeader('Soru Hazırlama', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}')">＋ Soru Ekle</button>`) + `
+        function renderQuizCategories(person) {
+            // Mevcut quizlerden kategorileri çıkar veya person.quizCategories dizisini kullan
+            const cats = person.quizCategories || ['Genel'];
+            
+            app.innerHTML = getHeader('Quiz Kategorileri', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="renderAddQuizCategory('${person.id}')">＋ Yeni Kategori</button>`) + `
                 <div class="container">
-                    ${Object.keys(categories).length === 0 ? `
+                    <div class="grid">
+                        ${cats.map(c => `
+                            <div class="card category" onclick="navigate('#/quiz-cat-detail/${person.id}/${encodeURIComponent(c)}')">
+                                <div class="card-img">📚</div>
+                                <div class="card-title">${c}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function renderAddQuizCategory(pid) {
+            app.innerHTML = getHeader('Yeni Quiz Kategorisi', '#/quiz-list/' + pid) + `
+                <div class="container">
+                    <div class="form-card">
+                        <div class="form-group">
+                            <label>Kategori Adı</label>
+                            <input type="text" id="newQuizCatName" placeholder="Örn: Renkler, Hayvanlar..." required>
+                        </div>
+                        <button class="btn-save" onclick="handleAddQuizCategory('${pid}')">Kategoriyi Oluştur ✨</button>
+                    </div>
+                </div>`;
+        }
+
+        async function handleAddQuizCategory(pid) {
+            const name = document.getElementById('newQuizCatName').value;
+            if(!name) return;
+            const person = await peopleDB.get(pid);
+            if(!person.quizCategories) person.quizCategories = ['Genel'];
+            if(!person.quizCategories.includes(name)) {
+                person.quizCategories.push(name);
+                await peopleDB.save(person);
+            }
+            navigate('#/quiz-list/' + pid);
+        }
+
+        function renderQuizList(person, categoryName) {
+            const filteredQuizzes = (person.quizzes || []).filter(q => (q.category || 'Genel') === categoryName);
+
+            app.innerHTML = getHeader(categoryName, '#/quiz-list/' + person.id, `<button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}/${encodeURIComponent(categoryName)}')">＋ Soru Ekle</button>`) + `
+                <div class="container">
+                    ${filteredQuizzes.length === 0 ? `
                         <div style="text-align:center; padding:40px; background:rgba(255,255,255,0.5); border-radius:30px; border:3px dashed #CCC; margin-top:20px;">
-                            <p style="font-size:1.5rem; color:#666; font-weight:700;">Henüz soru yok 🎮</p>
-                            <p style="color:#888;">Sağ üstteki + butonuna basarak ilk soruyu hazırlayabilirsin!</p>
+                            <p style="font-size:1.5rem; color:#666; font-weight:700;">Henüz bu kategoride soru yok 🎮</p>
+                            <p style="color:#888;">Sağ üstteki + butonuna basarak ilk soruyu ekleyebilirsin.</p>
                         </div>
                     ` : ''}
-                    ${Object.entries(categories).map(([name, qs]) => `
-                        <h2 style="margin:25px 0 15px; font-family:'Baloo 2'; color:var(--primary); font-size:1.8rem; border-bottom:2px solid var(--primary); display:inline-block; padding-right:20px;">${name}</h2>
-                        <div class="grid">${qs.map(q => `
-                            <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')" style="border:3px solid #eee; transition:transform 0.2s;">
-                                <div class="action-btns">
-                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
-                                </div>
-                                <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:12px;object-fit:cover">` : '❓'}</div>
-                                <div class="card-title" style="font-size:1.1rem;">${q.question}</div>
-                            </div>`).join('')}</div>
-                    `).join('')}
+                    <div class="grid">${filteredQuizzes.map(q => `
+                        <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${q.id}')" style="border:3px solid #eee;">
+                            <div class="action-btns">
+                                <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${q.id}')">✕</button>
+                            </div>
+                            <div class="card-img">${q.image ? `<img src="${q.image}" style="width:100%;height:100%;border-radius:12px;object-fit:cover">` : '❓'}</div>
+                            <div class="card-title">${q.question}</div>
+                        </div>`).join('')}</div>
                 </div>`;
         }
 
         function renderQuizPlay(person, index) {
             const quiz = person.quizzes[index];
             if (!quiz) { navigate('#/quiz-list/' + person.id); return; }
-            app.innerHTML = getHeader('Soru ' + (index + 1), '#/quiz-list/' + person.id) + `
-                <div class="container"><div class="quiz-container">
-                    <button class="btn-round" style="background:#54A0FF; color:white; margin:0 auto 15px; display:block;" onclick="speakQuiz('${quiz.id}', '${person.id}')">🔊 Soruyu Oku</button>
-                    ${quiz.image ? `<img src="${quiz.image}" class="quiz-img" style="max-width:100%; border-radius:15px; margin-bottom:15px;">` : ''}
-                    <div class="quiz-question">${quiz.question}</div>
-                    <div class="options-grid">${quiz.options.map((opt, i) => `
-                        <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})">
-                            ${opt.img ? `<img src="${opt.img}" class="option-img" style="max-width:80px;">` : ''}
-                            <span class="option-text">${opt.text}</span>
-                        </button>`).join('')}</div>
-                    <button class="next-btn" onclick="navigate('#/quiz-play/${person.id}/${person.quizzes[index+1]?.id || person.quizzes[0].id}')">Sıradaki ➡️</button>
-                </div></div>`;
-        }
-
-        async function speakQuiz(qid, pid) {
-            const person = await peopleDB.get(pid);
-            const quiz = person.quizzes.find(q => q.id === qid);
-            if (!quiz) return;
-            let text = quiz.question + ". Seçenekler şunlar: ";
-            quiz.options.forEach((opt, i) => { text += (i+1) + ". " + opt.text + ". "; });
-            speak(text);
+            const backHash = '#/quiz-cat-detail/' + person.id + '/' + encodeURIComponent(quiz.category || 'Genel');
+            
+            app.innerHTML = getHeader('Soru ' + (index + 1), backHash) + `
+                <div class="container">
+                    <div class="quiz-container">
+                        <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:15px;">
+                            <div class="quiz-question" style="margin-bottom:0;">${quiz.question}</div>
+                            <button class="btn-round" style="background:var(--blue); color:white; width:45px; height:45px; font-size:1.2rem;" onclick="speak('${quiz.question.replace(/'/g, "\\'")}')">🔊</button>
+                        </div>
+                        
+                        ${quiz.image ? `<img src="${quiz.image}" class="quiz-img" style="max-width:100%; border-radius:20px; margin-bottom:20px; border:4px solid #eee;">` : ''}
+                        
+                        <div class="options-grid">
+                            ${quiz.options.map((opt, i) => `
+                                <div style="position:relative;">
+                                    <button class="option-btn" onclick="checkAnswer(this, ${i === quiz.correct})" style="padding-right:50px; width:100%;">
+                                        ${opt.img ? `<img src="${opt.img}" class="option-img" style="max-width:70px; margin-bottom:5px;">` : ''}
+                                        <span class="option-text">${opt.text}</span>
+                                    </button>
+                                    <button class="btn-round" 
+                                            style="position:absolute; right:5px; top:50%; transform:translateY(-50%); background:#FFF; border:2px solid var(--blue); color:var(--blue); width:35px; height:35px; font-size:1rem; z-index:10;" 
+                                            onclick="event.stopPropagation(); speak('${opt.text.replace(/'/g, "\\'")}')">🔊</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <button class="next-btn" style="margin-top:30px; background:var(--primary);" onclick="navigate('#/quiz-play/${person.id}/${person.quizzes[index+1]?.id || person.quizzes[0].id}')">Sıradaki Soru ➡️</button>
+                    </div>
+                </div>`;
         }
 
         window.checkAnswer = (btn, isCorrect) => {
@@ -1353,15 +1400,14 @@
             else { btn.classList.add('wrong'); speak("Tekrar dene!"); setTimeout(() => btn.classList.remove('wrong'), 500); }
         };
 
-        function renderQuizForm(pid) {
-            app.innerHTML = getHeader('Yeni Soru', '#/quiz-list/' + pid) + `
+        function renderQuizForm(pid, categoryName = 'Genel') {
+            app.innerHTML = getHeader('Yeni Soru', '#/quiz-cat-detail/' + pid + '/' + encodeURIComponent(categoryName)) + `
                 <div class="container">
                     <div class="form-card">
                         <form id="quiz-form">
                             <div class="form-group">
                                 <label>Kategori</label>
-                                <input type="text" id="qCat" placeholder="Örn: Renkler, Aile..." list="catList">
-                                <datalist id="catList"><option value="Renkler"><option value="Aile Bireyleri"></datalist>
+                                <input type="text" id="qCat" value="${categoryName}" readonly style="background:#f0f0f0; cursor:not-allowed;">
                             </div>
                             <div class="form-group">
                                 <label>Soru Metni</label>
@@ -1429,7 +1475,7 @@
                 person.quizzes.push(quiz);
                 await peopleDB.save(person);
                 speak("Soru başarıyla eklendi!");
-                navigate('#/quiz-list/' + pid);
+                navigate('#/quiz-cat-detail/' + pid + '/' + encodeURIComponent(quiz.category));
             } catch (err) {
                 console.error(err);
                 alert("Hata oluştu!");
