@@ -202,16 +202,22 @@
 
         /* İDEAL BOYUTTA GİRİŞ ALANLARI */
         .form-group input, .form-group select, .form-group textarea {
-            font-size: 1.3rem !important;
-            padding: 18px 20px !important;
-            border-radius: 20px !important;
-            border: 3px solid #DDD !important;
+            font-size: 1.5rem !important;
+            padding: 22px 25px !important;
+            border-radius: 25px !important;
+            border: 4px solid #DDD !important;
             width: 100% !important;
-            margin-bottom: 15px !important;
+            margin-bottom: 20px !important;
             background: white !important;
             color: #333 !important;
             display: block !important;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.05) !important;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--primary) !important;
+            outline: none;
+            box-shadow: 0 0 15px rgba(255,179,0,0.2) !important;
         }
         .form-group label {
             font-size: 1.2rem !important;
@@ -1300,7 +1306,6 @@
         }
 
         function renderQuizCategories(person) {
-            // Mevcut quizlerden kategorileri çıkar veya person.quizCategories dizisini kullan
             const cats = person.quizCategories || ['Genel'];
             
             app.innerHTML = getHeader('Quiz Kategorileri', '#/person/' + person.id, `<button class="btn-round btn-secondary" onclick="renderAddQuizCategory('${person.id}')">＋ Yeni Kategori</button>`) + `
@@ -1308,6 +1313,10 @@
                     <div class="grid">
                         ${cats.map(c => `
                             <div class="card category" onclick="navigate('#/quiz-cat-detail/${person.id}/${encodeURIComponent(c)}')">
+                                <div class="action-btns">
+                                    <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuizCategory('${person.id}', '${c.replace(/'/g, "\\'")}')">✕</button>
+                                    <button class="btn-mini btn-edit" onclick="event.stopPropagation(); renderEditQuizCategory('${person.id}', '${c.replace(/'/g, "\\'")}')">✎</button>
+                                </div>
                                 <div class="card-img">📚</div>
                                 <div class="card-title">${c}</div>
                             </div>
@@ -1316,8 +1325,19 @@
                 </div>`;
         }
 
+        async function deleteQuizCategory(pid, catName) {
+            if(catName === 'Genel') { alert("Genel kategorisi silinemez."); return; }
+            if(confirm(`"${catName}" kategorisini ve içindeki tüm soruları silmek istediğine emin misin?`)) {
+                const person = await peopleDB.get(pid);
+                person.quizCategories = person.quizCategories.filter(c => c !== catName);
+                person.quizzes = (person.quizzes || []).filter(q => q.category !== catName);
+                await peopleDB.save(person);
+                render();
+            }
+        }
+
         function renderAddQuizCategory(pid) {
-            app.innerHTML = getHeader('Yeni Quiz Kategorisi', '#/quiz-list/' + pid) + `
+            app.innerHTML = getHeader('Yeni Kategori', '#/quiz-list/' + pid) + `
                 <div class="container">
                     <div class="form-card">
                         <div class="form-group">
@@ -1327,6 +1347,38 @@
                         <button class="btn-save" onclick="handleAddQuizCategory('${pid}')">Kategoriyi Oluştur ✨</button>
                     </div>
                 </div>`;
+        }
+
+        function renderEditQuizCategory(pid, oldName) {
+            app.innerHTML = getHeader('Kategoriyi Düzenle', '#/quiz-list/' + pid) + `
+                <div class="container">
+                    <div class="form-card">
+                        <div class="form-group">
+                            <label>Yeni Kategori Adı</label>
+                            <input type="text" id="editQuizCatName" value="${oldName}" required>
+                        </div>
+                        <button class="btn-save" onclick="handleUpdateQuizCategory('${pid}', '${oldName.replace(/'/g, "\\'")}')">Güncelle ✎</button>
+                    </div>
+                </div>`;
+        }
+
+        async function handleUpdateQuizCategory(pid, oldName) {
+            const btn = event.target;
+            const newName = document.getElementById('editQuizCatName').value.trim();
+            if(!newName || newName === oldName) { navigate('#/quiz-list/' + pid); return; }
+            
+            btn.disabled = true;
+            btn.innerText = "Güncelleniyor...";
+            
+            const person = await peopleDB.get(pid);
+            person.quizCategories = person.quizCategories.map(c => c === oldName ? newName : c);
+            person.quizzes = (person.quizzes || []).map(q => {
+                if(q.category === oldName) q.category = newName;
+                return q;
+            });
+            await peopleDB.save(person);
+            speak("Kategori güncellendi!");
+            setTimeout(() => navigate('#/quiz-list/' + pid), 200);
         }
 
         async function handleAddQuizCategory(pid) {
