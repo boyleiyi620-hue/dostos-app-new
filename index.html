@@ -175,106 +175,172 @@
         .theme-space .quiz-container { background: #1e293b; border-color: #38bdf8; }
         .theme-aquarium .quiz-container { background: #075985; border-color: #38bdf8; }
         .quiz-question { font-family: 'Baloo 2', cursive; font-size: 1.6rem; margin-bottom: 20px; font-weight: 800; line-height: 1.3; }
-        .quiz-img { width: 100%; max-width: 280px; height: 180px; border-radius: 25px; object-fit: cover; margin-bottom: 20px; display: block; }
-        .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .quiz-option { padding: 15px; border-radius: 20px; border: 4px solid #DDD; background: white; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: all 0.2s; }
-        .quiz-option:active { transform: scale(0.95); }
-        .quiz-option.correct { background: #1DD1A1; border-color: #1DD1A1; color: white; }
-        .quiz-option.wrong { background: #FF6B6B; border-color: #FF6B6B; color: white; }
-        .theme-space .quiz-option { background: #334155; border-color: #38bdf8; color: #f8fafc; }
-        .theme-aquarium .quiz-option { background: #0c4a6e; border-color: #38bdf8; color: #e0f2fe; }
+        .quiz-img { width: 100%; max-width: 280px; height: 180px; border-radius: 25px; object-fit: cover; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .option-btn { background: #F8F9FA; border: 4px solid #EEE; padding: 15px; border-radius: 20px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 6px 0 #DDD; transition: all 0.2s; position: relative; }
+        .option-btn:active { transform: translateY(6px); box-shadow: none; }
+        .option-text { font-size: 1.2rem; font-weight: 800; }
+        .option-img { width: 80px; height: 80px; object-fit: cover; border-radius: 15px; }
+        .option-btn.correct { background: #d1fae5 !important; border-color: #10b981 !important; color: #065f46 !important; box-shadow: 0 6px 0 #059669; }
+        .option-btn.wrong { background: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; box-shadow: 0 6px 0 #dc2626; animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .next-btn { background: #54A0FF; color: white; border: none; padding: 15px 40px; border-radius: 20px; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 0 #2E86DE; transition: all 0.1s; }
+        .next-btn:active { transform: translateY(6px); box-shadow: none; }
+        .next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ===== OYUN STILLERI ===== */
-        .pop-container { width: 100%; height: 400px; background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border-radius: 25px; position: relative; overflow: hidden; border: 5px solid #FFB300; }
-        .bubble { position: absolute; border-radius: 50%; cursor: pointer; transition: transform 0.1s; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .bubble:active { transform: scale(0.9); }
-        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .memory-card { width: 100%; aspect-ratio: 1; border-radius: 15px; border: 4px solid #54A0FF; background: linear-gradient(135deg, #54A0FF 0%, #48DBFB 100%); cursor: pointer; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .memory-card:active { transform: scale(0.95); }
-        .memory-card.flipped { background: white; }
-        .memory-card.matched { opacity: 0.5; cursor: default; }
+        .theme-space .option-btn { background: #334155; border-color: #475569; color: #f8fafc; box-shadow: 0 6px 0 #1e293b; }
+        .theme-space .option-btn.correct { background: #064e3b !important; border-color: #10b981 !important; color: #d1fae5 !important; }
+        .theme-space .option-btn.wrong { background: #450a0a !important; border-color: #ef4444 !important; color: #fee2e2 !important; }
+        .theme-aquarium .option-btn { background: #0c4a6e; border-color: #075985; color: #e0f2fe; box-shadow: 0 6px 0 #082f49; }
+        .theme-aquarium .option-btn.correct { background: #064e3b !important; border-color: #34d399 !important; }
+        .theme-aquarium .option-btn.wrong { background: #450a0a !important; border-color: #f87171 !important; }
 
-        /* Ses Parkuru */
-        .parkour-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
-        .parkour-canvas { width: 100%; height: 500px; background: #B3E5FC; border-radius: 20px; border: 5px solid #54A0FF; display: block; }
-        .mic-indicator { display: flex; align-items: center; gap: 10px; margin-top: 15px; font-weight: 800; font-size: 1rem; }
-        .mic-bar { width: 100%; height: 20px; background: #DDD; border-radius: 10px; overflow: hidden; }
-        .mic-fill { height: 100%; background: linear-gradient(90deg, #1DD1A1, #54A0FF); transition: width 0.05s; border-radius: 10px; }
-        .parkour-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; }
-        .parkour-overlay h2 { color: white; font-size: 2rem; margin-bottom: 15px; }
-        .parkour-overlay p { color: white; font-size: 1.1rem; text-align: center; margin-bottom: 20px; }
+        /* ===== SESLENDIRME BUTONU ===== */
+        .audio-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--blue); color: white; border: none; cursor: pointer; font-size: 1rem; margin-left: 8px; vertical-align: middle; box-shadow: 0 3px 0 #2E86DE; transition: all 0.1s; }
+        .audio-btn:active { transform: translateY(3px); box-shadow: none; }
+        .audio-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Hayvan Sesi Oyunu */
-        .voice-farm-bg { background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%); border-radius: 25px; padding: 30px 20px; border: 5px solid #FFB300; }
-        .voice-animal-area { text-align: center; }
-        .voice-progress { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        .voice-dot { width: 20px; height: 20px; border-radius: 50%; background: #DDD; border: 3px solid #999; }
-        .voice-dot.correct { background: #1DD1A1; border-color: #1DD1A1; }
-        .voice-dot.wrong { background: #FF6B6B; border-color: #FF6B6B; }
-        .voice-animal-display { font-size: 6rem; margin: 20px 0; animation: bounce 0.6s ease-in-out; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes run-in-left { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes run-in-right { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .run-in-left { animation: run-in-left 0.5s ease-out; }
-        .run-in-right { animation: run-in-right 0.5s ease-out; }
-        .voice-animal-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
-        .voice-animal-text { font-size: 1.3rem; font-weight: 700; color: #54A0FF; margin-bottom: 20px; }
-        .voice-btn { padding: 12px 20px; border-radius: 15px; border: none; cursor: pointer; font-weight: 800; font-size: 1rem; margin: 0 8px; transition: all 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
-        .voice-btn:active { transform: translateY(4px); box-shadow: none; }
-        .voice-btn.listen { background: #54A0FF; color: white; }
-        .voice-btn.speak { background: #FF9F43; color: white; }
-        .voice-btn.speak.listening { background: #FF6B6B; }
-        .voice-status { margin-top: 15px; font-weight: 800; font-size: 1.1rem; min-height: 30px; }
-        .next-btn { padding: 12px 24px; border-radius: 15px; border: none; background: #1DD1A1; color: white; cursor: pointer; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 0 #10AC84; transition: all 0.1s; }
-        .next-btn:active { transform: translateY(4px); box-shadow: none; }
+        /* ===== MEMORY GAME ===== */
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .memory-card { height: 100px; background: var(--primary); border-radius: 15px; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.5s; border: 4px solid white; }
+        .memory-card.flipped { transform: rotateY(180deg); }
+        .memory-card.matched { visibility: hidden; opacity: 0; transition: opacity 0.5s, visibility 0.5s; }
+        .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .card-front { background: linear-gradient(135deg, #FFB300, #FF9F43); color: white; font-size: 2.5rem; }
+        .card-back { background: #fff; transform: rotateY(180deg); overflow: hidden; }
+        .card-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+        .theme-space .card-front { background: linear-gradient(135deg, #1e293b, #334155); border: 2px solid #38bdf8; }
+        .theme-aquarium .card-front { background: linear-gradient(135deg, #075985, #0c4a6e); border: 2px solid #38bdf8; }
 
-        /* Yapboz */
-        .puzzle-container { text-align: center; }
-        .puzzle-upload { padding: 40px; border: 4px dashed #54A0FF; border-radius: 20px; cursor: pointer; background: #F0F7FF; transition: all 0.2s; }
-        .puzzle-upload:hover { background: #E0F2FF; }
-        .puzzle-upload input { display: none; }
-        .puzzle-grid { display: grid; gap: 8px; justify-content: center; margin: 20px 0; }
-        .puzzle-piece { border: 3px solid white; cursor: grab; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 8px; }
-        .puzzle-piece:active { cursor: grabbing; }
-
-        /* Oyun Menüsü */
-        .game-menu { display: flex; flex-direction: column; gap: 12px; }
-        .game-menu-btn { width: 100%; padding: 20px; border-radius: 20px; border: none; cursor: pointer; font-weight: 800; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
+        /* ===== OYUN BUTONLARI / MENULER ===== */
+        .game-menu { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 20px auto; }
+        .game-menu-btn { padding: 18px; border-radius: 20px; border: none; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.15); transition: all 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .game-menu-btn:active { transform: translateY(6px); box-shadow: none; }
-        .game-menu-btn.primary { background: #FFB300; color: white; }
+        .game-menu-btn.primary { background: #FFB300; color: #4834D4; }
         .game-menu-btn.secondary { background: #54A0FF; color: white; }
         .game-menu-btn.accent { background: #FF6B6B; color: white; }
-        .game-menu-btn.info { background: #00D2D3; color: white; }
         .game-menu-btn.success { background: #1DD1A1; color: white; }
+        .game-menu-btn.info { background: #00D2D3; color: white; }
         .game-menu-btn.warning { background: #FF9F43; color: white; }
-        .sub-menu { display: none; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .sub-menu { display: none; flex-direction: column; gap: 10px; animation: slideDown 0.3s ease-out; }
         .sub-menu.active { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Balon Oyunu */
-        .balloon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .balloon-btn { width: 100%; aspect-ratio: 1; border-radius: 50%; border: none; cursor: pointer; font-size: 3rem; transition: transform 0.1s; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .balloon-btn:active { transform: scale(0.9); }
+        /* ===== BALON RENK OYUNU ===== */
+        .balloon-game-area { text-align: center; padding: 20px; max-width: 500px; margin: 0 auto; }
+        .target-balloon { font-size: 6rem; animation: floatBalloon 3s ease-in-out infinite; margin-bottom: 10px; display: inline-block; }
+        @keyframes floatBalloon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .balloon-hint { font-size: 1.4rem; font-weight: 800; margin-bottom: 30px; }
+        .balloon-options { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .balloon-btn { font-size: 4rem; background: none; border: 4px solid transparent; border-radius: 50%; width: 100px; height: 100px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 0 rgba(0,0,0,0.1); }
+        .balloon-btn:active { transform: translateY(8px); box-shadow: none; }
+        .balloon-btn:hover { transform: scale(1.1); }
+        .balloon-btn.pop-wrong { animation: popWrong 0.5s; border-color: #FF6B6B !important; }
+        @keyframes popWrong { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+        .balloon-btn.fly-up { animation: flyUp 1s forwards; }
+        @keyframes flyUp { to { transform: translateY(-200px); opacity: 0; } }
+        .balloon-farm-bg { background: linear-gradient(to bottom, #87CEEB 0%, #90EE90 60%, #228B22 100%); border-radius: 30px; padding: 20px; min-height: 400px; position: relative; overflow: hidden; }
+        .theme-aquarium .balloon-farm-bg { background: linear-gradient(to bottom, #0c4a6e 0%, #075985 60%, #0c4a6e 100%); }
 
-        /* Hayvan Bilme Oyunu */
-        .animal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .animal-btn { padding: 20px; border-radius: 15px; border: 4px solid #DDD; background: white; cursor: pointer; font-weight: 700; font-size: 1.1rem; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .animal-btn:active { transform: scale(0.95); }
-        .animal-btn.correct { background: #1DD1A1; border-color: #1DD1A1; color: white; }
-        .animal-btn.wrong { background: #FF6B6B; border-color: #FF6B6B; color: white; }
+        /* ===== HAYVAN / SEKIL OYUNU ===== */
+        .guess-game-area { text-align: center; padding: 20px; max-width: 500px; margin: 0 auto; }
+        .guess-target { font-size: 7rem; margin: 20px 0; animation: bounceIn 0.6s; display: inline-block; }
+        @keyframes bounceIn { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .guess-options { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
+        .guess-btn { padding: 15px 25px; font-size: 1.3rem; font-weight: 800; border-radius: 20px; border: 4px solid #EEE; background: white; cursor: pointer; box-shadow: 0 6px 0 #DDD; transition: all 0.2s; min-width: 100px; }
+        .guess-btn:active { transform: translateY(6px); box-shadow: none; }
+        .guess-btn.correct { background: #d1fae5; border-color: #10b981; color: #065f46; }
+        .guess-btn.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; animation: shake 0.5s; }
+        .farm-bg { background: linear-gradient(to bottom, #87CEEB 0%, #90EE90 100%); border-radius: 30px; padding: 20px; min-height: 400px; }
+        .theme-aquarium .farm-bg { background: linear-gradient(to bottom, #0c4a6e 0%, #075985 100%); }
 
-        /* Şekil Bilme Oyunu */
-        .shape-display { font-size: 5rem; margin: 30px 0; }
-        .shape-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .shape-btn { padding: 20px; border-radius: 15px; border: 4px solid #DDD; background: white; cursor: pointer; font-size: 2.5rem; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .shape-btn:active { transform: scale(0.95); }
-        .shape-btn.correct { background: #1DD1A1; border-color: #1DD1A1; }
-        .shape-btn.wrong { background: #FF6B6B; border-color: #FF6B6B; }
+        /* ===== SES PARKURU ===== */
+        .parkour-container { position: relative; width: 100%; max-width: 600px; height: 400px; margin: 0 auto; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); border-radius: 20px; overflow: hidden; border: 4px solid var(--primary); }
+        .parkour-canvas { width: 100%; height: 100%; display: block; }
+        .mic-indicator { position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); padding: 8px 15px; border-radius: 15px; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .mic-bar { width: 60px; height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; }
+        .mic-fill { height: 100%; background: #1DD1A1; width: 0%; transition: width 0.1s; }
+        .parkour-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); color: white; z-index: 10; }
+        .parkour-overlay h2 { font-size: 2rem; margin-bottom: 15px; }
+        .parkour-overlay p { margin-bottom: 20px; font-size: 1.1rem; text-align: center; padding: 0 20px; }
+
+        /* ===== YAPBOZ ===== */
+        .puzzle-container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .puzzle-grid { display: grid; gap: 4px; margin: 20px auto; width: fit-content; background: #333; padding: 4px; border-radius: 10px; }
+        .puzzle-piece { background-size: 300px 300px; cursor: grab; border-radius: 8px; border: 2px solid white; transition: transform 0.15s, opacity 0.15s, border-color 0.15s; position: relative; touch-action: none; user-select: none; -webkit-user-select: none; }
+        .puzzle-piece:active { cursor: grabbing; }
+        .puzzle-piece.dragging { opacity: 0.3; transform: scale(0.95); }
+        .puzzle-piece.correct-place { border-color: #1DD1A1; box-shadow: 0 0 10px rgba(29, 209, 161, 0.5); }
+        @media (max-width: 480px) {
+            .puzzle-piece { background-size: 240px 240px; }
+        }
+        @media (max-width: 360px) {
+            .puzzle-piece { background-size: 210px 210px; }
+        }
+        .puzzle-upload { border: 3px dashed var(--primary); border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; margin-bottom: 20px; background: rgba(255,255,255,0.5); }
+        .puzzle-upload input { display: none; }
+
+        /* ===== HAYVAN SESI TEKRARLAMA ===== */
+        .voice-animal-area { text-align: center; max-width: 500px; margin: 0 auto; padding: 20px; }
+        .voice-animal-display { font-size: 8rem; margin: 20px 0; }
+        .voice-animal-display.run-in-left { animation: runInFromLeft 0.8s ease-out; }
+        .voice-animal-display.run-in-right { animation: runInFromRight 0.8s ease-out; }
+        .voice-animal-name { font-size: 2rem; font-weight: 800; margin-bottom: 10px; color: inherit; }
+        .voice-animal-text { font-size: 1.5rem; color: var(--accent); font-weight: 700; margin-bottom: 30px; }
+        .voice-btn { padding: 15px 30px; font-size: 1.2rem; font-weight: 800; border-radius: 20px; border: none; cursor: pointer; margin: 5px; box-shadow: 0 6px 0 rgba(0,0,0,0.15); transition: all 0.1s; }
+        .voice-btn:active { transform: translateY(6px); box-shadow: none; }
+        .voice-btn.listen { background: #54A0FF; color: white; }
+        .voice-btn.speak { background: #1DD1A1; color: white; }
+        .voice-btn.speak.listening { background: #FF6B6B; animation: pulseMic 1.5s infinite; }
+        @keyframes pulseMic { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.7); } 50% { box-shadow: 0 0 0 15px rgba(255,107,107,0); } }
+        .voice-status { margin-top: 20px; font-size: 1.2rem; font-weight: 700; min-height: 30px; }
+        .voice-progress { display: flex; justify-content: center; gap: 8px; margin: 20px 0; flex-wrap: wrap; }
+        .voice-dot { width: 20px; height: 20px; border-radius: 50%; background: #ddd; transition: background 0.3s; }
+        .voice-dot.correct { background: #1DD1A1; }
+        .voice-dot.wrong { background: #FF6B6B; }
+        .voice-farm-bg { background: linear-gradient(to bottom, #87CEEB 0%, #90EE90 40%, #7CFC00 100%); border-radius: 30px; padding: 20px; min-height: 400px; position: relative; overflow: hidden; border: 5px solid #8B4513; }
+        .voice-farm-bg::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60px; background: linear-gradient(to top, #228B22 0%, transparent 100%); opacity: 0.5; border-radius: 0 0 25px 25px; pointer-events: none; }
+        @keyframes runInFromLeft { 0% { transform: translateX(-80vw) scaleX(1); } 60% { transform: translateX(10px) scaleX(1); } 80% { transform: translateX(-5px) scaleX(1); } 100% { transform: translateX(0) scaleX(1); } }
+        @keyframes runInFromRight { 0% { transform: translateX(80vw) scaleX(-1); } 60% { transform: translateX(-10px) scaleX(-1); } 80% { transform: translateX(5px) scaleX(-1); } 100% { transform: translateX(0) scaleX(-1); } }
+
+        /* ===== POP GAME ===== */
+        .pop-obj { position: fixed; font-size: 4rem; z-index: 1000; animation: popIn var(--dur) linear forwards; pointer-events: auto; cursor: pointer; }
+
+        /* ===== GIZLI INPUT (Hayvan sesi icin) ===== */
+        .hidden-voice-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .options-grid { grid-template-columns: 1fr; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); }
+            .header h1 { font-size: 1.1rem; }
+            .btn-round { width: 38px; height: 38px; font-size: 1.1rem; }
+            .balloon-btn { width: 80px; height: 80px; font-size: 3rem; }
+            .guess-target { font-size: 5rem; }
+            .voice-animal-display { font-size: 6rem; }
+        }
+        @media (max-width: 360px) {
+            .memory-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FFB300">
+
 </head>
 <body class="theme-modern">
-    <div id="bg-elements" class="bg-animations"></div>
+    <div class="bg-animations" id="bg-elements"></div>
+
     <div id="theme-menu" class="theme-selector">
-        <div class="theme-option" onclick="setTheme('modern')">&#127752; Modern</div>
+        <div class="theme-option" onclick="setTheme('modern')">&#127752; Gokkusagi</div>
         <div class="theme-option" onclick="setTheme('classic')">&#127800; Klasik</div>
         <div class="theme-option" onclick="setTheme('space')">&#128640; Uzay</div>
         <div class="theme-option" onclick="setTheme('notebook')">&#128221; Not Defteri</div>
@@ -303,7 +369,6 @@
         let micAnalyser = null;
         let micRafId = null;
         let speechRecognition = null;
-        let voiceListenTimer = null;
 
         function toggleThemeMenu() {
             const menu = document.getElementById('theme-menu');
@@ -359,10 +424,10 @@
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
                 request.onupgradeneeded = (e) => {
-                    const upgradeDb = e.target.result;
+                    const db = e.target.result;
                     const oldVersion = e.oldVersion;
-                    if (!upgradeDb.objectStoreNames.contains('people')) {
-                        upgradeDb.createObjectStore('people', { keyPath: 'id' });
+                    if (!db.objectStoreNames.contains('people')) {
+                        db.createObjectStore('people', { keyPath: 'id' });
                     }
                     if (oldVersion < 2) {
                         try {
@@ -466,29 +531,18 @@
         };
 
         const generateId = () => Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-        const navigate = (hash) => { window.location.hash = hash; if (window.location.hash === hash) render(); };
+        const navigate = (hash) => { window.location.hash = hash; };
         
-        function speak(text, rate = 0.85, pitch = 1.2, callback = null) {
-            if (!window.speechSynthesis) {
-                if (callback) callback();
-                return;
-            }
+        function speak(text, rate = 0.85, pitch = 1.2) {
+            if (!window.speechSynthesis) return;
             try {
                 window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance(text);
                 msg.lang = 'tr-TR';
                 msg.rate = rate;
                 msg.pitch = pitch;
-                if (callback) {
-                    msg.onend = () => callback();
-                    // Fallback for some browsers where onend might not fire
-                    setTimeout(() => { if (msg.onend) { msg.onend = null; callback(); } }, text.length * 200 + 1000);
-                }
                 window.speechSynthesis.speak(msg);
-            } catch(e) { 
-                console.error('TTS error:', e); 
-                if (callback) callback();
-            }
+            } catch(e) { console.error('TTS error:', e); }
         }
 
         function stopAllGames() {
@@ -527,23 +581,57 @@
             if (!hiddenInputEl) {
                 hiddenInputEl = document.createElement('input');
                 hiddenInputEl.type = 'text';
-                hiddenInputEl.style.position = 'fixed';
-                hiddenInputEl.style.left = '-9999px';
-                hiddenInputEl.style.top = '-9999px';
-                hiddenInputEl.style.opacity = '0';
-                hiddenInputEl.style.pointerEvents = 'none';
+                hiddenInputEl.className = 'hidden-voice-input';
+                hiddenInputEl.setAttribute('inputmode', 'text');
+                hiddenInputEl.setAttribute('autocomplete', 'off');
+                hiddenInputEl.setAttribute('autocorrect', 'off');
+                hiddenInputEl.setAttribute('spellcheck', 'false');
                 document.body.appendChild(hiddenInputEl);
             }
         }
-
+        
+        function startHiddenVoiceInput(callback) {
+            setupHiddenVoiceInput();
+            if (!hiddenInputEl) return;
+            
+            hiddenInputEl.value = '';
+            
+            // Event listener'ı temizle ve yeni ekle
+            hiddenInputEl.oninput = null;
+            hiddenInputEl.onblur = null;
+            
+            let debounceTimer = null;
+            hiddenInputEl.oninput = function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    const val = hiddenInputEl.value.trim();
+                    if (val) {
+                        callback(val);
+                    }
+                }, 800);
+            };
+            
+            // Input'a focus et
+            setTimeout(() => {
+                hiddenInputEl.focus();
+                // iOS'ta klavyeyi açmak için tıklama simülasyonu
+                if (typeof Event !== 'undefined') {
+                    const event = document.createEvent('Event');
+                    event.initEvent('click', true, true);
+                    hiddenInputEl.dispatchEvent(event);
+                }
+            }, 100);
+        }
+        
         function stopHiddenVoiceInput() {
+            if (hiddenInputEl) {
+                hiddenInputEl.oninput = null;
+                hiddenInputEl.onblur = null;
+                hiddenInputEl.blur();
+            }
             if (hiddenInputTimeout) {
                 clearTimeout(hiddenInputTimeout);
                 hiddenInputTimeout = null;
-            }
-            if (hiddenInputEl) {
-                hiddenInputEl.blur();
-                hiddenInputEl.value = '';
             }
         }
 
@@ -894,103 +982,63 @@
             if (!text) return;
             const file = document.getElementById('iImg').files[0];
             const person = await peopleDB.get(pid);
-            if (!person || !person.categories) { alert('Kategori bulunamadi!'); navigate('#/'); return; }
+            if (!person || !person.categories) { alert('Kisi veya kategori bulunamadi!'); navigate('#/'); return; }
             const cat = person.categories.find(c => c.id === cid);
             if (!cat) { alert('Kategori bulunamadi!'); navigate('#/'); return; }
             if (!cat.items) cat.items = [];
-            
-            const saveItem = async (image) => {
-                if (iid) {
-                    const item = cat.items.find(i => i.id === iid);
-                    if (item) { item.text = text; if (image) item.image = image; }
-                } else {
-                    cat.items.push({ id: generateId(), text, image: image || null });
-                }
-                await peopleDB.save(person);
-                navigate('#/category/' + pid + '/' + cid);
-            };
-            
+            let item;
+            if (iid) {
+                item = cat.items.find(i => i.id === iid);
+                if (!item) item = { id: generateId(), text, image: null };
+            } else {
+                item = { id: generateId(), text, image: null };
+            }
+            item.text = text;
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (ev) => saveItem(ev.target.result);
+                reader.onload = async (ev) => { 
+                    item.image = ev.target.result; 
+                    if(!iid) cat.items.push(item); 
+                    await peopleDB.save(person); 
+                    navigate('#/category/'+pid+'/'+cid); 
+                };
                 reader.readAsDataURL(file);
-            } else {
-                saveItem(null);
+            } else { 
+                if(!iid) cat.items.push(item); 
+                await peopleDB.save(person); 
+                navigate('#/category/'+pid+'/'+cid); 
             }
         }
 
-        // ===== QUIZ KATEGORILERI =====
+        // ===== SORU KATEGORILERI =====
         function renderQuizCategories(person) {
+            if (!person) { navigate('#/'); return; }
             const quizCategories = person.quizCategories || [];
             app.innerHTML = getHeader('Soru Kategorileri', '#/person/' + person.id, `
                 <button class="btn-round btn-secondary" onclick="navigate('#/add-quiz-category/${person.id}')">+</button>
             `) + `
                 <div class="container"><div class="grid">${quizCategories.map(c => `
-                    <div class="card category" onclick="navigate('#/quiz-list/${person.id}/${c.id}')">
+                    <div class="card" onclick="navigate('#/quiz-list/${person.id}/${c.id}')">
                         <div class="action-btns">
                             <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuizCategory('${person.id}', '${c.id}')">&#10060;</button>
                             <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-quiz-category/${person.id}/${c.id}')">&#9999;&#65039;</button>
                         </div>
-                        <div class="card-img">&#128221;</div>
+                        <div class="card-img">&#128218;</div>
                         <div class="card-title">${c.name || 'Kategorisiz'}</div>
-                        <div style="font-size:0.9rem;color:#666">${(c.quizzes || []).length} soru</div>
+                        <div style="font-size:0.9rem;color:#666;margin-top:4px">${c.quizzes ? c.quizzes.length : 0} soru</div>
                     </div>`).join('')}
                     <div class="card" onclick="navigate('#/add-quiz-category/${person.id}')" style="border-style:dashed;border-color:#54A0FF">
                         <div class="card-img" style="font-size:2.5rem;color:#54A0FF">+</div>
-                        <div class="card-title" style="color:#54A0FF">Kategori Ekle</div>
+                        <div class="card-title" style="color:#54A0FF">Yeni Kategori</div>
                     </div>
                 </div></div>`;
         }
 
-        // ===== QUIZ FORMU =====
-        function renderQuizForm(pid, cid, editData = null) {
-            const qValue = editData && editData.question ? editData.question : '';
-            const aValue = editData && editData.answer ? editData.answer : '';
-            app.innerHTML = getHeader(editData ? 'Duzenle' : 'Yeni Soru', '#/quiz-list/' + pid + '/' + cid) + `
-                <div class="container"><div class="form-card"><form onsubmit="handleSaveQuiz(event, '${pid}', '${cid}', ${editData ? `'${editData.id}'` : 'null'})">
-                    <div class="form-group"><label>Soru</label><input type="text" id="qText" required value="${qValue}" placeholder="Soruyu yaz"></div>
-                    <div class="form-group"><label>Cevap</label><input type="text" id="aText" required value="${aValue}" placeholder="Cevabi yaz"></div>
-                    <div class="form-group"><label>Fotograf (Opsiyonel)</label><input type="file" id="qImg" accept="image/*"></div>
-                    <button type="submit" class="btn-save">Kaydet</button></form></div></div>`;
-        }
-        async function handleSaveQuiz(e, pid, cid, qid) {
-            e.preventDefault();
-            const question = document.getElementById('qText').value.trim();
-            const answer = document.getElementById('aText').value.trim();
-            if (!question || !answer) return;
-            const file = document.getElementById('qImg').files[0];
-            const person = await peopleDB.get(pid);
-            if (!person || !person.quizCategories) { alert('Kategori bulunamadi!'); navigate('#/'); return; }
-            const cat = person.quizCategories.find(c => c.id === cid);
-            if (!cat) { alert('Kategori bulunamadi!'); navigate('#/'); return; }
-            if (!cat.quizzes) cat.quizzes = [];
-            
-            const saveQuiz = async (image) => {
-                if (qid) {
-                    const quiz = cat.quizzes.find(q => q.id === qid);
-                    if (quiz) { quiz.question = question; quiz.answer = answer; if (image) quiz.image = image; }
-                } else {
-                    cat.quizzes.push({ id: generateId(), question, answer, image: image || null });
-                }
-                await peopleDB.save(person);
-                navigate('#/quiz-list/' + pid + '/' + cid);
-            };
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => saveQuiz(ev.target.result);
-                reader.readAsDataURL(file);
-            } else {
-                saveQuiz(null);
-            }
-        }
-
-        // ===== QUIZ KATEGORISI FORMU =====
         function renderQuizCategoryForm(pid, editData = null) {
             const nameValue = editData && editData.name ? editData.name : '';
-            app.innerHTML = getHeader(editData ? 'Duzenle' : 'Yeni Kategori', '#/quiz-categories/' + pid) + `
+            app.innerHTML = getHeader(editData ? 'Duzenle' : 'Yeni Soru Kategorisi', '#/quiz-categories/' + pid) + `
                 <div class="container"><div class="form-card"><form onsubmit="handleSaveQuizCategory(event, '${pid}', ${editData ? `'${editData.id}'` : 'null'})">
-                    <div class="form-group"><label>Kategori Adi</label><input type="text" id="qcName" required value="${nameValue}" placeholder="Orn: Matematik, Bilim"></div>
+                    <div class="form-group"><label>Kategori Adi</label><input type="text" id="qcName" required value="${nameValue}" placeholder="Orn: Renkler, Aile Bireyleri"></div>
                     <button type="submit" class="btn-save">Kaydet</button></form></div></div>`;
         }
         async function handleSaveQuizCategory(e, pid, cid) {
@@ -1000,31 +1048,34 @@
             const person = await peopleDB.get(pid);
             if (!person) { alert('Kisi bulunamadi!'); navigate('#/'); return; }
             if (!person.quizCategories) person.quizCategories = [];
-            if (cid) {
+            if (cid) { 
                 const cat = person.quizCategories.find(c => c.id === cid);
                 if (cat) cat.name = name;
-            } else {
-                person.quizCategories.push({ id: generateId(), name, quizzes: [] });
+            } else { 
+                person.quizCategories.push({ id: generateId(), name, quizzes: [] }); 
             }
             await peopleDB.save(person);
             navigate('#/quiz-categories/' + pid);
         }
 
-        // ===== QUIZ LISTESI =====
+        // ===== SORU LISTESI =====
         function renderQuizList(person, category) {
+            if (!person || !category) { navigate('#/'); return; }
             const quizzes = category.quizzes || [];
-            app.innerHTML = getHeader(category.name || 'Sorular', '#/quiz-categories/' + person.id, `
+            const safeCatName = (category.name || 'Kategori').replace(/'/g, "\\'");
+            app.innerHTML = getHeader((category.name || 'Kategori') + ' Sorulari', '#/quiz-categories/' + person.id, `
                 <button class="btn-round btn-secondary" onclick="navigate('#/add-quiz/${person.id}/${category.id}')">+</button>
             `) + `
-                <div class="container"><div class="grid">${quizzes.map(q => `
-                    <div class="card quiz" onclick="navigate('#/quiz-play/${person.id}/${category.id}/${q.id}')">
-                        <div class="action-btns">
-                            <button class="btn-mini btn-del" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${category.id}', '${q.id}')">&#10060;</button>
-                            <button class="btn-mini btn-edit" onclick="event.stopPropagation(); navigate('#/edit-quiz/${person.id}/${category.id}/${q.id}')">&#9999;&#65039;</button>
-                        </div>
-                        <div class="card-img">${q.image ? `<img src="${q.image}" alt="Soru">` : '&#128221;'}</div>
-                        <div class="card-title">${q.question || 'Isimsiz'}</div>
-                    </div>`).join('')}
+                <div class="container"><div class="grid">${quizzes.map(q => {
+                    const safeQuestion = (q.question || '').replace(/'/g, "\\'");
+                    return `
+                    <div class="card" onclick="navigate('#/quiz-play/${person.id}/${category.id}/${q.id}')">
+                        <button class="btn-mini btn-del" style="position:absolute;top:5px;right:5px;z-index:10" onclick="event.stopPropagation(); deleteQuiz('${person.id}', '${category.id}', '${q.id}')">&#10060;</button>
+                        <div class="card-img">${q.image ? `<img src="${q.image}" alt="soru">` : '&#10067;'}</div>
+                        <div class="card-title" style="font-size:1rem;padding:0 5px">${q.question || 'Soruisiz'}</div>
+                        <button class="audio-btn" style="position:absolute;top:5px;left:5px;width:24px;height:24px;font-size:0.8rem" onclick="event.stopPropagation(); speak('${safeQuestion}')">&#128266;</button>
+                    </div>`;
+                }).join('')}
                     <div class="card" onclick="navigate('#/add-quiz/${person.id}/${category.id}')" style="border-style:dashed;border-color:#54A0FF">
                         <div class="card-img" style="font-size:2.5rem;color:#54A0FF">+</div>
                         <div class="card-title" style="color:#54A0FF">Soru Ekle</div>
@@ -1032,413 +1083,526 @@
                 </div></div>`;
         }
 
-        // ===== QUIZ OYUNU =====
+        // ===== SORU OYUNU =====
         function renderQuizPlay(person, category, index) {
-            const quizzes = category.quizzes || [];
-            if (index < 0 || index >= quizzes.length) { navigate('#/quiz-list/' + person.id + '/' + category.id); return; }
-            const quiz = quizzes[index];
-            const isLast = index === quizzes.length - 1;
-            app.innerHTML = getHeader('Soru ' + (index + 1) + '/' + quizzes.length, '#/quiz-list/' + person.id + '/' + category.id) + `
-                <div class="container">
-                    <div class="quiz-container">
-                        ${quiz.image ? `<img src="${quiz.image}" class="quiz-img" alt="Soru">` : ''}
-                        <div class="quiz-question">${quiz.question}</div>
-                        <div class="quiz-options">
-                            <button class="quiz-option" onclick="checkQuizAnswer(this, true, '${person.id}', '${category.id}', ${index}, ${isLast})">${quiz.answer}</button>
-                            <button class="quiz-option" onclick="checkQuizAnswer(this, false, '${person.id}', '${category.id}', ${index}, ${isLast})">Yanlis Cevap</button>
-                        </div>
-                    </div>
-                </div>`;
-        }
-        window.checkQuizAnswer = (btn, isCorrect, pid, cid, index, isLast) => {
-            if (isCorrect) {
-                btn.classList.add('correct');
-                speak('Dogru!');
-                confetti({ particleCount: 50, spread: 50 });
-            } else {
-                btn.classList.add('wrong');
-                speak('Yanlis!');
+            if (!person || !category || !category.quizzes || index < 0 || index >= category.quizzes.length) { 
+                navigate('#/quiz-list/' + (person ? person.id : '') + '/' + (category ? category.id : '')); 
+                return; 
             }
-            btn.disabled = true;
-            setTimeout(() => {
-                if (isLast) {
-                    navigate('#/quiz-list/' + pid + '/' + cid);
-                } else {
-                    navigate('#/quiz-play/' + pid + '/' + cid + '/' + (index + 1));
-                }
-            }, 1500);
+            const quiz = category.quizzes[index];
+            const nextQuiz = category.quizzes[index + 1];
+            const prevQuiz = index > 0 ? category.quizzes[index - 1] : null;
+            const safeQuestion = (quiz.question || '').replace(/'/g, "\\'");
+            
+            app.innerHTML = getHeader('Soru ' + (index + 1) + '/' + category.quizzes.length, '#/quiz-list/' + person.id + '/' + category.id, `
+                <button class="btn-round" onclick="speak('${safeQuestion}')" title="Soruyu dinle">&#128266;</button>
+            `) + `
+                <div class="container"><div class="quiz-container">
+                    ${quiz.image ? `<img src="${quiz.image}" class="quiz-img" alt="Soru">` : ''}
+                    <div class="quiz-question">${quiz.question || ''} <button class="audio-btn" onclick="speak('${safeQuestion}')">&#128266;</button></div>
+                    <div class="options-grid">${(quiz.options || []).map((opt, i) => {
+                        const safeOpt = (opt.text || '').replace(/'/g, "\\'");
+                        return `
+                        <button class="option-btn" id="opt-${i}" onclick="checkAnswer(this, ${i === quiz.correct}, '${safeOpt}')">
+                            ${opt.img ? `<img src="${opt.img}" class="option-img" alt="${safeOpt}">` : ''}
+                            <span class="option-text">${opt.text || ''}</span>
+                            <button class="audio-btn" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); speak('${safeOpt}')">&#128266;</button>
+                        </button>`;
+                    }).join('')}</div>
+                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                        ${prevQuiz ? `<button class="next-btn" style="background:#94a3b8;box-shadow:0 6px 0 #64748b" onclick="navigate('#/quiz-play/${person.id}/${category.id}/${prevQuiz.id}')">Onceki</button>` : ''}
+                        <button class="next-btn" id="next-btn" onclick="navigate('#/quiz-play/${person.id}/${category.id}/${nextQuiz ? nextQuiz.id : category.quizzes[0].id}')">Siradaki</button>
+                    </div>
+                </div></div>`;
+        }
+
+        window.checkAnswer = (btn, isCorrect, text) => {
+            if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+            if (isCorrect) { 
+                btn.classList.add('correct'); 
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
+                speak('Harika! Dogru!'); 
+                document.getElementById('next-btn')?.focus();
+            } else { 
+                btn.classList.add('wrong'); 
+                speak('Tekrar dene!'); 
+                setTimeout(() => btn.classList.remove('wrong'), 800); 
+            }
         };
+
+        // ===== SORU FORMU =====
+        function renderQuizForm(pid, catId, editData = null) {
+            const backHash = '#/quiz-list/' + pid + '/' + catId;
+            const qText = editData && editData.question ? editData.question : '';
+            app.innerHTML = getHeader(editData ? 'Soru Duzenle' : 'Yeni Soru', backHash) + `
+                <div class="container"><div class="form-card"><form onsubmit="handleSaveQuiz(event, '${pid}', '${catId}', ${editData ? `'${editData.id}'` : 'null'})">
+                    <div class="form-group"><label>Soru <button type="button" class="audio-btn" onclick="speak(document.getElementById('qText').value)" style="width:28px;height:28px">&#128266;</button></label><input type="text" id="qText" required value="${qText}" placeholder="Soruyu yazin"></div>
+                    <div class="form-group"><label>Soru Fotografi</label><input type="file" id="qImg" accept="image/*"></div>
+                    ${[0,1,2,3].map(i => `
+                        <div style="background:#F8F9FA;padding:16px;border-radius:15px;margin-bottom:14px;border:2px solid #EEE">
+                            <label style="font-size:1.15rem;margin-bottom:8px;display:block">Secenek ${i+1} <button type="button" class="audio-btn" onclick="speak(document.getElementById('optT${i}').value)" style="width:30px;height:30px;font-size:1rem">&#128266;</button></label>
+                            <input type="text" id="optT${i}" required placeholder="Cevap secenegini yazin..." value="${editData && editData.options && editData.options[i] ? (editData.options[i].text || '') : ''}" style="font-size:1.2rem !important;padding:14px 18px !important;min-height:50px">
+                            <input type="file" id="optI${i}" accept="image/*" style="margin-top:10px;font-size:1rem;padding:8px">
+                        </div>`).join('')}
+                    <div class="form-group"><label>Dogru Cevap</label><select id="correctIdx">${[0,1,2,3].map(i => `<option value="${i}" ${editData && editData.correct === i ? 'selected' : ''}>Secenek ${i+1}</option>`).join('')}</select></div>
+                    <button type="submit" class="btn-save">Kaydet</button></form></div></div>`;
+        }
+        async function handleSaveQuiz(e, pid, catId, qid) {
+            e.preventDefault();
+            const person = await peopleDB.get(pid);
+            if (!person || !person.quizCategories) { alert('Kisi bulunamadi!'); navigate('#/'); return; }
+            const cat = person.quizCategories.find(c => c.id === catId);
+            if (!cat) { alert('Kategori bulunamadi!'); navigate('#/'); return; }
+            if (!cat.quizzes) cat.quizzes = [];
+            let quiz;
+            if (qid) {
+                quiz = cat.quizzes.find(q => q.id === qid);
+                if (!quiz) quiz = { id: generateId(), question: '', image: null, options: [], correct: 0 };
+            } else {
+                quiz = { id: generateId(), question: '', image: null, options: [], correct: 0 };
+            }
+            quiz.question = document.getElementById('qText').value.trim();
+            quiz.correct = parseInt(document.getElementById('correctIdx').value);
+            const readFile = (file) => new Promise(r => { if(!file) r(null); const rd = new FileReader(); rd.onload = (ev) => r(ev.target.result); rd.readAsDataURL(file); });
+            quiz.image = await readFile(document.getElementById('qImg').files[0]) || quiz.image;
+            quiz.options = [];
+            for(let i=0; i<4; i++) { 
+                quiz.options.push({ 
+                    text: document.getElementById('optT'+i).value.trim(), 
+                    img: await readFile(document.getElementById('optI'+i).files[0]) || (qid && quiz.options[i] ? quiz.options[i].img : null)
+                }); 
+            }
+            if (!qid) cat.quizzes.push(quiz);
+            await peopleDB.save(person);
+            navigate('#/quiz-list/' + pid + '/' + catId);
+        }
 
         // ===== PATLATMA OYUNU =====
         function renderPopGame(person) {
-            const pid = person && person.id ? person.id : '';
-            const highScore = person && person.id ? (person.popHighScore || 0) : 0;
-            app.innerHTML = getHeader('Patlatma Oyunu', '#/') + `
-                <div class="container">
-                    <div class="score-board">
-                        <span>Skor: <span id="pop-score">0</span></span>
-                        <span>Rekor: ${highScore}</span>
-                    </div>
-                    <div class="pop-container" id="pop-container"></div>
-                </div>`;
-            startPopGame(pid);
-        }
-        function startPopGame(pid) {
             popGameActive = true;
             popScore = 0;
-            const container = document.getElementById('pop-container');
-            if (!container) return;
-            
-            function spawnBubble() {
-                if (!popGameActive) return;
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = 30 + Math.random() * 40;
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                const colors = ['#FF6B6B', '#54A0FF', '#1DD1A1', '#FFB300', '#FF9F43'];
-                bubble.style.background = colors[Math.floor(Math.random() * colors.length)];
-                bubble.style.left = Math.random() * (container.offsetWidth - size) + 'px';
-                bubble.style.top = Math.random() * (container.offsetHeight - size) + 'px';
-                bubble.onclick = (e) => {
-                    e.stopPropagation();
-                    bubble.remove();
-                    popScore++;
-                    document.getElementById('pop-score').innerText = popScore;
-                    confetti({ particleCount: 20, spread: 30, origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight } });
-                };
-                container.appendChild(bubble);
-                setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 3000);
-            }
-            
             spawnRate = 2000;
-            const spawnLoop = () => {
-                spawnBubble();
-                spawnRate = Math.max(500, spawnRate - 50);
-                if (popGameActive) spawnTimer = setTimeout(spawnLoop, spawnRate);
+            const bgEl = document.getElementById('bg-elements');
+            if (bgEl) bgEl.style.display = 'none';
+            const pid = person && person.id ? person.id : null;
+            const highScore = person ? (person.popHighScore || 0) : 0;
+            app.innerHTML = getHeader('Patlatma Oyunu', '#/games/' + (person ? person.id : 'any')) + `
+                <div class="container">
+                    <div class="score-board" id="pop-score-board">
+                        <span>Skor: <span id="current-pop-score">0</span></span>
+                        <span>En Yuksek: ${highScore}</span>
+                    </div>
+                    <p style="text-align:center; font-weight:800; font-size:1.2rem;">Balonlari patlat! Hizlaniyor!</p>
+                </div>
+                <div id="game-area" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:900;"></div>`;
+            spawnObject(pid);
+        }
+        function spawnObject(pid) {
+            if (!popGameActive) return;
+            const area = document.getElementById('game-area');
+            if (!area) return;
+            // Her tema icin emoji balonlar
+            const themeObjs = { modern: '&#127880;', classic: '&#10084;&#65039;', space: '&#129728;', notebook: '&#9999;&#65039;', aquarium: '&#128031;' };
+            const obj = document.createElement('div');
+            obj.className = 'pop-obj';
+            obj.innerHTML = themeObjs[currentTheme] || '&#127880;';
+            const x = Math.random() * 80 + 10;
+            const y = Math.random() * 70 + 15;
+            const tx = (Math.random() - 0.5) * 200;
+            const ty = (Math.random() - 0.5) * 200;
+            const dur = Math.max(1500, 4000 - (popScore * 50));
+            obj.style.left = x + '%';
+            obj.style.top = y + '%';
+            obj.style.setProperty('--tx', tx + 'px');
+            obj.style.setProperty('--ty', ty + 'px');
+            obj.style.setProperty('--dur', dur + 'ms');
+            obj.onclick = (e) => {
+                e.stopPropagation();
+                popScore++;
+                speak('Pat!');
+                confetti({ particleCount: 20, spread: 30, origin: { x: e.clientX/window.innerWidth, y: e.clientY/window.innerHeight } });
+                obj.remove();
+                updatePopScoreUI(pid);
+                spawnRate = Math.max(400, 2000 - (popScore * 30));
             };
-            spawnLoop();
+            area.appendChild(obj);
+            setTimeout(() => obj.remove(), dur);
+            spawnTimer = setTimeout(() => spawnObject(pid), spawnRate);
+        }
+        async function updatePopScoreUI(pid) {
+            const scoreEl = document.getElementById('current-pop-score');
+            if (scoreEl) scoreEl.innerText = popScore;
+            if (pid) {
+                try {
+                    const p = await peopleDB.get(pid);
+                    if (p && popScore > (p.popHighScore || 0)) {
+                        p.popHighScore = popScore;
+                        await peopleDB.save(p);
+                    }
+                } catch(e) { console.error('Pop score save error:', e); }
+            }
         }
 
-        // ===== HAFIZA OYUNU =====
-        function renderMemorySetup(person) {
-            const pid = person && person.id ? person.id : '';
-            app.innerHTML = getHeader('Hafiza Oyunu Kurulum', '#/') + `
-                <div class="container">
-                    <div class="form-card">
-                        <h2 style="margin-bottom:20px">Kartlar Icin Resim Sec</h2>
-                        <input type="file" id="mem-file" accept="image/*" onchange="window.loadMemoryImage(event, '${pid}')">
-                        <div id="mem-preview" style="margin-top:20px"></div>
-                    </div>
-                </div>`;
-        }
-        window.loadMemoryImage = (e, pid) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const img = ev.target.result;
-                const preview = document.getElementById('mem-preview');
-                preview.innerHTML = `<img src="${img}" style="max-width:200px;border-radius:12px;margin-bottom:15px"><button class="btn-save" onclick="window.startMemoryGame('${pid}', '${img.replace(/'/g, "\\'")}')">Oyunu Basla</button>`;
-            };
-            reader.readAsDataURL(file);
-        };
-        window.startMemoryGame = (pid, img) => {
-            const person = { id: pid };
-            if (!person.memoryImages) person.memoryImages = [];
-            person.memoryImages.push(img);
-            navigate('#/memory-game/' + pid);
-        };
-        function renderMemoryGame(person) {
-            const pid = person && person.id ? person.id : '';
-            const highScore = person && person.id ? (person.memoryImages ? person.memoryImages.length : 0) : 0;
-            app.innerHTML = getHeader('Hafiza Oyunu', '#/') + `
-                <div class="container">
-                    <div class="score-board">
-                        <span>Eslestirilen: <span id="mem-matched">0</span>/8</span>
-                        <span>Rekor: ${highScore}</span>
-                    </div>
-                    <div class="memory-grid" id="memory-grid"></div>
-                </div>`;
-            startMemoryGame(pid);
-        }
-        function startMemoryGame(pid) {
+
+        // ===== HAFIZA OYUNU - DUZELTILDI =====
+        async function renderMemoryGame(person) {
+            const memImages = (person && person.memoryImages) || [];
+            if (!memImages || memImages.length < 2) {
+                renderMemorySetup(person);
+                return;
+            }
+            // Kartları oluştur: her resimden 2 tane (eşleştirme için)
+            const cardData = [];
+            memImages.forEach((img, idx) => {
+                cardData.push({ pairId: idx, img: img, id: idx * 2 });
+                cardData.push({ pairId: idx, img: img, id: idx * 2 + 1 });
+            });
+            // Karıştır
+            cardData.sort(() => Math.random() - 0.5);
+            
             memoryFlipped = [];
             memoryMatched = 0;
-            const grid = document.getElementById('memory-grid');
-            if (!grid) return;
-            const images = ['&#128001;', '&#128002;', '&#128003;', '&#128004;', '&#128005;', '&#128006;', '&#128007;', '&#128008;'];
-            const cards = [...images, ...images].sort(() => Math.random() - 0.5);
-            grid.innerHTML = cards.map((img, idx) => `
-                <div class="memory-card" id="card-${idx}" onclick="window.flipMemoryCard(${idx})">
-                    <span style="display:none">${img}</span>
-                </div>
-            `).join('');
+            
+            app.innerHTML = getHeader('Hafiza Oyunu', '#/games/' + person.id, `<button class="btn-round" onclick="navigate('#/memory-setup/${person.id}')">&#9881;&#65039;</button>`) + `
+                <div class="container">
+                    <div style="text-align:center;margin-bottom:10px;font-weight:800;font-size:1.1rem;">
+                        Eslesen: <span id="matched-count">0</span> / ${memImages.length}
+                    </div>
+                    <div class="memory-grid" id="memory-grid">
+                        ${cardData.map((c, displayIdx) => `
+                            <div class="memory-card" id="memcard-${displayIdx}" data-pair="${c.pairId}" data-idx="${displayIdx}" onclick="window.flipMemoryCard(${displayIdx})">
+                                <div class="card-front">&#10067;</div>
+                                <div class="card-back"><img src="${c.img}" alt="kart" draggable="false"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
         }
-        window.flipMemoryCard = (idx) => {
-            const card = document.getElementById('card-' + idx);
-            if (!card || card.classList.contains('flipped') || card.classList.contains('matched') || memoryFlipped.length >= 2) return;
+        
+        window.flipMemoryCard = (displayIdx) => {
+            const card = document.getElementById('memcard-' + displayIdx);
+            if (!card) return;
+            // Zaten çevrilmiş veya eşleşmiş kartlara tıklama
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+            // 2 kart zaten çevriliyse bekle
+            if (memoryFlipped.length >= 2) return;
+            
+            // Kartı çevir
             card.classList.add('flipped');
-            card.innerHTML = card.querySelector('span').innerText;
-            memoryFlipped.push(idx);
+            const pairId = parseInt(card.dataset.pair);
+            memoryFlipped.push({ displayIdx, pairId, element: card });
+            
             if (memoryFlipped.length === 2) {
-                const [idx1, idx2] = memoryFlipped;
-                const card1 = document.getElementById('card-' + idx1);
-                const card2 = document.getElementById('card-' + idx2);
-                if (card1.innerText === card2.innerText) {
-                    card1.classList.add('matched');
-                    card2.classList.add('matched');
-                    memoryMatched++;
-                    document.getElementById('mem-matched').innerText = memoryMatched;
-                    if (memoryMatched === 8) {
-                        speak('Tebrikler! Oyunu bitirdin!');
-                        confetti({ particleCount: 200, spread: 100 });
-                    }
-                    memoryFlipped = [];
-                } else {
+                const [first, second] = memoryFlipped;
+                
+                if (first.pairId === second.pairId) {
+                    // Eşleşme bulundu!
                     setTimeout(() => {
-                        card1.classList.remove('flipped');
-                        card2.classList.remove('flipped');
-                        card1.innerHTML = '';
-                        card2.innerHTML = '';
+                        first.element.classList.add('matched');
+                        second.element.classList.add('matched');
+                        memoryFlipped = [];
+                        memoryMatched++;
+                        
+                        const matchedEl = document.getElementById('matched-count');
+                        if (matchedEl) matchedEl.innerText = memoryMatched;
+                        
+                        speak('Harika!');
+                        
+                        // Tüm eşleşmeler tamamlandı mı?
+                        const totalPairs = document.querySelectorAll('.memory-card').length / 2;
+                        if (memoryMatched >= totalPairs) {
+                            setTimeout(() => {
+                                confetti({ particleCount: 200, spread: 100 });
+                                speak('Tebrikler! Hepsini buldun!');
+                            }, 500);
+                        }
+                    }, 600);
+                } else {
+                    // Eşleşmedi, geri çevir
+                    setTimeout(() => {
+                        first.element.classList.remove('flipped');
+                        second.element.classList.remove('flipped');
                         memoryFlipped = [];
                     }, 1000);
                 }
             }
         };
+        
+        function renderMemorySetup(person) {
+            if (!person) { navigate('#/'); return; }
+            const images = (person.memoryImages) || [];
+            app.innerHTML = getHeader('Hafiza Kartlari', '#/games/' + person.id) + `
+                <div class="container">
+                    <div class="form-card">
+                        <label style="font-weight:800; display:block; margin-bottom:10px;">Resim Ekle (En az 2 tane)</label>
+                        <input type="file" id="memImg" accept="image/*" onchange="window.addMemoryImage('${person.id}')">
+                        <div class="grid" style="margin-top:20px;">
+                            ${images.map((img, idx) => `
+                                <div class="card" style="padding:5px;">
+                                    <button class="btn-mini btn-del" style="position:absolute; top:5px; right:5px; z-index:10;" onclick="event.stopPropagation(); window.removeMemoryImage('${person.id}', ${idx})">X</button>
+                                    <img src="${img}" style="width:100%; height:80px; object-fit:cover; border-radius:10px;" alt="hafiza">
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${images.length >= 2 ? `<button class="btn-save" onclick="navigate('#/memory-game/${person.id}')" style="margin-top:20px;">Oyuna Basla</button>` : '<p style="text-align:center;color:#666;margin-top:15px;">En az 2 resim ekleyin</p>'}
+                    </div>
+                </div>`;
+        }
+        window.addMemoryImage = async (pid) => {
+            const file = document.getElementById('memImg').files[0];
+            if (!file) return;
+            const person = await peopleDB.get(pid);
+            if (!person) return;
+            if (!Array.isArray(person.memoryImages)) person.memoryImages = [];
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                person.memoryImages.push(e.target.result);
+                await peopleDB.save(person);
+                renderMemorySetup(person);
+            };
+            reader.readAsDataURL(file);
+        };
+        window.removeMemoryImage = async (pid, idx) => {
+            const person = await peopleDB.get(pid);
+            if (!person || !Array.isArray(person.memoryImages)) return;
+            person.memoryImages.splice(idx, 1);
+            await peopleDB.save(person);
+            renderMemorySetup(person);
+        };
 
-        // ===== RENK ESLESTIRME (BALLOON GAME) =====
+        // ===== RENK ESLESTIRME (BALON) OYUNU =====
+        const BALLOON_COLORS = [
+            { name: 'Mavi', emoji: '&#128309;', hex: '#3b82f6' },
+            { name: 'Kirmizi', emoji: '&#128308;', hex: '#ef4444' },
+            { name: 'Sari', emoji: '&#128993;', hex: '#eab308' },
+            { name: 'Yesil', emoji: '&#128994;', hex: '#22c55e' }
+        ];
+        let balloonScore = 0;
+        let balloonTarget = null;
+        let balloonPersonId = null;
+
         function renderBalloonGame(person) {
-            const pid = person && person.id ? person.id : 'any';
-            app.innerHTML = getHeader('Renk Eslestirme', '#/') + `
+            balloonScore = 0;
+            balloonPersonId = person && person.id ? person.id : null;
+            const highScore = person ? (person.balloonHighScore || 0) : 0;
+            app.innerHTML = getHeader('Renk Eslestirme', '#/games/' + (person ? person.id : 'any')) + `
                 <div class="container">
                     <div class="score-board">
                         <span>Skor: <span id="balloon-score">0</span></span>
+                        <span>Rekor: ${highScore}</span>
                     </div>
-                    <div class="quiz-container">
-                        <div id="balloon-target" style="font-size:1.5rem;margin-bottom:20px;font-weight:800"></div>
-                        <div class="grid" id="balloon-grid"></div>
-                    </div>
-                </div>`;
-            startBalloonGame(pid);
-        }
-        function startBalloonGame(pid) {
-            const colors = [
-                { name: 'Kirmizi', code: '#FF6B6B' },
-                { name: 'Mavi', code: '#54A0FF' },
-                { name: 'Yesil', code: '#1DD1A1' },
-                { name: 'Sari', code: '#FFB300' },
-                { name: 'Turuncu', code: '#FF9F43' },
-                { name: 'Mor', code: '#A29BFE' }
-            ];
-            let score = 0;
-            function nextRound() {
-                const target = colors[Math.floor(Math.random() * colors.length)];
-                document.getElementById('balloon-target').innerText = target.name + ' balonu bul!';
-                speak(target.name + ' balonu bul!');
-                const grid = document.getElementById('balloon-grid');
-                grid.innerHTML = '';
-                [...colors].sort(() => Math.random() - 0.5).forEach(c => {
-                    const btn = document.createElement('div');
-                    btn.className = 'card';
-                    btn.style.background = c.code;
-                    btn.style.height = '100px';
-                    btn.innerHTML = '<div style="font-size:3rem">🎈</div>';
-                    btn.onclick = () => {
-                        if (c.name === target.name) {
-                            score++;
-                            document.getElementById('balloon-score').innerText = score;
-                            speak('Harika!');
-                            confetti({ particleCount: 50, spread: 30 });
-                            setTimeout(nextRound, 1000);
-                        } else {
-                            speak('Bu ' + c.name + ', tekrar dene!');
-                        }
-                    };
-                    grid.appendChild(btn);
-                });
-            }
-            nextRound();
-        }
-
-        // ===== HAYVAN BILMECE (ANIMAL GAME) =====
-        function renderAnimalGame(person) {
-            const pid = person && person.id ? person.id : 'any';
-            app.innerHTML = getHeader('Hayvan Bilmece', '#/') + `
-                <div class="container">
-                    <div class="score-board"><span>Skor: <span id="animal-score">0</span></span></div>
-                    <div class="quiz-container">
-                        <div id="animal-question" style="font-size:1.5rem;margin-bottom:20px;font-weight:800"></div>
-                        <div class="grid" id="animal-grid"></div>
-                    </div>
-                </div>`;
-            startAnimalGame(pid);
-        }
-        function startAnimalGame(pid) {
-            const animals = [
-                { name: 'Kedi', emoji: '🐱', sound: 'Miyav' },
-                { name: 'Köpek', emoji: '🐶', sound: 'Hav hav' },
-                { name: 'Aslan', emoji: '🦁', sound: 'Ruar' },
-                { name: 'Inek', emoji: '🐮', sound: 'Möö' },
-                { name: 'Ördek', emoji: '🦆', sound: 'Vak vak' },
-                { name: 'Maymun', emoji: '🐵', sound: 'Uu aa' }
-            ];
-            let score = 0;
-            function nextRound() {
-                const target = animals[Math.floor(Math.random() * animals.length)];
-                document.getElementById('animal-question').innerText = target.name + ' nerede?';
-                speak(target.name + ' nerede?');
-                const grid = document.getElementById('animal-grid');
-                grid.innerHTML = '';
-                [...animals].sort(() => Math.random() - 0.5).forEach(a => {
-                    const btn = document.createElement('div');
-                    btn.className = 'card';
-                    btn.innerHTML = `<div class="card-img" style="font-size:3rem">${a.emoji}</div>`;
-                    btn.onclick = () => {
-                        if (a.name === target.name) {
-                            score++;
-                            document.getElementById('animal-score').innerText = score;
-                            speak('Aferin! Bu bir ' + a.name);
-                            confetti({ particleCount: 50, spread: 30 });
-                            setTimeout(nextRound, 1000);
-                        } else {
-                            speak('Bu bir ' + a.name + ', tekrar dene!');
-                        }
-                    };
-                    grid.appendChild(btn);
-                });
-            }
-            nextRound();
-        }
-
-        // ===== SEKIL BILMECE (SHAPE GAME) =====
-        function renderShapeGame(person) {
-            const pid = person && person.id ? person.id : 'any';
-            app.innerHTML = getHeader('Sekil Bilmece', '#/') + `
-                <div class="container">
-                    <div class="score-board"><span>Skor: <span id="shape-score">0</span></span></div>
-                    <div class="quiz-container">
-                        <div id="shape-question" style="font-size:1.5rem;margin-bottom:20px;font-weight:800"></div>
-                        <div class="grid" id="shape-grid"></div>
-                    </div>
-                </div>`;
-            startShapeGame(pid);
-        }
-        function startShapeGame(pid) {
-            const shapes = [
-                { name: 'Kare', emoji: '🟦' },
-                { name: 'Daire', emoji: '🔴' },
-                { name: 'Yildiz', emoji: '⭐' },
-                { name: 'Üçgen', emoji: '🔺' },
-                { name: 'Kalp', emoji: '❤️' }
-            ];
-            let score = 0;
-            function nextRound() {
-                const target = shapes[Math.floor(Math.random() * shapes.length)];
-                document.getElementById('shape-question').innerText = target.name + ' seklini bul!';
-                speak(target.name + ' seklini bul!');
-                const grid = document.getElementById('shape-grid');
-                grid.innerHTML = '';
-                [...shapes].sort(() => Math.random() - 0.5).forEach(s => {
-                    const btn = document.createElement('div');
-                    btn.className = 'card';
-                    btn.innerHTML = `<div class="card-img" style="font-size:3rem">${s.emoji}</div>`;
-                    btn.onclick = () => {
-                        if (s.name === target.name) {
-                            score++;
-                            document.getElementById('shape-score').innerText = score;
-                            speak('Harika! Bu bir ' + s.name);
-                            confetti({ particleCount: 50, spread: 30 });
-                            setTimeout(nextRound, 1000);
-                        } else {
-                            speak('Bu bir ' + s.name + ', tekrar dene!');
-                        }
-                    };
-                    grid.appendChild(btn);
-                });
-            }
-            nextRound();
-        }
-
-        // ===== HAYVAN SESI TEKRAR (ANIMAL VOICE) =====
-        function renderAnimalVoice(person) {
-            const pid = person && person.id ? person.id : 'any';
-            app.innerHTML = getHeader('Hayvan Sesi Tekrar', '#/') + `
-                <div class="container">
-                    <div class="score-board"><span>Skor: <span id="voice-score">0</span></span></div>
-                    <div class="quiz-container">
-                        <div id="voice-instruction" style="font-size:1.5rem;margin-bottom:20px;font-weight:800">Hayvanin sesini cikar!</div>
-                        <div id="voice-animal" style="font-size:8rem;margin-bottom:20px"></div>
-                        <div class="mic-indicator" style="margin: 0 auto 20px; width: 200px;">
-                            <div class="mic-bar"><div class="mic-fill" id="voice-mic-fill"></div></div>
+                    <div class="balloon-farm-bg" id="balloon-area">
+                        <div class="balloon-game-area">
+                            <div class="target-balloon" id="target-balloon">&#127880;</div>
+                            <div class="balloon-hint" id="balloon-hint">Hazir!</div>
+                            <div class="balloon-options" id="balloon-options"></div>
                         </div>
-                        <button class="btn-save" id="voice-start-btn" onclick="window.startVoiceGame('${pid}')">Basla</button>
                     </div>
                 </div>`;
+            nextBalloonRound();
         }
-        window.startVoiceGame = async (pid) => {
-            const btn = document.getElementById('voice-start-btn');
-            if (btn) btn.style.display = 'none';
-            try {
-                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                micAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-                micAnalyser = micAudioContext.createAnalyser();
-                micAnalyser.fftSize = 256;
-                const source = micAudioContext.createMediaStreamSource(micStream);
-                source.connect(micAnalyser);
-                runAnimalVoiceGame(pid);
-            } catch(e) {
-                alert('Mikrofon erisimi gerekli!');
-                if (btn) btn.style.display = 'block';
+        function nextBalloonRound() {
+            const target = BALLOON_COLORS[Math.floor(Math.random() * BALLOON_COLORS.length)];
+            balloonTarget = target;
+            const targetEl = document.getElementById('target-balloon');
+            const hintEl = document.getElementById('balloon-hint');
+            const optsEl = document.getElementById('balloon-options');
+            if (!targetEl || !hintEl || !optsEl) return;
+            targetEl.innerHTML = target.emoji;
+            targetEl.style.filter = `drop-shadow(0 0 15px ${target.hex})`;
+            hintEl.innerHTML = `Hangi renk? <button class="audio-btn" onclick="speak('${target.name}')">Ses</button>`;
+            speak(target.name);
+            
+            const others = BALLOON_COLORS.filter(c => c.name !== target.name);
+            const shuffled = [target, ...others.sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5);
+            optsEl.innerHTML = shuffled.map(c => `
+                <button class="balloon-btn" style="border-color:${c.hex}" onclick="window.checkBalloon(this, '${c.name}')">${c.emoji}</button>
+            `).join('');
+        }
+        window.checkBalloon = async (btn, colorName) => {
+            if (!balloonTarget) return;
+            if (colorName === balloonTarget.name) {
+                btn.classList.add('fly-up');
+                speak('Dogru!');
+                balloonScore++;
+                const scoreEl = document.getElementById('balloon-score');
+                if (scoreEl) scoreEl.innerText = balloonScore;
+                confetti({ particleCount: 50, spread: 50 });
+                if (balloonPersonId) {
+                    try {
+                        const p = await peopleDB.get(balloonPersonId);
+                        if (p && balloonScore > (p.balloonHighScore || 0)) {
+                            p.balloonHighScore = balloonScore;
+                            await peopleDB.save(p);
+                        }
+                    } catch(e) { console.error('Balloon save error:', e); }
+                }
+                setTimeout(nextBalloonRound, 800);
+            } else {
+                btn.classList.add('pop-wrong');
+                speak('Bilemedin, tekrar dene!');
+                setTimeout(() => {
+                    btn.classList.remove('pop-wrong');
+                    nextBalloonRound();
+                }, 1000);
             }
         };
-        function runAnimalVoiceGame(pid) {
-            const animals = [
-                { name: 'Kedi', emoji: '🐱', sound: 'Miyav' },
-                { name: 'Köpek', emoji: '🐶', sound: 'Hav hav' },
-                { name: 'Aslan', emoji: '🦁', sound: 'Ruar' },
-                { name: 'Inek', emoji: '🐮', sound: 'Möö' },
-                { name: 'Ördek', emoji: '🦆', sound: 'Vak vak' }
-            ];
-            let score = 0;
-            let currentAnimal = null;
-            let isListening = false;
 
-            function nextAnimal() {
-                currentAnimal = animals[Math.floor(Math.random() * animals.length)];
-                document.getElementById('voice-animal').innerText = currentAnimal.emoji;
-                document.getElementById('voice-instruction').innerText = currentAnimal.name + ' nasil ses cikarir?';
-                speak(currentAnimal.name + ' nasil ses cikarir?');
-                setTimeout(() => {
-                    speak(currentAnimal.sound);
-                    isListening = true;
-                }, 2000);
-            }
+        // ===== HAYVAN BILME OYUNU =====
+        const ANIMALS = [
+            { name: 'Kedi', emoji: '&#128008;' },
+            { name: 'Kopek', emoji: '&#128021;' },
+            { name: 'Koyun', emoji: '&#128017;' },
+            { name: 'Inek', emoji: '&#128004;' },
+            { name: 'Esek', emoji: '&#129743;' }
+        ];
+        let animalScore = 0;
+        let animalTarget = null;
+        let animalPersonId = null;
 
-            function update() {
-                if (!micAnalyser) return;
-                const dataArray = new Uint8Array(micAnalyser.frequencyBinCount);
-                micAnalyser.getByteFrequencyData(dataArray);
-                const level = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-                const fill = document.getElementById('voice-mic-fill');
-                if (fill) fill.style.width = Math.min(100, level * 2) + '%';
-
-                if (isListening && level > 25) {
-                    isListening = false;
-                    score++;
-                    document.getElementById('voice-score').innerText = score;
-                    speak('Harika taklit ettin!');
-                    confetti({ particleCount: 100, spread: 70 });
-                    setTimeout(nextAnimal, 2000);
-                }
-                requestAnimationFrame(update);
-            }
-
-            nextAnimal();
-            update();
+        function renderAnimalGame(person) {
+            animalScore = 0;
+            animalPersonId = person && person.id ? person.id : null;
+            const highScore = person ? (person.animalHighScore || 0) : 0;
+            app.innerHTML = getHeader('Hayvan Bilme', '#/games/' + (person ? person.id : 'any')) + `
+                <div class="container">
+                    <div class="score-board">
+                        <span>Skor: <span id="animal-score">0</span></span>
+                        <span>Rekor: ${highScore}</span>
+                    </div>
+                    <div class="farm-bg">
+                        <div class="guess-game-area">
+                            <div class="guess-target" id="animal-target">?</div>
+                            <div id="animal-hint" style="font-size:1.3rem;font-weight:800;margin-bottom:10px">Bu hayvan nedir?</div>
+                            <div class="guess-options" id="animal-options"></div>
+                        </div>
+                    </div>
+                </div>`;
+            nextAnimalRound();
         }
+        function nextAnimalRound() {
+            const target = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+            animalTarget = target;
+            const targetEl = document.getElementById('animal-target');
+            const optsEl = document.getElementById('animal-options');
+            if (!targetEl || !optsEl) return;
+            targetEl.innerHTML = target.emoji;
+            speak('Bu hayvan nedir?');
+            const others = ANIMALS.filter(a => a.name !== target.name);
+            const shuffled = [target, ...others.sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5);
+            optsEl.innerHTML = shuffled.map(a => `
+                <button class="guess-btn" onclick="window.checkAnimal(this, '${a.name}')">
+                    ${a.emoji} ${a.name}
+                    <button class="audio-btn" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); speak('${a.name}')">&#128266;</button>
+                </button>
+            `).join('');
+        }
+        window.checkAnimal = async (btn, name) => {
+            if (!animalTarget) return;
+            if (name === animalTarget.name) {
+                btn.classList.add('correct');
+                speak('Dogru! ' + animalTarget.name);
+                animalScore++;
+                const scoreEl = document.getElementById('animal-score');
+                if (scoreEl) scoreEl.innerText = animalScore;
+                confetti({ particleCount: 50, spread: 50 });
+                if (animalPersonId) {
+                    try {
+                        const p = await peopleDB.get(animalPersonId);
+                        if (p && animalScore > (p.animalHighScore || 0)) {
+                            p.animalHighScore = animalScore;
+                            await peopleDB.save(p);
+                        }
+                    } catch(e) { console.error('Animal save error:', e); }
+                }
+                setTimeout(nextAnimalRound, 1000);
+            } else {
+                btn.classList.add('wrong');
+                speak('Bilemedin, tekrar dene!');
+                setTimeout(() => {
+                    btn.classList.remove('wrong');
+                    nextAnimalRound();
+                }, 1000);
+            }
+        };
 
-        // ===== SES PARKURU OYUNU =====
+        // ===== SEKIL BILME OYUNU =====
+        const SHAPES = [
+            { name: 'Kare', emoji: '&#11036;' },
+            { name: 'Ucgen', emoji: '&#128314;' },
+            { name: 'Yuvarlak', emoji: '&#128308;' }
+        ];
+        let shapeScore = 0;
+        let shapeTarget = null;
+        let shapePersonId = null;
+
+        function renderShapeGame(person) {
+            shapeScore = 0;
+            shapePersonId = person && person.id ? person.id : null;
+            const highScore = person ? (person.shapeHighScore || 0) : 0;
+            app.innerHTML = getHeader('Sekil Bilme', '#/games/' + (person ? person.id : 'any')) + `
+                <div class="container">
+                    <div class="score-board">
+                        <span>Skor: <span id="shape-score">0</span></span>
+                        <span>Rekor: ${highScore}</span>
+                    </div>
+                    <div class="farm-bg">
+                        <div class="guess-game-area">
+                            <div class="guess-target" id="shape-target">?</div>
+                            <div id="shape-hint" style="font-size:1.3rem;font-weight:800;margin-bottom:10px">Bu sekil nedir?</div>
+                            <div class="guess-options" id="shape-options"></div>
+                        </div>
+                    </div>
+                </div>`;
+            nextShapeRound();
+        }
+        function nextShapeRound() {
+            const target = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+            shapeTarget = target;
+            const targetEl = document.getElementById('shape-target');
+            const optsEl = document.getElementById('shape-options');
+            if (!targetEl || !optsEl) return;
+            targetEl.innerHTML = target.emoji;
+            speak('Bu sekil nedir?');
+            const others = SHAPES.filter(s => s.name !== target.name);
+            const shuffled = [target, ...others.sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5);
+            optsEl.innerHTML = shuffled.map(s => `
+                <button class="guess-btn" onclick="window.checkShape(this, '${s.name}')">
+                    ${s.emoji} ${s.name}
+                    <button class="audio-btn" style="position:absolute;top:5px;right:5px" onclick="event.stopPropagation(); speak('${s.name}')">&#128266;</button>
+                </button>
+            `).join('');
+        }
+        window.checkShape = async (btn, name) => {
+            if (!shapeTarget) return;
+            if (name === shapeTarget.name) {
+                btn.classList.add('correct');
+                speak('Dogru! ' + shapeTarget.name);
+                shapeScore++;
+                const scoreEl = document.getElementById('shape-score');
+                if (scoreEl) scoreEl.innerText = shapeScore;
+                confetti({ particleCount: 50, spread: 50 });
+                if (shapePersonId) {
+                    try {
+                        const p = await peopleDB.get(shapePersonId);
+                        if (p && shapeScore > (p.shapeHighScore || 0)) {
+                            p.shapeHighScore = shapeScore;
+                            await peopleDB.save(p);
+                        }
+                    } catch(e) { console.error('Shape save error:', e); }
+                }
+                setTimeout(nextShapeRound, 1000);
+            } else {
+                btn.classList.add('wrong');
+                speak('Bilemedin, tekrar dene!');
+                setTimeout(() => {
+                    btn.classList.remove('wrong');
+                    nextShapeRound();
+                }, 1000);
+            }
+        };
+
+        // ===== SES PARKURU OYUNU - GELİŞTİRİLMİŞ =====
         let parkourGame = null;
         function renderVoiceParkour(person) {
             const pid = person && person.id ? person.id : '';
@@ -1583,11 +1747,9 @@
                     const micFill = document.getElementById('mic-fill');
                     if (micFill) micFill.style.width = Math.min(100, micLevel * 1.5) + '%';
                     
-                    // Ses ile zıplama - sınırlı yükseklik
+                    // Ses ile zıplama - daha hassas
                     if (micLevel > 15) {
-                        // Maksimum zıplama yüksekliği: -12 (daha düşük)
-                        const jumpForce = Math.min(-12, -8 - (micLevel / 30));
-                        player.vy = jumpForce;
+                        player.vy = -8 - (micLevel / 15);
                         player.grounded = false;
                         // Zıplama partikülü
                         for (let i = 0; i < 3; i++) {
@@ -1639,8 +1801,8 @@
                     gameOver = true; // Sola kayma engeli
                 }
                 
-                // Otomatik sağa kayma (Zamanla hızlanan)
-                player.x += 2.5 + (score / 2000);
+                // Otomatik sağa kayma
+                player.x += 2.5;
                 
                 // Engel çarpışma
                 for (const o of obstacles) {
@@ -1734,21 +1896,27 @@
                     if (sx + p.w < -50 || sx > canvas.width + 50) continue;
                     
                     if (p.type === 'grass') {
-                        // Bulut Platform (Çocuklara uygun)
-                        ctx.fillStyle = 'white';
-                        ctx.beginPath();
-                        ctx.arc(sx + 20, p.y + 10, 20, 0, Math.PI * 2);
-                        ctx.arc(sx + p.w - 20, p.y + 10, 20, 0, Math.PI * 2);
-                        ctx.rect(sx + 20, p.y - 10, p.w - 40, 40);
-                        ctx.fill();
-                        ctx.fillStyle = '#E1F5FE';
-                        ctx.fillRect(sx + 20, p.y + 15, p.w - 40, 5);
-                    } else if (p.type === 'moving') {
-                        // Şeker Platform
-                        ctx.fillStyle = '#F06292';
+                        // Toprak
+                        ctx.fillStyle = '#8D6E63';
                         ctx.fillRect(sx, p.y, p.w, p.h);
+                        // Çim üstü
+                        ctx.fillStyle = '#66BB6A';
+                        ctx.fillRect(sx, p.y, p.w, 6);
+                        // Çim detayı
+                        ctx.fillStyle = '#43A047';
+                        for (let gx = sx; gx < sx + p.w; gx += 12) {
+                            ctx.fillRect(gx, p.y - 3, 3, 6);
+                        }
+                    } else if (p.type === 'moving') {
+                        // Hareketli platform
+                        ctx.fillStyle = '#AB47BC';
+                        ctx.fillRect(sx, p.y, p.w, p.h);
+                        ctx.fillStyle = '#CE93D8';
+                        ctx.fillRect(sx, p.y, p.w, 4);
+                        // Ok işaretleri
+                        ctx.font = '14px sans-serif';
                         ctx.fillStyle = 'white';
-                        for(let ix=0; ix<p.w; ix+=20) ctx.fillRect(sx+ix, p.y, 10, p.h);
+                        ctx.fillText('⇅', sx + p.w / 2 - 7, p.y + 15);
                     }
                 }
                 
@@ -1801,11 +1969,9 @@
                 }
                 ctx.globalAlpha = 1;
                 
-                // Oyuncu (Karakter seçimi veya rastgele)
-                const characters = ['🐱', '🚀', '🎈', '🐸', '🦄'];
-                const charIdx = Math.floor((score / 500) % characters.length);
-                ctx.font = '36px serif';
-                ctx.fillText(characters[charIdx], player.x - camera.x, player.y + 30);
+                // Oyuncu
+                ctx.font = '32px serif';
+                ctx.fillText('😎', player.x - camera.x, player.y + 30);
                 
                 // Zemin çizgisi (sonsuz his)
                 ctx.fillStyle = 'rgba(129,199,132,0.3)';
@@ -1852,7 +2018,7 @@
             update();
         }
 
-        // ===== FOTOGRAF YAPBOZU =====
+        // ===== FOTOGRAF YAPBOZU - DUZELTILDI =====
         let puzzleState = { pieces: [], size: 3, image: null, personId: null, totalPieces: 0 };
         
         function renderPuzzle(person) {
@@ -2078,39 +2244,357 @@
                 speak('Tebrikler! Yapboz tamamlandi!');
                 confetti({ particleCount: 200, spread: 100 });
                 if (puzzleState.personId) {
-                    const person = await peopleDB.get(puzzleState.personId);
-                    if (person) {
-                        person.puzzleCompleted = (person.puzzleCompleted || 0) + 1;
-                        await peopleDB.save(person);
-                    }
+                    try {
+                        const p = await peopleDB.get(puzzleState.personId);
+                        if (p) {
+                            p.puzzleCompleted = (p.puzzleCompleted || 0) + 1;
+                            await peopleDB.save(p);
+                        }
+                    } catch(e) { console.error('Puzzle save error:', e); }
                 }
             } else {
-                msg.innerHTML = '<span style="color:#FF6B6B">Henüz bitmedi, denemeye devam et!</span>';
-                speak('Henüz bitmedi, denemeye devam et!');
+                msg.innerHTML = '<span style="color:#FF6B6B">Henüz tamamlanmadi, tekrar dene!</span>';
+                speak('Henüz tamamlanmadi, tekrar dene');
             }
         };
 
-        // ==================== INIT ====================
-        window.addEventListener('hashchange', render);
-        // Service Worker Kaydı
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW Registered'))
-                    .catch(err => console.log('SW Error', err));
-            });
+        // ===== HAYVAN SESI TEKRARLAMA - DUZELTILDI =====
+        const VOICE_ANIMALS = [
+            { name: 'Inek', emoji: '&#128004;', sound: 'Moo', matches: ['mo', 'moo', 'inek', 'möö', 'mö'] },
+            { name: 'Kopek', emoji: '&#128021;', sound: 'Hav hav', matches: ['hav', 'havhav', 'hep', 'kopek'] },
+            { name: 'Kedi', emoji: '&#128008;', sound: 'Miyav', matches: ['miyav', 'miyau', 'mau', 'miyow', 'kedi'] },
+            { name: 'Koyun', emoji: '&#128017;', sound: 'Mee', matches: ['me', 'mee', 'meee', 'koyun'] },
+            { name: 'Esek', emoji: '&#129743;', sound: 'Ihaa', matches: ['iha', 'ihaa', 'ihaaa', 'esek'] },
+            { name: 'Ordek', emoji: '&#129414;', sound: 'Vak vak', matches: ['vak', 'vakvak', 'vak vak', 'ördek', 'ordek'] },
+            { name: 'Horoz', emoji: '&#128019;', sound: 'Uuuru', matches: ['uru', 'uuru', 'kukuriku', 'horoz', 'üürü'] },
+            { name: 'Kurbaga', emoji: '&#128056;', sound: 'Vrak', matches: ['vre', 'vrak', 'krek', 'kurbaga', 'krekrek'] },
+            { name: 'At', emoji: '&#128014;', sound: 'Ihii', matches: ['ihi', 'ihii', 'at', 'iiiih'] },
+            { name: 'Domuz', emoji: '&#128055;', sound: 'Oink', matches: ['oink', 'of', 'domuz', 'öink'] }
+        ];
+        let voiceGameState = { index: 0, score: 0, results: [], personId: null };
+
+        function renderAnimalVoice(person) {
+            voiceGameState = { index: 0, score: 0, results: [], personId: person && person.id ? person.id : null };
+            app.innerHTML = getHeader('Hayvan Sesleri', '#/') + `
+                <div class="container">
+                    <div class="score-board">
+                        <span>Soru: <span id="voice-q">1</span>/10</span>
+                        <span>Skor: <span id="voice-score">0</span></span>
+                    </div>
+                    <div class="voice-farm-bg">
+                        <div class="voice-animal-area" id="voice-area">
+                            <div class="voice-progress" id="voice-progress">${Array(10).fill(0).map(() => '<div class="voice-dot"></div>').join('')}</div>
+                            <div class="voice-animal-display run-in-left" id="voice-animal">Inek</div>
+                            <div class="voice-animal-name" id="voice-name">Inek</div>
+                            <div class="voice-animal-text" id="voice-sound">"Moo"</div>
+                            <div>
+                                <button class="voice-btn listen" onclick="window.playAnimalSound()">&#128266; Dinle</button>
+                                <button class="voice-btn speak" id="voice-speak-btn" onclick="window.startAnimalVoiceRecognition()">&#127908; Sesi Tekrarla</button>
+                            </div>
+                            <div class="voice-status" id="voice-status"></div>
+                            <button class="next-btn" id="voice-next" style="display:none;margin-top:20px" onclick="window.nextVoiceAnimal()">Sonraki</button>
+                        </div>
+                    </div>
+                </div>`;
+            showVoiceAnimal(0);
+        }
+        function showVoiceAnimal(idx) {
+            if (idx < 0 || idx >= VOICE_ANIMALS.length) return;
+            const animal = VOICE_ANIMALS[idx];
+            const animalEl = document.getElementById('voice-animal');
+            const nameEl = document.getElementById('voice-name');
+            const soundEl = document.getElementById('voice-sound');
+            const qEl = document.getElementById('voice-q');
+            const statusEl = document.getElementById('voice-status');
+            const nextEl = document.getElementById('voice-next');
+            const speakBtn = document.getElementById('voice-speak-btn');
+
+            // Hayvanı köşeden koşarak getir - animasyon class'ını yenilemek için önce kaldır sonra ekle
+            if (animalEl) {
+                animalEl.classList.remove('run-in-left', 'run-in-right');
+                void animalEl.offsetWidth; // Reflow tetikle
+                const fromRight = Math.random() > 0.5;
+                animalEl.classList.add(fromRight ? 'run-in-right' : 'run-in-left');
+                animalEl.innerHTML = animal.emoji;
+            }
+            if (nameEl) nameEl.innerText = animal.name;
+            if (soundEl) soundEl.innerText = '"' + animal.sound + '"';
+            if (qEl) qEl.innerText = idx + 1;
+            if (statusEl) statusEl.innerHTML = '<span style="color:#54A0FF">&#127908; Hayvan sesini taklit etmek için butona bas!</span>';
+            if (nextEl) nextEl.style.display = 'none';
+            if (speakBtn) {
+                speakBtn.style.display = 'inline-block';
+                speakBtn.innerHTML = '&#127908; Sesi Tekrarla';
+                speakBtn.classList.remove('listening');
+                speakBtn.disabled = false;
+            }
+        }
+        window.playAnimalSound = () => {
+            const idx = voiceGameState.index;
+            if (idx < 0 || idx >= VOICE_ANIMALS.length) return;
+            const animal = VOICE_ANIMALS[idx];
+            speak(animal.sound + '! ' + animal.name + ' sesi!');
+        };
+        
+        // Ses tanıma - Sadece SpeechRecognition (gerçek mikrofon)
+        let voiceListenTimer = null;
+        // Mikrofon izni kontrolü
+        async function checkMicPermission() {
+            try {
+                const result = await navigator.permissions.query({ name: 'microphone' });
+                return result.state;
+            } catch(e) {
+                // permissions API desteklemeyen tarayıcılar için
+                return 'prompt';
+            }
         }
 
-        window.addEventListener('load', async () => {
+        async function requestMicAccess() {
+            const status = document.getElementById('voice-status');
             try {
-                await initDB();
-                updateBackground();
-                render();
-            } catch (err) {
-                console.error('App init error:', err);
-                app.innerHTML = '<div style="padding:20px;text-align:center"><h2>Hata!</h2><p>' + err.message + '</p></div>';
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(t => t.stop());
+                return true;
+            } catch(e) {
+                if (status) status.innerHTML = '<span style="color:#FF6B6B">&#127908; Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofon iznini açın.</span>';
+                return false;
             }
+        }
+
+        window.startAnimalVoiceRecognition = async () => {
+            const idx = voiceGameState.index;
+            if (idx < 0 || idx >= VOICE_ANIMALS.length) return;
+            const animal = VOICE_ANIMALS[idx];
+            const status = document.getElementById('voice-status');
+            const speakBtn = document.getElementById('voice-speak-btn');
+
+            // Mikrofon izni kontrolü
+            const permState = await checkMicPermission();
+            if (permState === 'denied') {
+                if (status) status.innerHTML = '<span style="color:#FF6B6B">&#127908; Mikrofon izni engellenmiş. Lütfen tarayıcı ayarlarından mikrofon iznini açın.</span>';
+                return;
+            }
+            if (permState === 'prompt') {
+                const granted = await requestMicAccess();
+                if (!granted) return;
+            }
+
+            // Butonu dinleme moduna geçir
+            if (speakBtn) {
+                speakBtn.classList.add('listening');
+                speakBtn.innerHTML = '&#127908; Dinliyor...';
+                speakBtn.disabled = true;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                if (status) status.innerHTML = '<span style="color:#FF6B6B">Tarayiciniz ses tanımayı desteklemiyor. Lütfen Chrome, Edge veya Safari kullanın.</span>';
+                if (speakBtn) {
+                    speakBtn.classList.remove('listening');
+                    speakBtn.innerHTML = '&#127908; Sesi Tekrarla';
+                    speakBtn.disabled = false;
+                }
+                return;
+            }
+
+            stopSpeechRecognition();
+            speechRecognition = new SpeechRecognition();
+            speechRecognition.lang = 'tr-TR';
+            speechRecognition.interimResults = true;
+            speechRecognition.maxAlternatives = 5;
+            speechRecognition.continuous = true;
+
+            if (status) status.innerHTML = '<span style="color:#54A0FF">&#127908; Dinliyorum... Sesini cikar!</span>';
+
+            let heardResults = [];
+            let hasResult = false;
+
+            // 10 saniyelik zaman aşımı - kullanıcı daha uzun süre konuşabilsin
+            if (voiceListenTimer) clearTimeout(voiceListenTimer);
+            voiceListenTimer = setTimeout(() => {
+                if (!hasResult) {
+                    stopSpeechRecognition();
+                    window.handleVoiceResult(false, animal);
+                }
+            }, 10000);
+
+            speechRecognition.onresult = (event) => {
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript.toLowerCase().trim();
+                    heardResults.push(transcript);
+
+                    if (event.results[i].isFinal) {
+                        hasResult = true;
+                        if (voiceListenTimer) clearTimeout(voiceListenTimer);
+                        let isCorrect = false;
+                        for (const heard of heardResults) {
+                            if (animal.matches.some(m => heard.includes(m))) {
+                                isCorrect = true;
+                                break;
+                            }
+                        }
+                        window.handleVoiceResult(isCorrect, animal);
+                    }
+                }
+            };
+
+            speechRecognition.onerror = (e) => {
+                console.log('Speech recognition error:', e.error);
+                if (!hasResult) {
+                    hasResult = true;
+                    if (voiceListenTimer) clearTimeout(voiceListenTimer);
+                    if (status) status.innerHTML = '<span style="color:#FF9F43">Ses anlayamadım, tekrar dene!</span>';
+                    setTimeout(() => {
+                        window.handleVoiceResult(false, animal);
+                    }, 1000);
+                }
+            };
+
+            speechRecognition.onend = () => {
+                if (!hasResult && heardResults.length > 0) {
+                    // interim results var ama final yok - son kontrol
+                    hasResult = true;
+                    if (voiceListenTimer) clearTimeout(voiceListenTimer);
+                    let isCorrect = false;
+                    for (const heard of heardResults) {
+                        if (animal.matches.some(m => heard.includes(m))) {
+                            isCorrect = true;
+                            break;
+                        }
+                    }
+                    window.handleVoiceResult(isCorrect, animal);
+                }
+            };
+
+            try {
+                speechRecognition.start();
+            } catch(e) {
+                console.error('Speech recognition start error:', e);
+                if (speakBtn) {
+                    speakBtn.classList.remove('listening');
+                    speakBtn.innerHTML = '&#127908; Sesi Tekrarla';
+                    speakBtn.disabled = false;
+                }
+            }
+        };
+        
+        window.handleVoiceResult = (isCorrect, animal) => {
+            stopSpeechRecognition();
+            if (voiceListenTimer) clearTimeout(voiceListenTimer);
+            const status = document.getElementById('voice-status');
+            const dots = document.querySelectorAll('.voice-dot');
+            const idx = voiceGameState.index;
+            const speakBtn = document.getElementById('voice-speak-btn');
+
+            if (isCorrect) {
+                if (status) status.innerHTML = '<span style="color:#1DD1A1">&#127881; Dogru! ' + animal.name + '!</span>';
+                speak('Harika! Dogru!');
+                voiceGameState.score++;
+                const scoreEl = document.getElementById('voice-score');
+                if (scoreEl) scoreEl.innerText = voiceGameState.score;
+                if (dots && dots[idx]) dots[idx].classList.add('correct');
+                confetti({ particleCount: 50, spread: 50 });
+            } else {
+                if (status) status.innerHTML = '<span style="color:#FF6B6B">&#10060; Bilemedin! Bu bir ' + animal.name + '.</span>';
+                speak('Bilemedin! Bu bir ' + animal.name);
+                if (dots && dots[idx]) dots[idx].classList.add('wrong');
+            }
+
+            if (speakBtn) {
+                speakBtn.style.display = 'none';
+                speakBtn.classList.remove('listening');
+                speakBtn.disabled = false;
+            }
+            const nextBtn = document.getElementById('voice-next');
+            if (nextBtn) nextBtn.style.display = 'inline-block';
+        };
+        
+        window.nextVoiceAnimal = async () => {
+            voiceGameState.index++;
+            if (voiceGameState.index >= VOICE_ANIMALS.length) {
+                const status = document.getElementById('voice-status');
+                if (status) status.innerHTML = '<div style="font-size:1.5rem;color:#1DD1A1">Oyun Bitti!<br>Skorun: ' + voiceGameState.score + '/10</div>';
+                speak('Oyun bitti! Skorun ' + voiceGameState.score + '!');
+                confetti({ particleCount: 200, spread: 100 });
+                const nextBtn = document.getElementById('voice-next');
+                if (nextBtn) nextBtn.style.display = 'none';
+                if (voiceGameState.personId) {
+                    try {
+                        const p = await peopleDB.get(voiceGameState.personId);
+                        if (p && voiceGameState.score > (p.animalVoiceScore || 0)) {
+                            p.animalVoiceScore = voiceGameState.score;
+                            await peopleDB.save(p);
+                        }
+                    } catch(e) { console.error('Voice score save error:', e); }
+                }
+                return;
+            }
+            showVoiceAnimal(voiceGameState.index);
+        };
+
+        // ===== SILME FONKSIYONLARI =====
+        window.deletePerson = async (id) => {
+            if(confirm('Bu kisiyi silmek istedigine emin misin?')) { 
+                await peopleDB.delete(id); 
+                render(); 
+            }
+        };
+        window.deleteCategory = async (pid, cid) => {
+            if(confirm('Bu kategoriyi silmek istedigine emin misin?')) {
+                const p = await peopleDB.get(pid);
+                if (!p) return;
+                p.categories = (p.categories || []).filter(c => c.id !== cid);
+                await peopleDB.save(p);
+                render();
+            }
+        };
+        window.deleteItem = async (pid, cid, iid) => {
+            if(confirm('Bu kelimeyi silmek istedigine emin misin?')) {
+                const p = await peopleDB.get(pid);
+                if (!p || !p.categories) return;
+                const c = p.categories.find(cat => cat.id === cid);
+                if (!c) return;
+                c.items = (c.items || []).filter(i => i.id !== iid);
+                await peopleDB.save(p);
+                render();
+            }
+        };
+        window.deleteQuiz = async (pid, catId, qid) => {
+            if(confirm('Bu soruyu silmek istedigine emin misin?')) {
+                const p = await peopleDB.get(pid);
+                if (!p || !p.quizCategories) return;
+                const c = p.quizCategories.find(cat => cat.id === catId);
+                if (!c) return;
+                c.quizzes = (c.quizzes || []).filter(q => q.id !== qid);
+                await peopleDB.save(p);
+                render();
+            }
+        };
+        window.deleteQuizCategory = async (pid, cid) => {
+            if(confirm('Bu kategoriyi ve icindeki tum sorulari silmek istedigine emin misin?')) {
+                const p = await peopleDB.get(pid);
+                if (!p) return;
+                p.quizCategories = (p.quizCategories || []).filter(c => c.id !== cid);
+                await peopleDB.save(p);
+                render();
+            }
+        };
+
+        window.addEventListener('hashchange', render);
+        initDB().then(() => { updateBackground(); render(); }).catch(err => {
+            console.error('DB init error:', err);
+            app.innerHTML = '<div style="padding:20px;text-align:center"><p>Veritabani baslatilamadi. Lütfen sayfayi yenileyin.</p></div>';
         });
     </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+</script>
+
 </body>
 </html>
