@@ -331,6 +331,27 @@
             .memory-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
+    <link rel="manifest" href="manifest.json">
+    <script>
+        // PWA Service Worker Kaydı ve Otomatik Güncelleme
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    reg.onupdatefound = () => {
+                        const installingWorker = reg.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed') {
+                                if (navigator.serviceWorker.controller) {
+                                    // Yeni güncelleme var! Sayfayı yenile
+                                    window.location.reload();
+                                }
+                            }
+                        };
+                    };
+                }).catch(err => console.log('SW Kayıt Hatası:', err));
+            });
+        }
+    </script>
 </head>
 <body class="theme-modern">
     <div class="bg-animations" id="bg-elements"></div>
