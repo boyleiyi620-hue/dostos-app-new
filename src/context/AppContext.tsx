@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
 import type {
   User, FriendRequest, Friend, AppData, Group,
   Notification, TabId
 } from '@/types';
+
+// ─── SUPABASE CLIENT ───
+const SUPABASE_URL = 'https://sb-publishable-4-4tjlhqrfg5vufryyd4nw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_4_4TJlhqRfG5vUFrYDd4nw_txtgCltP';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
@@ -15,14 +22,8 @@ function escapeHtml(text: string | null | undefined): string {
   return div.innerHTML;
 }
 
-// ─── STORAGE KEYS ───
-const USERS_KEY = 'dostos_users';
+// ─── STORAGE KEYS (for local fallback) ───
 const SESSION_KEY = 'dostos_session';
-const DATA_KEY = (userId: string) => `dostos_data_${userId}`;
-const FRIENDS_KEY = (userId: string) => `dostos_friends_${userId}`;
-const REQUESTS_KEY = 'dostos_requests';
-const GROUPS_KEY = 'dostos_groups';
-const SHARED_KEY = 'dostos_shared';
 
 // ─── DEFAULT DATA ───
 function defaultAppData(): AppData {
@@ -61,8 +62,8 @@ function randomColor() {
 interface AppContextType {
   // Auth
   currentUser: User | null;
-  login: (username: string, password: string) => boolean;
-  register: (username: string, password: string, displayName: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
+  register: (username: string, password: string, displayName: string) => Promise<boolean>;
   logout: () => void;
   // Data
   data: AppData;
@@ -72,15 +73,15 @@ interface AppContextType {
   friends: Friend[];
   friendRequests: FriendRequest[];
   sentRequests: FriendRequest[];
-  sendFriendRequest: (toUsername: string) => boolean;
-  acceptFriendRequest: (requestId: string) => void;
-  rejectFriendRequest: (requestId: string) => void;
-  removeFriend: (userId: string) => void;
+  sendFriendRequest: (toUsername: string) => Promise<boolean>;
+  acceptFriendRequest: (requestId: string) => Promise<void>;
+  rejectFriendRequest: (requestId: string) => Promise<void>;
+  removeFriend: (userId: string) => Promise<void>;
   // Groups
   currentGroup: Group | null;
   groups: Group[];
-  createGroup: (name: string) => void;
-  joinGroup: (groupId: string) => boolean;
+  createGroup: (name: string) => Promise<void>;
+  joinGroup: (groupId: string) => Promise<boolean>;
   switchGroup: (group: Group | null) => void;
   // Shared data
   sharedData: AppData;
@@ -91,7 +92,7 @@ interface AppContextType {
   generateId: () => string;
   escapeHtml: (text: string | null | undefined) => string;
   allUsers: User[];
-  refreshRequests: () => void;
+  refreshRequests: () => Promise<void>;
   // Active tab
   activeTab: TabId;
   setActiveTab: (tab: TabId) => void;
@@ -105,180 +106,243 @@ export function useApp(): AppContextType {
   return ctx;
 }
 
-// ─── LOAD / SAVE HELPERS ───
-function loadUsers(): User[] {
-  try {
-    const raw = localStorage.getItem(USERS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return [];
-}
-
-function saveUsers(users: User[]) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function loadSession(): User | null {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return null;
-}
-
-function saveSession(user: User | null) {
-  if (user) localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  else localStorage.removeItem(SESSION_KEY);
-}
-
-function loadAppData(userId: string): AppData {
-  try {
-    const raw = localStorage.getItem(DATA_KEY(userId));
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const def = defaultAppData();
-      for (const key in def) {
-        if (!(key in parsed)) parsed[key] = (def as any)[key];
-      }
-      return parsed;
-    }
-  } catch { /* ignore */ }
-  return defaultAppData();
-}
-
-function saveAppData(userId: string, data: AppData) {
-  localStorage.setItem(DATA_KEY(userId), JSON.stringify(data));
-}
-
-function loadFriends(userId: string): Friend[] {
-  try {
-    const raw = localStorage.getItem(FRIENDS_KEY(userId));
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return [];
-}
-
-function saveFriends(userId: string, friends: Friend[]) {
-  localStorage.setItem(FRIENDS_KEY(userId), JSON.stringify(friends));
-}
-
-function loadRequests(): FriendRequest[] {
-  try {
-    const raw = localStorage.getItem(REQUESTS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return [];
-}
-
-function saveRequests(requests: FriendRequest[]) {
-  localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
-}
-
-function loadGroups(): Group[] {
-  try {
-    const raw = localStorage.getItem(GROUPS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return [];
-}
-
-function saveGroups(groups: Group[]) {
-  localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
-}
-
-function loadSharedData(): AppData {
-  try {
-    const raw = localStorage.getItem(SHARED_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return defaultAppData();
-}
-
-function saveSharedData(data: AppData) {
-  localStorage.setItem(SHARED_KEY, JSON.stringify(data));
-}
-
-function loadCurrentGroup(): Group | null {
-  try {
-    const raw = localStorage.getItem('dostos_current_group');
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return null;
-}
-
-function saveCurrentGroup(group: Group | null) {
-  if (group) localStorage.setItem('dostos_current_group', JSON.stringify(group));
-  else localStorage.removeItem('dostos_current_group');
-}
-
 // ─── PROVIDER ───
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(loadSession);
-  const [data, setData] = useState<AppData>(() => currentUser ? loadAppData(currentUser.id) : defaultAppData());
-  const [friends, setFriends] = useState<Friend[]>(() => currentUser ? loadFriends(currentUser.id) : []);
-  const [friendRequests, setFriendRequests] = useState<FriendRequest[]>(() => loadRequests().filter(r => r.toUserId === currentUser?.id && r.status === 'pending'));
-  const [sentRequests, setSentRequests] = useState<FriendRequest[]>(() => loadRequests().filter(r => r.fromUserId === currentUser?.id && r.status === 'pending'));
-  const [groups, setGroups] = useState<Group[]>(loadGroups);
-  const [currentGroup, setCurrentGroup] = useState<Group | null>(loadCurrentGroup);
-  const [sharedData, setSharedData] = useState<AppData>(loadSharedData);
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem(SESSION_KEY);
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [data, setData] = useState<AppData>(defaultAppData());
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
+  const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
+  const [sharedData, setSharedData] = useState<AppData>(defaultAppData());
   const [activeTab, setActiveTab] = useState<TabId>('kesfet');
+  const [allUsers, setAllUsers] = useState<User[]>([]);
 
-  // Load data when user changes
+  // Load user data when logged in
   useEffect(() => {
     if (currentUser) {
-      setData(loadAppData(currentUser.id));
-      setFriends(loadFriends(currentUser.id));
-      refreshRequestsState(currentUser.id);
+      loadUserData(currentUser.id);
+      loadAllUsers();
+      loadGroups();
     }
   }, [currentUser]);
 
-  function refreshRequestsState(userId?: string) {
-    const all = loadRequests();
+  // ─── LOAD FUNCTIONS ───
+  const loadUserData = async (userId: string) => {
+    try {
+      // Load user's personal data
+      const { data: appDataRes } = await supabase
+        .from('app_data')
+        .select('data')
+        .eq('user_id', userId)
+        .single();
+
+      if (appDataRes?.data) {
+        setData(appDataRes.data as AppData);
+      }
+
+      // Load friends
+      const { data: friendsRes } = await supabase
+        .from('friends')
+        .select('friend_id, users!friends_friend_id_fkey(id, username, display_name, avatar, color)')
+        .eq('user_id', userId);
+
+      if (friendsRes) {
+        const friendsList = friendsRes.map((f: any) => ({
+          userId: f.friend_id,
+          username: f.users.username,
+          displayName: f.users.display_name,
+          avatar: f.users.avatar,
+          color: f.users.color,
+          since: new Date().toLocaleString('tr-TR'),
+        }));
+        setFriends(friendsList);
+      }
+
+      // Load friend requests
+      await refreshRequestsState(userId);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
+
+  const loadAllUsers = async () => {
+    try {
+      const { data: usersRes } = await supabase.from('users').select('*');
+      if (usersRes) {
+        const users = usersRes.map((u: any) => ({
+          id: u.id,
+          username: u.username,
+          password: u.password,
+          displayName: u.display_name,
+          avatar: u.avatar,
+          color: u.color,
+          createdAt: u.created_at,
+        }));
+        setAllUsers(users);
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  };
+
+  const loadGroups = async () => {
+    try {
+      const { data: groupsRes } = await supabase.from('groups').select('*');
+      if (groupsRes) {
+        const groupsList = await Promise.all(
+          groupsRes.map(async (g: any) => {
+            const { data: membersRes } = await supabase
+              .from('group_members')
+              .select('user_id')
+              .eq('group_id', g.id);
+            return {
+              id: g.id,
+              name: g.name,
+              createdBy: g.created_by,
+              members: membersRes?.map((m: any) => m.user_id) || [],
+              createdAt: g.created_at,
+            };
+          })
+        );
+        setGroups(groupsList);
+      }
+    } catch (error) {
+      console.error('Error loading groups:', error);
+    }
+  };
+
+  const refreshRequestsState = async (userId?: string) => {
     const uid = userId || currentUser?.id;
     if (!uid) return;
-    setFriendRequests(all.filter(r => r.toUserId === uid && r.status === 'pending'));
-    setSentRequests(all.filter(r => r.fromUserId === uid && r.status === 'pending'));
-  }
+
+    try {
+      // Incoming requests
+      const { data: incomingRes } = await supabase
+        .from('friend_requests')
+        .select('*, users!friend_requests_from_user_id_fkey(username, display_name)')
+        .eq('to_user_id', uid)
+        .eq('status', 'pending');
+
+      if (incomingRes) {
+        const incoming = incomingRes.map((r: any) => ({
+          id: r.id,
+          fromUserId: r.from_user_id,
+          fromUsername: r.users.username,
+          fromDisplayName: r.users.display_name,
+          toUserId: r.to_user_id,
+          status: r.status,
+          createdAt: r.created_at,
+        }));
+        setFriendRequests(incoming);
+      }
+
+      // Outgoing requests
+      const { data: outgoingRes } = await supabase
+        .from('friend_requests')
+        .select('*')
+        .eq('from_user_id', uid)
+        .eq('status', 'pending');
+
+      if (outgoingRes) {
+        setSentRequests(outgoingRes);
+      }
+    } catch (error) {
+      console.error('Error refreshing requests:', error);
+    }
+  };
 
   // ─── AUTH ───
-  const login = useCallback((username: string, password: string): boolean => {
-    const users = loadUsers();
-    const user = users.find(u => u.username === username && u.password === password);
-    if (!user) return false;
-    setCurrentUser(user);
-    saveSession(user);
-    setData(loadAppData(user.id));
-    setFriends(loadFriends(user.id));
-    refreshRequestsState(user.id);
-    return true;
+  const login = useCallback(async (username: string, password: string): Promise<boolean> => {
+    try {
+      const { data: users } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .single();
+
+      if (!users) return false;
+
+      const user: User = {
+        id: users.id,
+        username: users.username,
+        password: users.password,
+        displayName: users.display_name,
+        avatar: users.avatar,
+        color: users.color,
+        createdAt: users.created_at,
+      };
+
+      setCurrentUser(user);
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
   }, []);
 
-  const register = useCallback((username: string, password: string, displayName: string): boolean => {
-    const users = loadUsers();
-    if (users.find(u => u.username === username)) return false;
-    const user: User = {
-      id: generateId(),
-      username,
-      password,
-      displayName: displayName || username,
-      avatar: (displayName || username)[0].toUpperCase(),
-      color: randomColor(),
-      createdAt: new Date().toLocaleString('tr-TR'),
-    };
-    users.push(user);
-    saveUsers(users);
-    setCurrentUser(user);
-    saveSession(user);
-    const newData = defaultAppData();
-    saveAppData(user.id, newData);
-    setData(newData);
-    setFriends([]);
-    return true;
+  const register = useCallback(async (username: string, password: string, displayName: string): Promise<boolean> => {
+    try {
+      // Check if user exists
+      const { data: existing } = await supabase
+        .from('users')
+        .select('id')
+        .eq('username', username)
+        .single();
+
+      if (existing) return false;
+
+      // Create user
+      const { data: newUser } = await supabase
+        .from('users')
+        .insert([{
+          username,
+          password,
+          display_name: displayName || username,
+          avatar: (displayName || username)[0].toUpperCase(),
+          color: randomColor(),
+        }])
+        .select()
+        .single();
+
+      if (!newUser) return false;
+
+      // Create app_data entry
+      await supabase
+        .from('app_data')
+        .insert([{
+          user_id: newUser.id,
+          data: defaultAppData(),
+        }]);
+
+      const user: User = {
+        id: newUser.id,
+        username: newUser.username,
+        password: newUser.password,
+        displayName: newUser.display_name,
+        avatar: newUser.avatar,
+        color: newUser.color,
+        createdAt: newUser.created_at,
+      };
+
+      setCurrentUser(user);
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+      return true;
+    } catch (error) {
+      console.error('Register error:', error);
+      return false;
+    }
   }, []);
 
   const logout = useCallback(() => {
     setCurrentUser(null);
-    saveSession(null);
+    localStorage.removeItem(SESSION_KEY);
     setData(defaultAppData());
     setFriends([]);
     setFriendRequests([]);
@@ -286,14 +350,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // ─── DATA PERSISTENCE ───
-  const persistData = useCallback((newData: AppData) => {
+  const persistData = useCallback(async (newData: AppData) => {
     if (currentUser) {
-      saveAppData(currentUser.id, newData);
-    }
-    // Also save to shared if in a group
-    if (currentGroup) {
-      saveSharedData(newData);
-      setSharedData(newData);
+      try {
+        await supabase
+          .from('app_data')
+          .update({ data: newData, updated_at: new Date().toISOString() })
+          .eq('user_id', currentUser.id);
+
+        // Also save to shared if in a group
+        if (currentGroup) {
+          await supabase
+            .from('shared_data')
+            .update({ data: newData, updated_at: new Date().toISOString() })
+            .eq('group_id', currentGroup.id);
+          setSharedData(newData);
+        }
+      } catch (error) {
+        console.error('Error persisting data:', error);
+      }
     }
   }, [currentUser, currentGroup]);
 
@@ -305,130 +380,201 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [persistData]);
 
   // ─── FRIENDS ───
-  const sendFriendRequest = useCallback((toUsername: string): boolean => {
+  const sendFriendRequest = useCallback(async (toUsername: string): Promise<boolean> => {
     if (!currentUser) return false;
-    const users = loadUsers();
-    const target = users.find(u => u.username === toUsername);
-    if (!target || target.id === currentUser.id) return false;
-    const allReqs = loadRequests();
-    if (allReqs.find(r => r.fromUserId === currentUser.id && r.toUserId === target.id && r.status === 'pending')) return false;
-    const req: FriendRequest = {
-      id: generateId(),
-      fromUserId: currentUser.id,
-      fromUsername: currentUser.username,
-      fromDisplayName: currentUser.displayName,
-      toUserId: target.id,
-      status: 'pending',
-      createdAt: new Date().toLocaleString('tr-TR'),
-    };
-    allReqs.push(req);
-    saveRequests(allReqs);
-    refreshRequestsState();
-    return true;
-  }, [currentUser]);
 
-  const acceptFriendRequest = useCallback((requestId: string) => {
-    if (!currentUser) return;
-    const allReqs = loadRequests();
-    const req = allReqs.find(r => r.id === requestId);
-    if (!req) return;
-    req.status = 'accepted';
-    saveRequests(allReqs);
+    try {
+      const { data: targetUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('username', toUsername)
+        .single();
 
-    const users = loadUsers();
-    const fromUser = users.find(u => u.id === req.fromUserId);
-    if (!fromUser) return;
+      if (!targetUser || targetUser.id === currentUser.id) return false;
 
-    // Add to current user's friends
-    const myFriends = loadFriends(currentUser.id);
-    myFriends.push({
-      userId: fromUser.id,
-      username: fromUser.username,
-      displayName: fromUser.displayName,
-      avatar: fromUser.avatar,
-      color: fromUser.color,
-      since: new Date().toLocaleString('tr-TR'),
-    });
-    saveFriends(currentUser.id, myFriends);
-    setFriends(myFriends);
+      // Check if request already exists
+      const { data: existing } = await supabase
+        .from('friend_requests')
+        .select('id')
+        .eq('from_user_id', currentUser.id)
+        .eq('to_user_id', targetUser.id)
+        .eq('status', 'pending')
+        .single();
 
-    // Add to other user's friends
-    const theirFriends = loadFriends(fromUser.id);
-    theirFriends.push({
-      userId: currentUser.id,
-      username: currentUser.username,
-      displayName: currentUser.displayName,
-      avatar: currentUser.avatar,
-      color: currentUser.color,
-      since: new Date().toLocaleString('tr-TR'),
-    });
-    saveFriends(fromUser.id, theirFriends);
+      if (existing) return false;
 
-    refreshRequestsState();
-  }, [currentUser]);
+      // Create request
+      await supabase.from('friend_requests').insert([{
+        from_user_id: currentUser.id,
+        to_user_id: targetUser.id,
+        status: 'pending',
+      }]);
 
-  const rejectFriendRequest = useCallback((requestId: string) => {
-    const allReqs = loadRequests();
-    const req = allReqs.find(r => r.id === requestId);
-    if (req) {
-      req.status = 'rejected';
-      saveRequests(allReqs);
+      await refreshRequestsState();
+      return true;
+    } catch (error) {
+      console.error('Error sending friend request:', error);
+      return false;
     }
-    refreshRequestsState();
-  }, []);
-
-  const removeFriend = useCallback((userId: string) => {
-    if (!currentUser) return;
-    const myFriends = loadFriends(currentUser.id).filter(f => f.userId !== userId);
-    saveFriends(currentUser.id, myFriends);
-    setFriends(myFriends);
-    const theirFriends = loadFriends(userId);
-    saveFriends(userId, theirFriends.filter(f => f.userId !== currentUser.id));
   }, [currentUser]);
 
-  const refreshRequests = useCallback(() => {
-    refreshRequestsState();
+  const acceptFriendRequest = useCallback(async (requestId: string) => {
+    if (!currentUser) return;
+
+    try {
+      const { data: req } = await supabase
+        .from('friend_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+
+      if (!req) return;
+
+      // Update request status
+      await supabase
+        .from('friend_requests')
+        .update({ status: 'accepted' })
+        .eq('id', requestId);
+
+      // Add friendship both ways
+      await supabase.from('friends').insert([
+        { user_id: currentUser.id, friend_id: req.from_user_id },
+        { user_id: req.from_user_id, friend_id: currentUser.id },
+      ]);
+
+      await loadUserData(currentUser.id);
+      await refreshRequestsState();
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  }, [currentUser]);
+
+  const rejectFriendRequest = useCallback(async (requestId: string) => {
+    try {
+      await supabase
+        .from('friend_requests')
+        .update({ status: 'rejected' })
+        .eq('id', requestId);
+
+      await refreshRequestsState();
+    } catch (error) {
+      console.error('Error rejecting friend request:', error);
+    }
   }, []);
+
+  const removeFriend = useCallback(async (userId: string) => {
+    if (!currentUser) return;
+
+    try {
+      await supabase
+        .from('friends')
+        .delete()
+        .or(`and(user_id.eq.${currentUser.id},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUser.id})`);
+
+      await loadUserData(currentUser.id);
+    } catch (error) {
+      console.error('Error removing friend:', error);
+    }
+  }, [currentUser]);
+
+  const refreshRequests = useCallback(async () => {
+    if (currentUser) {
+      await refreshRequestsState(currentUser.id);
+    }
+  }, [currentUser]);
 
   // ─── GROUPS ───
-  const createGroup = useCallback((name: string) => {
+  const createGroup = useCallback(async (name: string) => {
     if (!currentUser) return;
-    const group: Group = {
-      id: generateId(),
-      name,
-      createdBy: currentUser.id,
-      members: [currentUser.id],
-      createdAt: new Date().toLocaleString('tr-TR'),
-    };
-    const allGroups = loadGroups();
-    allGroups.push(group);
-    saveGroups(allGroups);
-    setGroups(allGroups);
-    setCurrentGroup(group);
-    saveCurrentGroup(group);
+
+    try {
+      const { data: newGroup } = await supabase
+        .from('groups')
+        .insert([{
+          name,
+          created_by: currentUser.id,
+        }])
+        .select()
+        .single();
+
+      if (!newGroup) return;
+
+      // Add creator as member
+      await supabase.from('group_members').insert([{
+        group_id: newGroup.id,
+        user_id: currentUser.id,
+      }]);
+
+      // Create shared data for group
+      await supabase.from('shared_data').insert([{
+        group_id: newGroup.id,
+        data: defaultAppData(),
+      }]);
+
+      const group: Group = {
+        id: newGroup.id,
+        name: newGroup.name,
+        createdBy: newGroup.created_by,
+        members: [currentUser.id],
+        createdAt: newGroup.created_at,
+      };
+
+      setGroups(prev => [...prev, group]);
+      setCurrentGroup(group);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
   }, [currentUser]);
 
-  const joinGroup = useCallback((groupId: string): boolean => {
+  const joinGroup = useCallback(async (groupId: string): Promise<boolean> => {
     if (!currentUser) return false;
-    const allGroups = loadGroups();
-    const group = allGroups.find(g => g.id === groupId);
-    if (!group) return false;
-    if (!group.members.includes(currentUser.id)) {
-      group.members.push(currentUser.id);
-      saveGroups(allGroups);
-      setGroups(allGroups);
+
+    try {
+      const { data: group } = await supabase
+        .from('groups')
+        .select('*')
+        .eq('id', groupId)
+        .single();
+
+      if (!group) return false;
+
+      // Check if already member
+      const { data: existing } = await supabase
+        .from('group_members')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('user_id', currentUser.id)
+        .single();
+
+      if (!existing) {
+        await supabase.from('group_members').insert([{
+          group_id: groupId,
+          user_id: currentUser.id,
+        }]);
+      }
+
+      await loadGroups();
+      return true;
+    } catch (error) {
+      console.error('Error joining group:', error);
+      return false;
     }
-    setCurrentGroup(group);
-    saveCurrentGroup(group);
-    return true;
   }, [currentUser]);
 
   const switchGroup = useCallback((group: Group | null) => {
     setCurrentGroup(group);
-    saveCurrentGroup(group);
     if (group) {
-      const sd = loadSharedData();
-      setSharedData(sd);
+      // Load shared data for group
+      supabase
+        .from('shared_data')
+        .select('data')
+        .eq('group_id', group.id)
+        .single()
+        .then(({ data }) => {
+          if (data?.data) {
+            setSharedData(data.data as AppData);
+          }
+        });
     }
   }, []);
 
@@ -458,13 +604,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   }, [persistData]);
 
-  // ─── ALL USERS ───
-  const allUsers = loadUsers();
-
   // ─── SYNC DATA ───
   useEffect(() => {
     if (currentGroup) {
-      setSharedData(loadSharedData());
+      supabase
+        .from('shared_data')
+        .select('data')
+        .eq('group_id', currentGroup.id)
+        .single()
+        .then(({ data }) => {
+          if (data?.data) {
+            setSharedData(data.data as AppData);
+          }
+        });
     }
   }, [currentGroup, data]);
 

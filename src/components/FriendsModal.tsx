@@ -14,14 +14,14 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
   const [joinCode, setJoinCode] = useState('');
   const [msg, setMsg] = useState('');
 
-  const handleSendRequest = () => {
+  const handleSendRequest = async () => {
     setMsg('');
     if (!searchUser.trim()) return;
     if (searchUser.trim() === currentUser?.username) {
       setMsg('Kendini ekleyemezsin!');
       return;
     }
-    const ok = sendFriendRequest(searchUser.trim());
+    const ok = await sendFriendRequest(searchUser.trim());
     if (ok) {
       setMsg('Arkadaşlık isteği gönderildi!');
       setSearchUser('');
@@ -125,9 +125,9 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
                       <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>@{req.fromUsername}</div>
                     </div>
                     <button className="p-2 rounded-lg hover:bg-green-500/10 transition-colors" style={{ color: 'var(--green)', background: 'none', border: 'none', cursor: 'pointer' }}
-                      onClick={() => acceptFriendRequest(req.id)}><UserCheck size={16} /></button>
+                      onClick={() => { acceptFriendRequest(req.id); }}><UserCheck size={16} /></button>
                     <button className="p-2 rounded-lg hover:bg-red-500/10 transition-colors" style={{ color: 'var(--red)', background: 'none', border: 'none', cursor: 'pointer' }}
-                      onClick={() => rejectFriendRequest(req.id)}><UserX size={16} /></button>
+                      onClick={() => { rejectFriendRequest(req.id); }}><UserX size={16} /></button>
                   </div>
                 ))}
               </div>
@@ -189,7 +189,7 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
             <div className="flex gap-2">
               <input className="glass-input flex-1" placeholder="Grup ID..." value={joinCode} onChange={e => setJoinCode(e.target.value)} />
               <button className="btn-gradient" style={{ background: 'linear-gradient(135deg, var(--blue), #2563eb)', color: '#fff' }}
-                onClick={() => { if (joinGroup(joinCode.trim())) { setJoinCode(''); setMsg('Gruba katıldın!'); } else setMsg('Geçersiz grup kodu.'); }}>Katıl</button>
+                onClick={async () => { if (await joinGroup(joinCode.trim())) { setJoinCode(''); setMsg('Gruba katıldın!'); } else setMsg('Geçersiz grup kodu.'); }}>Katıl</button>
             </div>
             {groups.length > 0 && (
               <>
