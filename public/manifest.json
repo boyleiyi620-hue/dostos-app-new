@@ -2,12 +2,11 @@
   "name": "DostOS",
   "short_name": "DostOS",
   "description": "DostOS - Arkadaşlarınla bağlı kal",
-  "id": ".",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": ".",
   "display": "standalone",
-  "theme_color": "#f97316",
   "background_color": "#0a0a0a",
+  "theme_color": "#f97316",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192x192.png",
