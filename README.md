@@ -1,85 +1,73 @@
-# 🌈 Konuşuyorum - PWA
+# React + TypeScript + Vite
 
-Çocuklar için sevimli AAC (Alternatif ve Destekleyici İletişim) uygulamasının PWA (Progressive Web App) sürümü. Offline çalışır, ana ekrana eklenebilir.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## 📁 Dosya Yapısı
+Currently, two official plugins are available:
 
-```
-konusuyorum-pwa/
-├── index.html          # Ana uygulama (PWA meta etiketleri + SW kaydı eklendi)
-├── manifest.json       # PWA manifest
-├── sw.js               # Service Worker (offline destek)
-├── icons/              # Tüm PWA ikonları
-│   ├── icon-72.png ... icon-512.png
-│   ├── icon-maskable-192.png / 512.png
-│   ├── apple-touch-icon.png
-│   └── favicon-64.png
-└── README.md
-```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🚀 Yerel Test
+## React Compiler
 
-PWA'lar **HTTPS veya localhost** üzerinden çalışır. `file://` ile açarsanız Service Worker devre dışı kalır.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-### Yöntem 1 - Python ile (en kolay)
+## Expanding the ESLint configuration
 
-```bash
-cd konusuyorum-pwa
-python3 -m http.server 8000
-```
-
-Sonra tarayıcıda aç: <http://localhost:8000>
-
-### Yöntem 2 - Node.js ile
-
-```bash
-npx serve konusuyorum-pwa
-```
-
-## 📱 Yükleme
-
-- **Android/Chrome:** Adres çubuğundaki ⊕ ikonuna veya menüden "Uygulamayı yükle" tıklayın.
-- **iOS/Safari:** Paylaş düğmesi → "Ana Ekrana Ekle".
-- **Masaüstü Chrome/Edge:** Adres çubuğundaki yükleme ikonuna tıklayın.
-
-İsterseniz uygulamadan kendi yükleme butonunuzu da çağırabilirsiniz:
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
 ```js
-window.installKonusuyorum();
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-## ☁️ Yayınlama (HTTPS şart)
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-Aşağıdaki servislerden birine yükleyin — hepsi ücretsiz ve HTTPS sağlar:
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-- **GitHub Pages** — repo Settings → Pages
-- **Netlify** — `konusuyorum-pwa/` klasörünü sürükle-bırak: <https://app.netlify.com/drop>
-- **Vercel** — `vercel` CLI veya web arayüzü
-- **Cloudflare Pages** — Git veya doğrudan yükleme
-
-## ✅ PWA Doğrulama
-
-1. Chrome DevTools → **Application** sekmesi
-2. **Manifest** ve **Service Workers** bölümlerinin yeşil olduğunu kontrol edin
-3. **Lighthouse** → PWA kategorisinde test çalıştırın
-
-## 🔄 Önbellek Güncelleme
-
-`sw.js` dosyasındaki `CACHE_VERSION` değerini değiştirin (ör. `v1.0.0` → `v1.0.1`). Service Worker yeni sürümü algılar ve eski önbelleği siler.
-
-## 🎨 İkon Hakkında
-
-İkonlar Python (Pillow) ile programatik olarak üretildi (`generate_icons.py`). Kendi tasarımınızı kullanmak isterseniz `icons/` klasöründeki dosyaları aynı isim ve boyutlarda değiştirin.
-
-## 📝 Eklenenler (orijinal HTML'e ek olarak)
-
-`index.html` dosyasına şunlar eklendi:
-
-- `<link rel="manifest">`
-- Apple iOS PWA meta etiketleri
-- Microsoft Tile meta etiketleri
-- Favicon bağlantıları
-- Service Worker kayıt scripti
-- `beforeinstallprompt` yakalayıcısı + `window.installKonusuyorum()` yardımcı fonksiyonu
-
-Uygulamanın orijinal işlevselliğine **hiç dokunulmadı**.
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
