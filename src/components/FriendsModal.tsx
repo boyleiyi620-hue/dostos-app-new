@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
-import { X, UserPlus, UserCheck, UserX, Users, Crown, Plus } from 'lucide-react';
+import { X, UserPlus, UserCheck, UserX, Users, Crown, Plus, Copy, Check } from 'lucide-react';
 
 export default function FriendsModal({ onClose }: { onClose: () => void }) {
   const {
@@ -13,6 +13,7 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
   const [groupName, setGroupName] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [msg, setMsg] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleSendRequest = async () => {
     setMsg('');
@@ -28,6 +29,12 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
     } else {
       setMsg('Kullanıcı bulunamadı veya zaten istek gönderildi.');
     }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const otherUsers = allUsers.filter(u =>
@@ -67,7 +74,7 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
         {/* Message */}
         {msg && (
           <div className="mb-3 p-2 rounded-lg text-xs font-semibold text-center"
-            style={{ background: msg.includes('gönderildi') || msg.includes('Oluşturuldu') ? 'var(--green-dim)' : 'var(--red-dim)', color: msg.includes('gönderildi') || msg.includes('Oluşturuldu') ? 'var(--green)' : 'var(--red)' }}>
+            style={{ background: msg.includes('gönderildi') || msg.includes('Oluşturuldu') || msg.includes('katıldın') ? 'var(--green-dim)' : 'var(--red-dim)', color: msg.includes('gönderildi') || msg.includes('Oluşturuldu') || msg.includes('katıldın') ? 'var(--green)' : 'var(--red)' }}>
             {msg}
           </div>
         )}
@@ -171,36 +178,54 @@ export default function FriendsModal({ onClose }: { onClose: () => void }) {
         {tab === 'groups' && (
           <div className="space-y-3">
             {currentGroup && (
-              <div className="p-3 rounded-xl text-center" style={{ background: 'linear-gradient(135deg, var(--accent-glow), rgba(251,191,36,0.05))', border: '1px solid rgba(249,115,22,0.2)' }}>
-                <Crown size={20} style={{ color: 'var(--accent)', margin: '0 auto' }} />
-                <div className="font-bold text-sm mt-1">{currentGroup.name}</div>
-                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Aktif Grup · {currentGroup.members.length} üye</div>
-                <button className="btn-gradient mt-2 w-full justify-center" style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: 11 }}
+              <div className="p-4 rounded-2xl text-center relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,191,36,0.05))', border: '2px solid var(--accent)' }}>
+                <div className="absolute top-0 right-0 p-2">
+                   <Crown size={16} style={{ color: 'var(--accent)' }} />
+                </div>
+                <div className="font-extrabold text-base mb-1">{currentGroup.name}</div>
+                <div className="text-xs mb-3" style={{ color: 'var(--text-secondary)' }}>Aktif Grup · {currentGroup.members.length} üye</div>
+                
+                <div className="bg-black/20 p-3 rounded-xl border border-white/5 flex flex-col items-center gap-2">
+                   <div className="text-[10px] font-bold tracking-widest" style={{ color: 'var(--text-muted)' }}>GRUP KODU (TIKLA KOPYALA)</div>
+                   <button 
+                    onClick={() => copyToClipboard(currentGroup.id)}
+                    className="flex items-center gap-2 font-mono font-bold text-sm py-1.5 px-4 rounded-lg transition-all active:scale-95"
+                    style={{ background: 'var(--bg-card)', color: 'var(--accent)', border: '1px solid var(--accent)' }}
+                   >
+                     {currentGroup.id}
+                     {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+                   </button>
+                </div>
+
+                <button className="btn-gradient mt-4 w-full justify-center" style={{ background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: 11 }}
                   onClick={() => switchGroup(null)}>Gruptan Ayrıl</button>
               </div>
             )}
-            <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>YENİ GRUP OLUŞTUR</div>
+            
+            <div className="text-xs font-semibold mt-4" style={{ color: 'var(--text-muted)' }}>YENİ GRUP OLUŞTUR</div>
             <div className="flex gap-2">
               <input className="glass-input flex-1" placeholder="Grup adı..." value={groupName} onChange={e => setGroupName(e.target.value)} />
               <button className="btn-gradient" style={{ background: 'linear-gradient(135deg, var(--green), #16a34a)', color: '#fff' }}
                 onClick={() => { if (groupName.trim()) { createGroup(groupName.trim()); setGroupName(''); setMsg('Grup oluşturuldu!'); } }}><Plus size={16} /></button>
             </div>
-            <div className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>GRUP KODU İLE KATIL</div>
+            
+            <div className="text-xs font-semibold mt-4" style={{ color: 'var(--text-muted)' }}>GRUP KODU İLE KATIL</div>
             <div className="flex gap-2">
-              <input className="glass-input flex-1" placeholder="Grup ID..." value={joinCode} onChange={e => setJoinCode(e.target.value)} />
+              <input className="glass-input flex-1" placeholder="Grup ID yapıştır..." value={joinCode} onChange={e => setJoinCode(e.target.value)} />
               <button className="btn-gradient" style={{ background: 'linear-gradient(135deg, var(--blue), #2563eb)', color: '#fff' }}
                 onClick={async () => { if (await joinGroup(joinCode.trim())) { setJoinCode(''); setMsg('Gruba katıldın!'); } else setMsg('Geçersiz grup kodu.'); }}>Katıl</button>
             </div>
+            
             {groups.length > 0 && (
               <>
-                <div className="text-xs font-semibold mt-2" style={{ color: 'var(--text-muted)' }}>GRUPLARIN</div>
+                <div className="text-xs font-semibold mt-6" style={{ color: 'var(--text-muted)' }}>GRUPLARIN</div>
                 <div className="space-y-2 max-h-[25vh] overflow-y-auto">
                   {groups.filter(g => g.members.includes(currentUser?.id || '')).map(g => (
                     <div key={g.id} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                       <div className="w-10 h-10 rounded-full flex items-center justify-center font-extrabold" style={{ background: 'var(--bg-elevated)', color: 'var(--accent)' }}><Users size={18} /></div>
                       <div className="flex-1">
                         <div className="font-bold text-sm">{g.name}</div>
-                        <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.members.length} üye · ID: {g.id.substring(0, 8)}...</div>
+                        <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.members.length} üye</div>
                       </div>
                       <button className="btn-gradient btn-sm" style={{ background: currentGroup?.id === g.id ? 'var(--green-dim)' : 'var(--accent-glow)', color: currentGroup?.id === g.id ? 'var(--green)' : 'var(--accent)', fontSize: 10 }}
                         onClick={() => { switchGroup(g); setMsg('Grup değiştirildi!'); }}>
