@@ -6,8 +6,8 @@ import type {
 } from '@/types';
 
 // ─── SUPABASE CLIENT ───
-const SUPABASE_URL = 'https://sb-publishable-4-4tjlhqrfg5vufryyd4nw.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_4_4TJlhqRfG5vUFrYDd4nw_txtgCltP';
+const SUPABASE_URL = 'https://zblamvvtyrksobxhhggl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpibGFtdnZ0eXJrc29ieGhoZ2dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NTUxOTMsImV4cCI6MjA5ODQzMTE5M30.NuXZALkTncx6631gvDSzchR8VVZvRk64x__DuesTc_c';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
