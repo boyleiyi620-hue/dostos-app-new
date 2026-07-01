@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
 
 export default defineConfig({
-  base: '/', // Vercel/Netlify/GitHub Pages (custom domain) için en iyisi budur
+  base: '/dostos-app-new/', // GitHub Pages alt klasör yapısı için kritik
   plugins: [inspectAttr(), react()],
   resolve: {
     alias: {
@@ -12,6 +12,6 @@ export default defineConfig({
     },
   },
   build: {
-    assetsInlineLimit: 0, // İkonların base64 olmasını engelle
+    assetsInlineLimit: 0,
   }
 });
