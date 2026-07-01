@@ -2,32 +2,34 @@
   "name": "DostOS",
   "short_name": "DostOS",
   "description": "DostOS - Arkadaşlarınla bağlı kal",
-  "start_url": ".",
+  "id": "https://boyleiyi620-hue.github.io/dostos-app-new/",
+  "start_url": "https://boyleiyi620-hue.github.io/dostos-app-new/",
+  "scope": "https://boyleiyi620-hue.github.io/dostos-app-new/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#f97316",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192x192.png",
+      "src": "https://boyleiyi620-hue.github.io/dostos-app-new/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-192x192-maskable.png",
+      "src": "https://boyleiyi620-hue.github.io/dostos-app-new/icon-192x192-maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icon-512x512.png",
+      "src": "https://boyleiyi620-hue.github.io/dostos-app-new/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512x512-maskable.png",
+      "src": "https://boyleiyi620-hue.github.io/dostos-app-new/icon-512x512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

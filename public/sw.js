@@ -1,14 +1,15 @@
-const CACHE_NAME = 'dostos-cache-v10';
+const CACHE_NAME = 'dostos-final-v1';
+const BASE_URL = 'https://boyleiyi620-hue.github.io/dostos-app-new/';
 const ASSETS = [
-  './',
-  'index.html',
-  'manifest.json',
-  'icon-192x192.png',
-  'icon-512x512.png',
-  'icon-192x192-maskable.png',
-  'icon-512x512-maskable.png',
-  'apple-touch-icon.png',
-  'favicon-32x32.png'
+  BASE_URL,
+  BASE_URL + 'index.html',
+  BASE_URL + 'manifest.json',
+  BASE_URL + 'icon-192x192.png',
+  BASE_URL + 'icon-512x512.png',
+  BASE_URL + 'icon-192x192-maskable.png',
+  BASE_URL + 'icon-512x512-maskable.png',
+  BASE_URL + 'apple-touch-icon.png',
+  BASE_URL + 'favicon-32x32.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -31,9 +32,13 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      return cached || fetch(event.request);
-    })
-  );
+  
+  // Sadece kendi domainimizdeki assetleri cache'ten döndür
+  if (event.request.url.startsWith(BASE_URL)) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        return cached || fetch(event.request);
+      })
+    );
+  }
 });

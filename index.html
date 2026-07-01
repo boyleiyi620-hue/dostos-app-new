@@ -12,22 +12,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="DostOS" />
     
-    <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <!-- Icons with absolute paths -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://boyleiyi620-hue.github.io/dostos-app-new/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://boyleiyi620-hue.github.io/dostos-app-new/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="https://boyleiyi620-hue.github.io/dostos-app-new/apple-touch-icon.png" />
     
-    <!-- Manifest -->
-    <link rel="manifest" href="manifest.json" />
+    <!-- Manifest with absolute path -->
+    <link rel="manifest" href="https://boyleiyi620-hue.github.io/dostos-app-new/manifest.json" />
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/dostos-app-new/src/main.tsx"></script>
     
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js', { scope: './' })
+          navigator.serviceWorker.register('https://boyleiyi620-hue.github.io/dostos-app-new/sw.js', { scope: '/dostos-app-new/' })
             .then(reg => console.log('SW registered', reg))
             .catch(err => console.log('SW error', err));
         });
