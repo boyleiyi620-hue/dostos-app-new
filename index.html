@@ -17,26 +17,27 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="DostOS" />
     
-    <!-- Primary Icons (Cache busting with v=2) -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2" />
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2" />
+    <!-- Primary Icons (Cache busting with v=3) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=3" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=3" />
     
     <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
-    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon.png?v=2" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2" />
-    <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png?v=2" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3" />
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon.png?v=3" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
+    <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon.png?v=3" />
 
     <!-- Android Chrome Icons -->
-    <link rel="icon" sizes="192x192" href="icon-192x192.png?v=2" />
-    <link rel="icon" sizes="512x512" href="icon-512x512.png?v=2" />
+    <link rel="icon" sizes="192x192" href="icon-192x192.png?v=3" />
+    <link rel="icon" sizes="512x512" href="icon-512x512.png?v=3" />
     
     <!-- Manifest -->
-    <link rel="manifest" href="manifest.json?v=2" />
+    <link rel="manifest" href="manifest.json?v=3" />
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Script yolu göreli olmalı (alt klasör uyumu) -->
+    <script type="module" src="src/main.tsx"></script>
     
     <script>
       // Clear old service workers to force update
@@ -48,7 +49,7 @@
         });
         
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js?v=2')
+          navigator.serviceWorker.register('sw.js?v=3')
             .then(reg => console.log('SW registered'))
             .catch(err => console.log('SW error', err));
         });
