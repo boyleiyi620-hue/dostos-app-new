@@ -9,7 +9,13 @@ import type {
 const SUPABASE_URL = 'https://zblamvvtyrksobxhhggl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpibGFtdnZ0eXJrc29ieGhoZ2dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NTUxOTMsImV4cCI6MjA5ODQzMTE5M30.NuXZALkTncx6631gvDSzchR8VVZvRk64x__DuesTc_c';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
+});
 
 function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
@@ -135,13 +141,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Ref for friends (to use in callbacks without stale closure)
+  // Refs for use in callbacks without stale closure
   const friendsRef = useRef<Friend[]>([]);
+  const currentUserRef = useRef<User | null>(null);
+  
   useEffect(() => {
     friendsRef.current = friends;
   }, [friends]);
+  
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
 
-  // Load user data when logged in
+  // ─── LOAD USER DATA WHEN LOGGED IN ───
   useEffect(() => {
     if (currentUser) {
       setIsLoading(true);
@@ -154,12 +166,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentUser?.id]);
 
-  // Realtime subscription for shared feed
+  // ─── PERIODIC REFRESH OF FRIEND REQUESTS ───
   useEffect(() => {
     if (!currentUser) return;
 
+    // Poll for friend requests every 15 seconds as a fallback for realtime
+    const interval = setInterval(() => {
+      refreshRequestsState(currentUser.id);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [currentUser?.id]);
+
+  // ─── REALTIME SUBSCRIPTION: SHARED FEED ───
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const channelName = `shared_feed_${currentUser.id}`;
     const channel = supabase
-      .channel(`shared_feed_${currentUser.id}`)
+      .channel(channelName, {
+        config: {
+          broadcast: { self: false },
+        },
+      })
       .on(
         'postgres_changes',
         {
@@ -182,23 +211,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             createdAt: item.created_at,
           };
           setSharedFeed(prev => [feedItem, ...prev]);
-          // Add notification
           addNotificationLocal(`📨 Arkadaşından yeni ${getTypeLabel(item.type)} geldi!`, 'fa-share');
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('[Realtime] Shared feed subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, [currentUser?.id]);
 
-  // Realtime subscription for friend requests
+  // ─── REALTIME SUBSCRIPTION: FRIEND REQUESTS ───
   useEffect(() => {
     if (!currentUser) return;
 
+    const channelName = `friend_requests_${currentUser.id}`;
     const channel = supabase
-      .channel(`friend_requests_${currentUser.id}`)
+      .channel(channelName, {
+        config: {
+          broadcast: { self: false },
+        },
+      })
       .on(
         'postgres_changes',
         {
@@ -207,12 +242,36 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           table: 'friend_requests',
           filter: `to_user_id=eq.${currentUser.id}`,
         },
-        () => {
+        (payload) => {
+          console.log('[Realtime] New friend request received:', payload);
           refreshRequestsState(currentUser.id);
-          addNotificationLocal('👋 Yeni arkadaşlık isteği aldın!', 'fa-user-plus');
+          const newRequest = payload.new as any;
+          supabase
+            .from('users')
+            .select('username, display_name')
+            .eq('id', newRequest.from_user_id)
+            .single()
+            .then(({ data: sender }) => {
+              const senderName = sender?.display_name || sender?.username || 'Birisi';
+              addNotificationLocal(`👋 ${senderName} sana arkadaşlık isteği gönderdi!`, 'fa-user-plus');
+            });
         }
       )
-      .subscribe();
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'friend_requests',
+          filter: `to_user_id=eq.${currentUser.id}`,
+        },
+        () => {
+          refreshRequestsState(currentUser.id);
+        }
+      )
+      .subscribe((status) => {
+        console.log('[Realtime] Friend requests subscription status:', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -235,46 +294,68 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // ─── LOAD FUNCTIONS ───
   const loadUserData = async (userId: string) => {
     try {
-      // Load user's personal data
-      const { data: appDataRes } = await supabase
+      const { data: appDataRes, error: appDataErr } = await supabase
         .from('app_data')
         .select('data')
         .eq('user_id', userId)
         .single();
 
+      if (appDataErr) {
+        console.log('[loadUserData] No app_data found, using defaults:', appDataErr.message);
+      }
+
       if (appDataRes?.data) {
         setData(appDataRes.data as AppData);
       }
 
-      // Load friends
-      const { data: friendsRes } = await supabase
+      const { data: friendsRes, error: friendsErr } = await supabase
         .from('friends')
-        .select('friend_id, users!friends_friend_id_fkey(id, username, display_name, avatar, color)')
+        .select('friend_id')
         .eq('user_id', userId);
 
-      if (friendsRes) {
-        const friendsList = friendsRes.map((f: any) => ({
-          userId: f.friend_id,
-          username: f.users.username,
-          displayName: f.users.display_name,
-          avatar: f.users.avatar,
-          color: f.users.color,
-          since: new Date().toLocaleString('tr-TR'),
-        }));
-        setFriends(friendsList);
-        friendsRef.current = friendsList;
+      if (friendsErr) {
+        console.error('[loadUserData] Error loading friends:', friendsErr);
+      } else if (friendsRes && friendsRes.length > 0) {
+        const friendIds = friendsRes.map(f => f.friend_id);
+        
+        const { data: friendUsers, error: friendUsersErr } = await supabase
+          .from('users')
+          .select('id, username, display_name, avatar, color')
+          .in('id', friendIds);
+
+        if (friendUsersErr) {
+          console.error('[loadUserData] Error loading friend details:', friendUsersErr);
+        } else if (friendUsers) {
+          const friendsList = friendUsers.map((u: any) => ({
+            userId: u.id,
+            username: u.username,
+            displayName: u.display_name,
+            avatar: u.avatar,
+            color: u.color,
+            since: new Date().toLocaleString('tr-TR'),
+          }));
+          setFriends(friendsList);
+          friendsRef.current = friendsList;
+        }
       }
 
-      // Load friend requests
       await refreshRequestsState(userId);
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error('[loadUserData] Error:', error);
     }
   };
 
   const loadAllUsers = async () => {
     try {
-      const { data: usersRes } = await supabase.from('users').select('*');
+      const { data: usersRes, error } = await supabase
+        .from('users')
+        .select('id, username, password, display_name, avatar, color, created_at');
+      
+      if (error) {
+        console.error('[loadAllUsers] Error:', error);
+        return;
+      }
+      
       if (usersRes) {
         const users = usersRes.map((u: any) => ({
           id: u.id,
@@ -288,13 +369,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setAllUsers(users);
       }
     } catch (error) {
-      console.error('Error loading users:', error);
+      console.error('[loadAllUsers] Error:', error);
     }
   };
 
   const loadGroups = async () => {
     try {
-      const { data: groupsRes } = await supabase.from('groups').select('*');
+      const { data: groupsRes, error } = await supabase.from('groups').select('*');
+      
+      if (error) {
+        console.error('[loadGroups] Error:', error);
+        return;
+      }
+      
       if (groupsRes) {
         const groupsList = await Promise.all(
           groupsRes.map(async (g: any) => {
@@ -314,28 +401,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setGroups(groupsList);
       }
     } catch (error) {
-      console.error('Error loading groups:', error);
+      console.error('[loadGroups] Error:', error);
     }
   };
 
   const loadSharedFeed = async (userId: string) => {
     try {
-      const { data: feedRes } = await supabase
+      const { data: feedRes, error } = await supabase
         .from('shared_feed')
-        .select(`
-          *,
-          sender:users!shared_feed_from_user_id_fkey(username, display_name)
-        `)
+        .select('*')
         .eq('to_user_id', userId)
         .order('created_at', { ascending: false })
         .limit(50);
 
+      if (error) {
+        console.error('[loadSharedFeed] Error:', error);
+        return;
+      }
+
       if (feedRes) {
+        const fromUserIds = [...new Set(feedRes.map(f => f.from_user_id))];
+        const { data: senders } = await supabase
+          .from('users')
+          .select('id, username, display_name')
+          .in('id', fromUserIds);
+
+        const senderMap = new Map();
+        senders?.forEach((s: any) => senderMap.set(s.id, s));
+
         const items: SharedFeedItem[] = feedRes.map((f: any) => ({
           id: f.id,
           fromUserId: f.from_user_id,
-          fromUsername: f.sender?.username || '',
-          fromDisplayName: f.sender?.display_name || '',
+          fromUsername: senderMap.get(f.from_user_id)?.username || '',
+          fromDisplayName: senderMap.get(f.from_user_id)?.display_name || '',
           toUserId: f.to_user_id,
           type: f.type,
           content: f.content,
@@ -345,28 +443,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setSharedFeed(items);
       }
     } catch (error) {
-      console.error('Error loading shared feed:', error);
+      console.error('[loadSharedFeed] Error:', error);
     }
   };
 
   const refreshRequestsState = async (userId?: string) => {
-    const uid = userId || currentUser?.id;
+    const uid = userId || currentUserRef.current?.id;
     if (!uid) return;
 
     try {
-      // Incoming requests
-      const { data: incomingRes } = await supabase
+      const { data: incomingRes, error: incomingErr } = await supabase
         .from('friend_requests')
-        .select('*, users!friend_requests_from_user_id_fkey(username, display_name)')
+        .select('*, sender:users!friend_requests_from_user_id_fkey(username, display_name)')
         .eq('to_user_id', uid)
         .eq('status', 'pending');
 
-      if (incomingRes) {
+      if (incomingErr) {
+        console.error('[refreshRequestsState] Incoming error:', incomingErr);
+      } else if (incomingRes) {
         const incoming = incomingRes.map((r: any) => ({
           id: r.id,
           fromUserId: r.from_user_id,
-          fromUsername: r.users.username,
-          fromDisplayName: r.users.display_name,
+          fromUsername: r.sender?.username || '',
+          fromDisplayName: r.sender?.display_name || '',
           toUserId: r.to_user_id,
           status: r.status,
           createdAt: r.created_at,
@@ -374,59 +473,64 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setFriendRequests(incoming);
       }
 
-      // Outgoing requests
-      const { data: outgoingRes } = await supabase
+      const { data: outgoingRes, error: outgoingErr } = await supabase
         .from('friend_requests')
-        .select('*')
+        .select('*, receiver:users!friend_requests_to_user_id_fkey(username, display_name)')
         .eq('from_user_id', uid)
         .eq('status', 'pending');
 
-      if (outgoingRes) {
+      if (outgoingErr) {
+        console.error('[refreshRequestsState] Outgoing error:', outgoingErr);
+      } else if (outgoingRes) {
         setSentRequests(outgoingRes.map((r: any) => ({
           id: r.id,
           fromUserId: r.from_user_id,
-          fromUsername: '',
-          fromDisplayName: '',
+          fromUsername: currentUserRef.current?.username || '',
+          fromDisplayName: currentUserRef.current?.displayName || '',
           toUserId: r.to_user_id,
+          toUsername: r.receiver?.username || '',
+          toDisplayName: r.receiver?.display_name || '',
           status: r.status,
           createdAt: r.created_at,
         })));
       }
     } catch (error) {
-      console.error('Error refreshing requests:', error);
+      console.error('[refreshRequestsState] Error:', error);
     }
   };
 
   // ─── AUTH ───
   const login = useCallback(async (username: string, password: string): Promise<boolean> => {
     try {
-      const { data: users, error } = await supabase
+      const cleanUsername = username.toLowerCase().trim();
+      
+      const { data: userData, error } = await supabase
         .from('users')
         .select('*')
-        .eq('username', username.toLowerCase().trim())
+        .eq('username', cleanUsername)
         .eq('password', password)
         .single();
 
-      if (error || !users) {
-        console.error('Supabase login error:', error);
+      if (error || !userData) {
+        console.error('[login] Supabase login error:', error?.message || 'User not found');
         return false;
       }
 
       const user: User = {
-        id: users.id,
-        username: users.username,
-        password: users.password,
-        displayName: users.display_name,
-        avatar: users.avatar,
-        color: users.color,
-        createdAt: users.created_at,
+        id: userData.id,
+        username: userData.username,
+        password: userData.password,
+        displayName: userData.display_name,
+        avatar: userData.avatar,
+        color: userData.color,
+        createdAt: userData.created_at,
       };
 
       setCurrentUser(user);
       localStorage.setItem(SESSION_KEY, JSON.stringify(user));
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[login] Error:', error);
       return false;
     }
   }, []);
@@ -434,59 +538,89 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const register = useCallback(async (username: string, password: string, displayName: string): Promise<boolean> => {
     try {
       const cleanUsername = username.toLowerCase().trim();
+      const cleanDisplayName = displayName.trim() || cleanUsername;
 
-      // Check if user exists
-      const { data: existing } = await supabase
+      // Step 1: Check if user already exists
+      const { data: existing, error: checkError } = await supabase
         .from('users')
         .select('id')
         .eq('username', cleanUsername)
         .maybeSingle();
 
-      if (existing) return false;
+      if (checkError) {
+        console.error('[register] Error checking existing user:', checkError);
+      }
 
-      // Create user
-      const { data: newUser, error } = await supabase
+      if (existing) {
+        console.log('[register] Username already exists:', cleanUsername);
+        return false;
+      }
+
+      // Step 2: Create user in Supabase
+      const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert([{
           username: cleanUsername,
-          password,
-          display_name: displayName.trim() || cleanUsername,
-          avatar: (displayName.trim() || cleanUsername)[0].toUpperCase(),
+          password: password,
+          display_name: cleanDisplayName,
+          avatar: cleanDisplayName[0].toUpperCase(),
           color: randomColor(),
         }])
         .select()
         .single();
 
-      if (error || !newUser) {
-        console.error('Supabase register error:', error);
+      if (insertError || !newUser) {
+        console.error('[register] Supabase insert error:', insertError?.message || 'No user returned');
         return false;
       }
 
-      // Create app_data entry
-      await supabase
+      console.log('[register] User created in Supabase:', newUser.id);
+
+      // Step 3: Verify the user was actually created
+      const { data: verifyUser, error: verifyError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', newUser.id)
+        .single();
+
+      if (verifyError || !verifyUser) {
+        console.error('[register] Verification failed:', verifyError);
+        return false;
+      }
+
+      // Step 4: Create app_data entry for the new user
+      const { error: appDataError } = await supabase
         .from('app_data')
         .insert([{
           user_id: newUser.id,
           data: defaultAppData(),
         }]);
 
+      if (appDataError) {
+        console.error('[register] Error creating app_data:', appDataError);
+      }
+
+      // Step 5: Set current user and save session
       const user: User = {
-        id: newUser.id,
-        username: newUser.username,
-        password: newUser.password,
-        displayName: newUser.display_name,
-        avatar: newUser.avatar,
-        color: newUser.color,
-        createdAt: newUser.created_at,
+        id: verifyUser.id,
+        username: verifyUser.username,
+        password: verifyUser.password,
+        displayName: verifyUser.display_name,
+        avatar: verifyUser.avatar,
+        color: verifyUser.color,
+        createdAt: verifyUser.created_at,
       };
 
       setCurrentUser(user);
       localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-      // Refresh users list
-      loadAllUsers();
+      
+      // Step 6: Refresh users list
+      await loadAllUsers();
+      
+      console.log('[register] Registration successful for:', cleanUsername);
       return true;
     } catch (error) {
-      console.error('Register error:', error);
+      console.error('[register] Unexpected error:', error);
       return false;
     }
   }, []);
@@ -505,17 +639,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // ─── DATA PERSISTENCE ───
   const persistData = useCallback(async (newData: AppData) => {
-    if (!currentUser) return;
+    const user = currentUserRef.current;
+    if (!user) return;
     try {
       await supabase
         .from('app_data')
         .upsert({
-          user_id: currentUser.id,
+          user_id: user.id,
           data: newData,
           updated_at: new Date().toISOString(),
         }, { onConflict: 'user_id' });
 
-      // Also save to shared if in a group
       if (currentGroup) {
         await supabase
           .from('shared_data')
@@ -524,9 +658,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setSharedData(newData);
       }
     } catch (error) {
-      console.error('Error persisting data:', error);
+      console.error('[persistData] Error:', error);
     }
-  }, [currentUser, currentGroup]);
+  }, [currentGroup]);
 
   const saveData = useCallback(async (newData?: AppData) => {
     if (newData) {
@@ -540,34 +674,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [persistData]);
 
-  // ─── SHARED FEED (arkadaşlara paylaşım) ───
+  // ─── SHARED FEED ───
   const sendToFriends = useCallback(async (type: string, content: object) => {
-    if (!currentUser) return;
+    const user = currentUserRef.current;
+    if (!user) return;
 
-    // Use friends state directly for better reliability
-    if (friends.length === 0) return;
+    const currentFriends = friendsRef.current;
+    if (currentFriends.length === 0) {
+      console.log('[sendToFriends] No friends to send to');
+      return;
+    }
 
     try {
-      // Tüm arkadaşlara gönder
-      const inserts = friends.map(friend => ({
-        from_user_id: currentUser.id,
+      const inserts = currentFriends.map(friend => ({
+        from_user_id: user.id,
         to_user_id: friend.userId,
         type,
         content: {
           ...content,
-          senderName: currentUser.displayName || currentUser.username,
-          senderUsername: currentUser.username,
+          senderName: user.displayName || user.username,
+          senderUsername: user.username,
           sentAt: new Date().toISOString(),
         },
         read: false,
       }));
 
       const { error } = await supabase.from('shared_feed').insert(inserts);
-      if (error) throw error;
+      if (error) {
+        console.error('[sendToFriends] Insert error:', error);
+        throw error;
+      }
+      console.log('[sendToFriends] Sent to', inserts.length, 'friends');
     } catch (error) {
-      console.error('Error sending to friends:', error);
+      console.error('[sendToFriends] Error:', error);
     }
-  }, [currentUser, friends]);
+  }, []);
 
   const markFeedRead = useCallback(async (itemId: string) => {
     try {
@@ -580,149 +721,208 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         prev.map(item => item.id === itemId ? { ...item, read: true } : item)
       );
     } catch (error) {
-      console.error('Error marking feed read:', error);
+      console.error('[markFeedRead] Error:', error);
     }
   }, []);
 
   const refreshSharedFeed = useCallback(async () => {
-    if (currentUser) {
-      await loadSharedFeed(currentUser.id);
+    const user = currentUserRef.current;
+    if (user) {
+      await loadSharedFeed(user.id);
     }
-  }, [currentUser]);
+  }, []);
 
   // ─── FRIENDS ───
   const sendFriendRequest = useCallback(async (toUsername: string): Promise<boolean> => {
-    if (!currentUser) return false;
+    const user = currentUserRef.current;
+    if (!user) {
+      console.error('[sendFriendRequest] No current user');
+      return false;
+    }
 
     try {
-      const { data: targetUser } = await supabase
+      const cleanTargetUsername = toUsername.toLowerCase().trim();
+      
+      const { data: targetUser, error: targetError } = await supabase
         .from('users')
-        .select('id')
-        .eq('username', toUsername.toLowerCase().trim())
+        .select('id, username, display_name')
+        .eq('username', cleanTargetUsername)
         .maybeSingle();
 
-      if (!targetUser || targetUser.id === currentUser.id) return false;
+      if (targetError) {
+        console.error('[sendFriendRequest] Error finding user:', targetError);
+        return false;
+      }
 
-      // Check if already friends
-      const alreadyFriend = friendsRef.current.find(f => f.userId === targetUser.id);
-      if (alreadyFriend) return false;
+      if (!targetUser) {
+        console.log('[sendFriendRequest] User not found:', cleanTargetUsername);
+        return false;
+      }
 
-      // Check if request already exists
-      const { data: existing } = await supabase
+      if (targetUser.id === user.id) {
+        console.log('[sendFriendRequest] Cannot send request to self');
+        return false;
+      }
+
+      const currentFriends = friendsRef.current;
+      const alreadyFriend = currentFriends.find(f => f.userId === targetUser.id);
+      if (alreadyFriend) {
+        console.log('[sendFriendRequest] Already friends with:', cleanTargetUsername);
+        return false;
+      }
+
+      const { data: existingReq, error: existingError } = await supabase
         .from('friend_requests')
-        .select('id')
-        .eq('from_user_id', currentUser.id)
-        .eq('to_user_id', targetUser.id)
-        .eq('status', 'pending')
+        .select('id, status')
+        .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${targetUser.id}),and(from_user_id.eq.${targetUser.id},to_user_id.eq.${user.id})`)
+        .in('status', ['pending', 'accepted'])
         .maybeSingle();
 
-      if (existing) return false;
+      if (existingError) {
+        console.error('[sendFriendRequest] Error checking existing request:', existingError);
+      }
 
-      // Create request
-      const { error } = await supabase.from('friend_requests').insert([{
-        from_user_id: currentUser.id,
-        to_user_id: targetUser.id,
-        status: 'pending',
-      }]);
+      if (existingReq) {
+        console.log('[sendFriendRequest] Request already exists:', existingReq.status);
+        return false;
+      }
 
-      if (error) return false;
+      const { data: newRequest, error: insertError } = await supabase
+        .from('friend_requests')
+        .insert([{
+          from_user_id: user.id,
+          to_user_id: targetUser.id,
+          status: 'pending',
+        }])
+        .select()
+        .single();
 
+      if (insertError) {
+        console.error('[sendFriendRequest] Insert error:', insertError);
+        return false;
+      }
+
+      console.log('[sendFriendRequest] Request created:', newRequest);
       await refreshRequestsState();
       return true;
     } catch (error) {
-      console.error('Error sending friend request:', error);
+      console.error('[sendFriendRequest] Unexpected error:', error);
       return false;
     }
-  }, [currentUser]);
+  }, []);
 
   const acceptFriendRequest = useCallback(async (requestId: string) => {
-    if (!currentUser) return;
+    const user = currentUserRef.current;
+    if (!user) return;
 
     try {
-      const { data: req } = await supabase
+      const { data: req, error: reqError } = await supabase
         .from('friend_requests')
         .select('*')
         .eq('id', requestId)
         .single();
 
-      if (!req) return;
+      if (reqError || !req) {
+        console.error('[acceptFriendRequest] Request not found:', reqError);
+        return;
+      }
 
-      // Update request status
-      await supabase
+      const { error: updateError } = await supabase
         .from('friend_requests')
         .update({ status: 'accepted' })
         .eq('id', requestId);
 
-      // Add friendship both ways
-      await supabase.from('friends').insert([
-        { user_id: currentUser.id, friend_id: req.from_user_id },
-        { user_id: req.from_user_id, friend_id: currentUser.id },
+      if (updateError) {
+        console.error('[acceptFriendRequest] Update error:', updateError);
+        return;
+      }
+
+      const { error: friendInsertError } = await supabase.from('friends').insert([
+        { user_id: user.id, friend_id: req.from_user_id },
+        { user_id: req.from_user_id, friend_id: user.id },
       ]);
 
-      await loadUserData(currentUser.id);
+      if (friendInsertError) {
+        console.error('[acceptFriendRequest] Friends insert error:', friendInsertError);
+      }
+
+      await loadUserData(user.id);
       await refreshRequestsState();
+      console.log('[acceptFriendRequest] Request accepted:', requestId);
     } catch (error) {
-      console.error('Error accepting friend request:', error);
+      console.error('[acceptFriendRequest] Error:', error);
     }
-  }, [currentUser]);
+  }, []);
 
   const rejectFriendRequest = useCallback(async (requestId: string) => {
     try {
-      await supabase
+      const { error } = await supabase
         .from('friend_requests')
         .update({ status: 'rejected' })
         .eq('id', requestId);
 
+      if (error) {
+        console.error('[rejectFriendRequest] Error:', error);
+      }
+
       await refreshRequestsState();
     } catch (error) {
-      console.error('Error rejecting friend request:', error);
+      console.error('[rejectFriendRequest] Error:', error);
     }
   }, []);
 
   const removeFriend = useCallback(async (userId: string) => {
-    if (!currentUser) return;
+    const user = currentUserRef.current;
+    if (!user) return;
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('friends')
         .delete()
-        .or(`and(user_id.eq.${currentUser.id},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUser.id})`);
+        .or(`and(user_id.eq.${user.id},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${user.id})`);
 
-      await loadUserData(currentUser.id);
+      if (error) {
+        console.error('[removeFriend] Error:', error);
+      }
+
+      await loadUserData(user.id);
     } catch (error) {
-      console.error('Error removing friend:', error);
+      console.error('[removeFriend] Error:', error);
     }
-  }, [currentUser]);
+  }, []);
 
   const refreshRequests = useCallback(async () => {
-    if (currentUser) {
-      await refreshRequestsState(currentUser.id);
+    const user = currentUserRef.current;
+    if (user) {
+      await refreshRequestsState(user.id);
     }
-  }, [currentUser]);
+  }, []);
 
   // ─── GROUPS ───
   const createGroup = useCallback(async (name: string) => {
-    if (!currentUser) return;
+    const user = currentUserRef.current;
+    if (!user) return;
 
     try {
-      const { data: newGroup } = await supabase
+      const { data: newGroup, error } = await supabase
         .from('groups')
         .insert([{
           name,
-          created_by: currentUser.id,
+          created_by: user.id,
         }])
         .select()
         .single();
 
-      if (!newGroup) return;
+      if (error || !newGroup) {
+        console.error('[createGroup] Error:', error);
+        return;
+      }
 
-      // Add creator as member
       await supabase.from('group_members').insert([{
         group_id: newGroup.id,
-        user_id: currentUser.id,
+        user_id: user.id,
       }]);
 
-      // Create shared data for group
       await supabase.from('shared_data').insert([{
         group_id: newGroup.id,
         data: defaultAppData(),
@@ -732,51 +932,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         id: newGroup.id,
         name: newGroup.name,
         createdBy: newGroup.created_by,
-        members: [currentUser.id],
+        members: [user.id],
         createdAt: newGroup.created_at,
       };
 
       setGroups(prev => [...prev, group]);
       setCurrentGroup(group);
     } catch (error) {
-      console.error('Error creating group:', error);
+      console.error('[createGroup] Error:', error);
     }
-  }, [currentUser]);
+  }, []);
 
   const joinGroup = useCallback(async (groupId: string): Promise<boolean> => {
-    if (!currentUser) return false;
+    const user = currentUserRef.current;
+    if (!user) return false;
 
     try {
-      const { data: group } = await supabase
+      const { data: group, error: groupError } = await supabase
         .from('groups')
         .select('*')
         .eq('id', groupId)
         .single();
 
-      if (!group) return false;
+      if (groupError || !group) {
+        console.error('[joinGroup] Group not found:', groupError);
+        return false;
+      }
 
-      // Check if already member
       const { data: existing } = await supabase
         .from('group_members')
         .select('id')
         .eq('group_id', groupId)
-        .eq('user_id', currentUser.id)
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (!existing) {
-        await supabase.from('group_members').insert([{
+        const { error: joinError } = await supabase.from('group_members').insert([{
           group_id: groupId,
-          user_id: currentUser.id,
+          user_id: user.id,
         }]);
+        
+        if (joinError) {
+          console.error('[joinGroup] Join error:', joinError);
+        }
       }
 
       await loadGroups();
       return true;
     } catch (error) {
-      console.error('Error joining group:', error);
+      console.error('[joinGroup] Error:', error);
       return false;
     }
-  }, [currentUser]);
+  }, []);
 
   const switchGroup = useCallback((group: Group | null) => {
     setCurrentGroup(group);
@@ -786,8 +993,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         .select('data')
         .eq('group_id', group.id)
         .single()
-        .then(({ data }) => {
-          if (data?.data) {
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('[switchGroup] Error:', error);
+          } else if (data?.data) {
             setSharedData(data.data as AppData);
           }
         });
@@ -843,8 +1052,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         .select('data')
         .eq('group_id', currentGroup.id)
         .single()
-        .then(({ data }) => {
-          if (data?.data) {
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('[syncData] Error:', error);
+          } else if (data?.data) {
             setSharedData(data.data as AppData);
           }
         });
