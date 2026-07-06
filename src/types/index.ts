@@ -249,6 +249,7 @@ export interface Group {
   createdBy: string;
   members: string[];
   createdAt: string;
+  roomCode?: string;
 }
 
 export type TabId = 'kesfet' | 'arena' | 'kasa' | 'atolye' | 'canli';
