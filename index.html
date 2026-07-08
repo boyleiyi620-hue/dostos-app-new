@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <title>DostOS</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ff6b1a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DostOS" />
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <script type="module" crossorigin src="/dostos-app-new/assets/index-CGKVg9tg.js"></script>
+    <link rel="stylesheet" crossorigin href="/dostos-app-new/assets/index-DC8aTnXk.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Vite build sırasında bu yolu düzeltecek -->
+    
+    <script>
+      // SESSİZ OTOMATİK GÜNCELLEME SİSTEMİ
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(function(reg) {
+              console.log('SW Kayıtlı');
+              
+              // Her 5 dakikada bir kontrol et
+              setInterval(() => { reg.update(); }, 1000 * 60 * 5);
+
+              reg.onupdatefound = () => {
+                const installingWorker = reg.installing;
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Yeni sürüm bulundu, sessizce yenile
+                    window.location.reload();
+                  }
+                };
+              };
+            })
+            .catch(function(err) {
+              console.log('SW Hatası', err);
+            });
+        });
+
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (refreshing) return;
+          refreshing = true;
+          window.location.reload();
+        });
+      }
+    </script>
+  </body>
+</html>
